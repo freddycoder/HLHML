@@ -19,10 +19,10 @@ Si la reponse est egual à a + b, afficher "Bonne réponse!" sinon afficher "Mau
 ```
 L'utilisateur tape sa réponse
 ```
-5 + 7 = 12
+5 + 7 = ? 12
 ```
 Le programme affiche
 ```
-5 + 7 = 12
+5 + 7 = ? 12
 Bonne réponse!
 ```
