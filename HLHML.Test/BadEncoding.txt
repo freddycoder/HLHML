@@ -1,0 +1,8 @@
+a vaut 5.
+b vaut 7.
+
+Afficher a " + " b " = ? ".
+
+Lire la reponse.
+
+Si la reponse est egual à a + b, afficher "Bonne réponse!" sinon afficher "Mauvaise réponse".
