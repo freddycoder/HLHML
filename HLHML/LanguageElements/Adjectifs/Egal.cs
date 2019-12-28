@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace HLHML.LanguageElements.Adjectifs
 {
-    public class Egual : AST, Adjectif
+    public class Egal : AST, Adjectif
     {
-        public Egual(Token token) : base(token)
+        public Egal(Token token) : base(token)
         {
         }
 

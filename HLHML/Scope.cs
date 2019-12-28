@@ -3,13 +3,26 @@ using System.Collections.Generic;
 
 namespace HLHML
 {
-    public class Scope
+    public interface IReadOnlyScope
+    {
+        dynamic this[string name] { get; }
+
+        bool ContainsKey(string name);
+    }
+
+    public class Scope : IReadOnlyScope
     {
         private readonly IDictionary<string, dynamic> _variables;
-        private readonly Scope _parent;
+        public Scope Parent { get; }
 
         public Scope()
         {
+            _variables = new Dictionary<string, dynamic>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        public Scope(Scope parent)
+        {
+            Parent = parent;
             _variables = new Dictionary<string, dynamic>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -19,9 +32,9 @@ namespace HLHML
 
             if (!keyFounded)
             {
-                if (_parent != null)
+                if (Parent != null)
                 {
-                    keyFounded = _parent.ContainsKey(name);
+                    keyFounded = Parent.ContainsKey(name);
                 }
             }
 
@@ -38,9 +51,9 @@ namespace HLHML
                     {
                         return _variables[name];
                     }
-                    else if (_parent != null)
+                    else if (Parent != null)
                     {
-                        return _parent[name];
+                        return Parent[name];
                     }
                 }
 
@@ -56,9 +69,9 @@ namespace HLHML
                     {
                         _variables[name] = value;
                     }
-                    else if (_parent != null)
+                    else if (Parent != null)
                     {
-                        _parent[name] = value;
+                        Parent[name] = value;
                     }
                 }
                 else

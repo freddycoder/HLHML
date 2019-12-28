@@ -46,10 +46,12 @@
     <Compile Include="AST.cs" />
     <Compile Include="Interpreteur.cs" />
     <Compile Include="Exceptions\InvalidSentenceException.cs" />
+    <Compile Include="Exceptions\InvalidScopeException.cs" />
     <Compile Include="LanguageElements\Adjectifs\Adjectif.cs" />
-    <Compile Include="LanguageElements\Adjectifs\Egual.cs" />
+    <Compile Include="LanguageElements\Adjectifs\Egal.cs" />
     <Compile Include="LanguageElements\Conjonction.cs" />
     <Compile Include="Exceptions\InvalidPredicatException.cs" />
+    <Compile Include="Exceptions\InvalideConjonctionException.cs" />
     <Compile Include="LanguageElements\Verbes\Afficher.cs" />
     <Compile Include="Exceptions\InvalidNodeNumberException.cs" />
     <Compile Include="LanguageElements\Verbes\Lire.cs" />

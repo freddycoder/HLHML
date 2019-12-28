@@ -34,10 +34,5 @@ namespace HLHML
 
             return ast.Value;
         }
-
-        internal static dynamic Eval(IEnumerable<AST> ast)
-        {
-            return ast.First().Value;
-        }
     }
 }

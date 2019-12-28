@@ -10,7 +10,7 @@ namespace HLHML
     {
         private readonly string _text;
         private int _pos;
-        private readonly IDictionary<string, TokenType> _knowedWords = new Dictionary<string, TokenType>
+        private static readonly IDictionary<string, TokenType> _knowedWords = new Dictionary<string, TokenType>
         (StringComparer.OrdinalIgnoreCase)
         {
             { "Afficher", TokenType.Verbe },
@@ -20,8 +20,14 @@ namespace HLHML
             { "La", TokenType.Determinant },
             { "Si", TokenType.Conjonction },
             { "Sinon", TokenType.Conjonction },
-            { "Egual", TokenType.Adjectif },
-            { "à", TokenType.Determinant }
+            { "égal", TokenType.Adjectif },
+            { "à", TokenType.Determinant },
+            { "tant que", TokenType.Conjonction },
+            { "ne", TokenType.Negation },
+            { "pas", TokenType.Negation },
+            { "n'", TokenType.Negation },
+            { "modulo", TokenType.OperateurMathematique },
+            { "Ensuite", TokenType.Adverbe }
         };
 
         private char CurrentChar => _pos >= _text.Length ? '\0' : _text[_pos];
@@ -70,6 +76,22 @@ namespace HLHML
 
                 return operateur;
             }
+            else if (CurrentChar == '=')
+            {
+                var vaut = new Token("vaut", TokenType.Verbe);
+
+                _pos++;
+
+                return vaut;
+            }
+            else if (CurrentChar == '%')
+            {
+                var modulo = new Token("modulo", TokenType.OperateurMathematique);
+
+                _pos++;
+
+                return modulo;
+            }
 
             return new Token("", TokenType.None);
         }
@@ -104,6 +126,13 @@ namespace HLHML
             return sb.ToString();
         }
 
+        private Token PeekNextToken()
+        {
+            var sublexer = new Lexer(_text.Substring(_pos));
+
+            return sublexer.GetNextToken();
+        }
+
         private TokenType GetTokenType(string value)
         {
             if (_knowedWords.ContainsKey(value))
@@ -119,6 +148,19 @@ namespace HLHML
             var sb = new StringBuilder();
 
             while (char.IsLetter(CurrentChar))
+            {
+                sb.Append(CurrentChar);
+                _pos++;
+            }
+
+            if (sb.ToString().Equals("tant", StringComparison.OrdinalIgnoreCase) &&
+                PeekNextToken().Value.Equals("que", StringComparison.OrdinalIgnoreCase))
+            {
+                Advance();
+
+                sb.Append($" {GetNextWord()}");
+            }
+            else if (CurrentChar == '\'')
             {
                 sb.Append(CurrentChar);
                 _pos++;

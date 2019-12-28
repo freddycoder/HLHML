@@ -15,7 +15,12 @@ namespace HLHML.LanguageElements
 
         public void Actionner()
         {
-            Scope[Childs.First().Value] = NodeVisitor.Eval(Childs.Skip(1));
+            if (Childs.Count != 2)
+            {
+                throw new InvalidNodeNumberException("An assignation must have only tow child node.");
+            }
+
+            Scope[Childs.First().Value] = NodeVisitor.Eval(Childs.Last());
         }
     }
 }

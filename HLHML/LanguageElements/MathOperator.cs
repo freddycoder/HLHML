@@ -15,7 +15,7 @@ namespace HLHML.LanguageElements
         {
             Debug.Assert(token.Type == TokenType.OperateurMathematique);
 
-            Operator = token.Value;
+            Operator = token.Value.ToLower();
         }
 
         public override string Value 
@@ -26,6 +26,8 @@ namespace HLHML.LanguageElements
                 {
                     case "+":
                         return EvalPlus();
+                    case "modulo":
+                        return EvalModulo();
                 }
 
                 throw new NotImplementedException($"L'operateur {Operator} n'est pas implémenté");
@@ -48,6 +50,23 @@ namespace HLHML.LanguageElements
             else if (Childs.Count > 2)
             {
                 throw new InvalidNodeNumberException();
+            }
+
+            return "";
+        }
+
+        private string EvalModulo()
+        {
+            if (Childs.Count == 2)
+            {
+                var x = int.Parse(NodeVisitor.Eval(Childs[0]));
+                var y = int.Parse(NodeVisitor.Eval(Childs[1]));
+
+                return (x % y).ToString();
+            }
+            else if (Childs.Count > 2)
+            {
+                throw new InvalidNodeNumberException("Modulo operator must have only 2 child");
             }
 
             return "";

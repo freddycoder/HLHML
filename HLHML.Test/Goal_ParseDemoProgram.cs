@@ -337,7 +337,7 @@ namespace HLHML.Test
         [TestMethod]
         public void ConjonctionPremierJeton()
         {
-            var parseur = new Parseur(new Lexer("Si 5 est egual à 5, afficher \"Oui\""));
+            var parseur = new Parseur(new Lexer("Si 5 est égal à 5, afficher \"Oui\""));
 
             var conjonction = parseur.Parse().Childs.Single();
 
@@ -349,7 +349,7 @@ namespace HLHML.Test
         [TestMethod]
         public void ConjonctionPredicatParseur()
         {
-            var parseur = new Parseur(new Lexer("Si 5 est egual à 5, afficher \"Oui\""));
+            var parseur = new Parseur(new Lexer("Si 5 est égal à 5, afficher \"Oui\""));
 
             var conjonction = parseur.Parse().Childs.Single();
 
@@ -360,14 +360,14 @@ namespace HLHML.Test
             var predicat = conjonction.Childs.First();
 
             Assert.AreEqual(TokenType.Adjectif, predicat.Type);
-            Assert.AreEqual("egual", predicat.Value);
-            Assert.IsInstanceOfType(predicat, typeof(Egual));
+            Assert.AreEqual("égal", predicat.Value);
+            Assert.IsInstanceOfType(predicat, typeof(Egal));
         }
 
         [TestMethod]
         public void ConjonctionPredicatAdjectfParseur()
         {
-            var parseur = new Parseur(new Lexer("Si 5 est egual à 5, afficher \"Oui\""));
+            var parseur = new Parseur(new Lexer("Si 5 est égal à 5, afficher \"Oui\""));
 
             var conjonction = parseur.Parse().Childs.Single();
 
@@ -375,16 +375,16 @@ namespace HLHML.Test
             Assert.AreEqual("Si", conjonction.Value);
             Assert.IsInstanceOfType(conjonction, typeof(Conjonction));
 
-            var egual = conjonction.Childs.First();
+            var égal = conjonction.Childs.First();
 
-            Assert.AreEqual(TokenType.Adjectif, egual.Type);
-            Assert.AreEqual("egual", egual.Value);
-            Assert.IsInstanceOfType(egual, typeof(Egual));
+            Assert.AreEqual(TokenType.Adjectif, égal.Type);
+            Assert.AreEqual("égal", égal.Value);
+            Assert.IsInstanceOfType(égal, typeof(Egal));
 
-            Assert.AreEqual(2, egual.Childs.Count);
+            Assert.AreEqual(2, égal.Childs.Count);
 
-            Assert.AreEqual("5", egual.Childs[0].Value);
-            Assert.AreEqual("5", egual.Childs[1].Value);
+            Assert.AreEqual("5", égal.Childs[0].Value);
+            Assert.AreEqual("5", égal.Childs[1].Value);
         }
 
         [TestMethod]
@@ -412,7 +412,7 @@ namespace HLHML.Test
         [TestMethod]
         public void SiVraiAfficher()
         {
-            var program = "Si 5 est egual à 5, afficher \"Oui\"";
+            var program = "Si 5 est égal à 5, afficher \"Oui\"";
 
             using (var sw = new StringWriter())
             {
@@ -449,13 +449,13 @@ namespace HLHML.Test
             var program = "a vaut 2.\n" +
                           "b vaut 4.\n" +
                           "la réponse vaut 6.\n" +
-                          "si la réponse est egual à a + b, afficher \"bonne réponse\"";
+                          "si la réponse est égal à a + b, afficher \"bonne réponse\"";
 
             var conjonction = new Parseur(new Lexer(program)).Parse().Childs.Last();
 
             Assert.IsInstanceOfType(conjonction, typeof(Conjonction));
 
-            Assert.IsInstanceOfType(conjonction.Childs.First(), typeof(Egual));
+            Assert.IsInstanceOfType(conjonction.Childs.First(), typeof(Egal));
 
             using (var sw = new StringWriter())
             {
@@ -479,7 +479,7 @@ namespace HLHML.Test
                           "\n" +
                           "Lire la reponse." +
                           "\n" +
-                          "Si la reponse est egual à a + b, afficher \"Bonne réponse!\" sinon afficher \"Mauvaise réponse\".";
+                          "Si la reponse est égal à a + b, afficher \"Bonne réponse!\" sinon afficher \"Mauvaise réponse\".";
 
             using (var sr = new StringReader("12"))
             using (var sw = new StringWriter())
@@ -549,7 +549,7 @@ namespace HLHML.Test
         [TestMethod]
         public void Sinon()
         {
-            var program = "Si 5 est egual à 6, afficher \"oui\" sinon afficher \"non\"";
+            var program = "Si 5 est égal à 6, afficher \"oui\" sinon afficher \"non\"";
 
             using (var sw = new StringWriter())
             {
@@ -573,7 +573,7 @@ namespace HLHML.Test
                           "\n" +
                           "Lire la reponse." +
                           "\n" +
-                          "Si la reponse est egual à a + b, afficher \"Bonne réponse!\" sinon afficher \"Mauvaise réponse\"."; ;
+                          "Si la reponse est égal à a + b, afficher \"Bonne réponse!\" sinon afficher \"Mauvaise réponse\"."; ;
 
             using (var sr = new StringReader("13"))
             using (var sw = new StringWriter())

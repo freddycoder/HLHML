@@ -5,7 +5,9 @@ namespace HLHML
     public enum TokenType
     {
         Sujet, Verbe, Adjectif, Determinant, Conjonction, None, Nombre, Text, Compound, Ponctuation,
-        OperateurMathematique
+        OperateurMathematique,
+        Negation,
+        Adverbe
     }
 
     public class Token

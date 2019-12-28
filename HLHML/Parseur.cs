@@ -11,25 +11,53 @@ namespace HLHML
     {
         private readonly Lexer _lexer;
         private Token CurrentToken { get; set; }
+        private Scope _parentScope;
 
         public Parseur(Lexer lexer)
         {
             _lexer = lexer;
         }
 
-        public Token GetNextToken()
+        private Token GetNextToken()
         {
             CurrentToken = _lexer.GetNextToken();
             return CurrentToken;
         }
 
+        private void UpdateScopeReference(Scope scope)
+        {
+            if (scope == null && _parentScope == null)
+            {
+                _parentScope = new Scope();
+            }
+            else if (scope != null && _parentScope == null)
+            {
+                _parentScope = scope;
+            }
+            else if (scope == null && _parentScope != null)
+            {
+                _parentScope = new Scope(_parentScope);
+            }
+            else if (scope != null && _parentScope != null)
+            {
+                if (!(scope.Parent == _parentScope))
+                {
+                    throw new InvalidScopeException("Scopes does not reference each others properly");
+                }
+
+                _parentScope = scope;
+            }
+        }
+
         public AST Parse(Scope scope = null)
         {
-            var root = new AST(new Token("Compound", TokenType.Compound), scope ?? new Scope());
+            UpdateScopeReference(scope);
+
+            var root = new AST(new Token("Compound", TokenType.Compound), _parentScope);
 
             GetNextToken();
 
-            while (CurrentToken.Type != TokenType.None)
+            while (CurrentToken.Type != TokenType.None && CurrentToken.Type != TokenType.Adverbe)
             {
                 if (CurrentToken.Type == TokenType.Sujet || CurrentToken.Type == TokenType.Nombre)
                 {
@@ -51,6 +79,8 @@ namespace HLHML
                 GetNextToken();
             }
 
+            _parentScope = _parentScope.Parent;
+
             return root;
         }
 
@@ -60,6 +90,8 @@ namespace HLHML
 
             var isFirst = true;
 
+            var predicatIsNegated = false;
+
             var first = GetNextToken();
 
             if (first.Type == TokenType.Determinant)
@@ -67,22 +99,40 @@ namespace HLHML
                 first = GetNextToken();
             }
 
-            while (CurrentToken.Type != TokenType.None || CurrentToken.Type == TokenType.Ponctuation)
+            while ((CurrentToken.Type != TokenType.None || 
+                   CurrentToken.Type == TokenType.Ponctuation) &&
+                   CurrentToken.Type != TokenType.Adverbe)
             {
-                GetNextToken();
+                if (!(conjonction.Value.Equals("tant que", StringComparison.OrdinalIgnoreCase) &&
+                         conjonction.Childs.Count == 1))
+                {
+                    GetNextToken();
+                }
+                   
 
-                if (CurrentToken.Type == TokenType.Verbe)
+                if (CurrentToken.Type == TokenType.Negation)
+                {
+                    predicatIsNegated = true;
+                }
+                else if (conjonction.Value.Equals("tant que", StringComparison.OrdinalIgnoreCase) &&
+                         conjonction.Childs.Count == 1)
+                {
+                    conjonction.AddChilds(Parse(new Scope(_parentScope)));
+                }
+                else if (CurrentToken.Type == TokenType.Verbe)
                 {
                     conjonction.AddChilds(InitialiserVerbe());
                 }
 
-                if (isFirst)
+                if (isFirst && CurrentToken.Type != TokenType.Negation)
                 {
                     conjonction.Childs[0].AddChildsAsFirstChild(new AST(first));
 
                     isFirst = false;
                 }
             }
+
+            conjonction.PredicatIsNegated = predicatIsNegated;
 
             return conjonction;
         }
@@ -111,7 +161,7 @@ namespace HLHML
 
         private AST ParseNextAdjectif()
         {
-            AST adj = new Egual(GetNextToken());
+            AST adj = new Egal(GetNextToken());
 
             adj.AddChilds(AfterVerbeAndAdjectifs());
 

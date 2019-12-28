@@ -6,6 +6,8 @@ namespace HLHML
     {
         private readonly Scope _scope;
 
+        public IReadOnlyScope Scope => _scope;
+
         public Interpreteur()
         {
             _scope = new Scope();

@@ -10,7 +10,7 @@ Afficher a " + " b " = ? ".
 
 Lire la reponse.
 
-Si la reponse est egual à a + b, afficher "Bonne réponse!" sinon afficher "Mauvaise réponse".
+Si la reponse est égal à a + b, afficher "Bonne réponse!" sinon afficher "Mauvaise réponse".
 ```
 
 ## Sortie
