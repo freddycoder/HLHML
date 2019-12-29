@@ -1,6 +1,6 @@
 # HLHML.Syntaxe
 
-L'extension de sythaxe pour écrire des scripts avec Visual Studio Code
+L'extension de syntaxe pour écrire des scripts avec Visual Studio Code
 
 ## Utilisation
 
