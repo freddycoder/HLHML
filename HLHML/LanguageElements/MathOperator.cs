@@ -28,10 +28,71 @@ namespace HLHML.LanguageElements
                         return EvalPlus();
                     case "modulo":
                         return EvalModulo();
+                    case "*":
+                        return EvalMultiplication();
+                    case "-":
+                        return EvalSoustraction();
+                    case "/":
+                        return EvalDivision();
                 }
 
                 throw new NotImplementedException($"L'operateur {Operator} n'est pas implémenté");
             }
+        }
+
+        private string EvalDivision()
+        {
+            if (Childs.Count == 2)
+            {
+                var x = int.Parse(NodeVisitor.Eval(Childs[0]));
+                var y = int.Parse(NodeVisitor.Eval(Childs[1]));
+
+                return (x / y).ToString();
+            }
+            else if (Childs.Count > 2)
+            {
+                throw new InvalidNodeNumberException("Modulo operator must have only 2 child");
+            }
+
+            return "";
+        }
+
+        private string EvalSoustraction()
+        {
+            if (Childs.Count == 1)
+            {
+                return (- int.Parse(Childs[0].Value)).ToString();
+            }
+            if (Childs.Count == 2)
+            {
+                var x = int.Parse(NodeVisitor.Eval(Childs[0]));
+                var y = int.Parse(NodeVisitor.Eval(Childs[1]));
+
+                return (x - y).ToString();
+            }
+            else if (Childs.Count > 2)
+            {
+                throw new InvalidNodeNumberException("Modulo operator must have only 2 child");
+            }
+
+            return "";
+        }
+
+        private string EvalMultiplication()
+        {
+            if (Childs.Count == 2)
+            {
+                var x = int.Parse(NodeVisitor.Eval(Childs[0]));
+                var y = int.Parse(NodeVisitor.Eval(Childs[1]));
+
+                return (x * y).ToString();
+            }
+            else if (Childs.Count > 2)
+            {
+                throw new InvalidNodeNumberException("Modulo operator must have only 2 child");
+            }
+
+            return "";
         }
 
         private string EvalPlus()

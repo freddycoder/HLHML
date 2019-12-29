@@ -1,0 +1,25 @@
+{
+    "name": "francais",
+    "displayName": "Français",
+    "description": "Écrivez des scripts en utilisant le français!",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.41.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "francais",
+            "aliases": ["Français", "francais"],
+            "extensions": [".fr"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "francais",
+            "scopeName": "source.fr",
+            "path": "./syntaxes/francais.tmLanguage.json"
+        }]
+    }
+}

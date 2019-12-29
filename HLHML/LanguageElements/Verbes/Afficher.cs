@@ -22,7 +22,7 @@ namespace HLHML.LanguageElements
                 }
                 else if (child.Type == TokenType.Sujet)
                 {
-                    Console.Write(Scope[child.Value]);
+                    Console.Write(Scope[child.Value] ?? "");
                 }
             }
         }

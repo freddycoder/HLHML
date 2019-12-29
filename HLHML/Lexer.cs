@@ -20,14 +20,22 @@ namespace HLHML
             { "La", TokenType.Determinant },
             { "Si", TokenType.Conjonction },
             { "Sinon", TokenType.Conjonction },
-            { "égal", TokenType.Adjectif },
-            { "à", TokenType.Determinant },
+            { "égal à", TokenType.Adjectif },
+            { "à", TokenType.Preposition },
             { "tant que", TokenType.Conjonction },
+            { "que", TokenType.Complement },
             { "ne", TokenType.Negation },
             { "pas", TokenType.Negation },
             { "n'", TokenType.Negation },
             { "modulo", TokenType.OperateurMathematique },
-            { "Ensuite", TokenType.Adverbe }
+            { "Ensuite", TokenType.Adverbe },
+            { "Le", TokenType.Determinant },
+            { "de", TokenType.Determinant },
+            { "se", TokenType.Determinant },
+            { "comme suit", TokenType.Adverbe },
+            { "définit", TokenType.Verbe },
+            { "plus petit que", TokenType.Adjectif },
+            { "plus grand que", TokenType.Adjectif }
         };
 
         private char CurrentChar => _pos >= _text.Length ? '\0' : _text[_pos];
@@ -60,7 +68,7 @@ namespace HLHML
 
                 return new Token(nombre, TokenType.Nombre);
             }
-            else if (CurrentChar == '.' || CurrentChar == ',')
+            else if (CurrentChar == '.' || CurrentChar == ',' || CurrentChar == ':')
             {
                 var point = CurrentChar.ToString();
 
@@ -68,7 +76,7 @@ namespace HLHML
 
                 return new Token(point, TokenType.Ponctuation);
             }
-            else if (CurrentChar == '+')
+            else if (CurrentChar == '+' || CurrentChar == '-' || CurrentChar == '*' || CurrentChar == '/')
             {
                 var operateur = new Token(CurrentChar.ToString(), TokenType.OperateurMathematique);
 
@@ -153,17 +161,24 @@ namespace HLHML
                 _pos++;
             }
 
-            if (sb.ToString().Equals("tant", StringComparison.OrdinalIgnoreCase) &&
-                PeekNextToken().Value.Equals("que", StringComparison.OrdinalIgnoreCase))
-            {
-                Advance();
-
-                sb.Append($" {GetNextWord()}");
-            }
-            else if (CurrentChar == '\'')
+            if (CurrentChar == '\'')
             {
                 sb.Append(CurrentChar);
                 _pos++;
+            }
+            else
+            {
+                var nextTokenPeeked = PeekNextToken();
+
+                if (GetTokenType(sb.ToString()) == TokenType.Sujet &&
+                     (nextTokenPeeked.Type == TokenType.Sujet ||
+                      nextTokenPeeked.Type == TokenType.Complement ||
+                      nextTokenPeeked.Type == TokenType.Preposition))
+                {
+                    Advance();
+
+                    sb.Append($" {GetNextWord()}");
+                }
             }
 
             return sb.ToString();

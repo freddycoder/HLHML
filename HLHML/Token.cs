@@ -7,7 +7,9 @@ namespace HLHML
         Sujet, Verbe, Adjectif, Determinant, Conjonction, None, Nombre, Text, Compound, Ponctuation,
         OperateurMathematique,
         Negation,
-        Adverbe
+        Adverbe,
+        Complement,
+        Preposition
     }
 
     public class Token

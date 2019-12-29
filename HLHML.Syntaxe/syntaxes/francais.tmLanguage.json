@@ -1,0 +1,32 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Français",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.francais",
+				"match": "\\b(Si|si|sinon|Tant que|tant que|plus petit que|plus grand que|ensuite|Ensuite|Afficher|afficher|vaut)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.francais",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.francais",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "source.fr"
+}

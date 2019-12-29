@@ -49,6 +49,8 @@
     <Compile Include="Exceptions\InvalidScopeException.cs" />
     <Compile Include="LanguageElements\Adjectifs\Adjectif.cs" />
     <Compile Include="LanguageElements\Adjectifs\Egal.cs" />
+    <Compile Include="LanguageElements\Adjectifs\PlusGrand.cs" />
+    <Compile Include="LanguageElements\Adjectifs\PlusPetit.cs" />
     <Compile Include="LanguageElements\Conjonction.cs" />
     <Compile Include="Exceptions\InvalidPredicatException.cs" />
     <Compile Include="Exceptions\InvalideConjonctionException.cs" />

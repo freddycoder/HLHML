@@ -360,7 +360,7 @@ namespace HLHML.Test
             var predicat = conjonction.Childs.First();
 
             Assert.AreEqual(TokenType.Adjectif, predicat.Type);
-            Assert.AreEqual("égal", predicat.Value);
+            Assert.AreEqual("égal à", predicat.Value);
             Assert.IsInstanceOfType(predicat, typeof(Egal));
         }
 
@@ -378,7 +378,7 @@ namespace HLHML.Test
             var égal = conjonction.Childs.First();
 
             Assert.AreEqual(TokenType.Adjectif, égal.Type);
-            Assert.AreEqual("égal", égal.Value);
+            Assert.AreEqual("égal à", égal.Value);
             Assert.IsInstanceOfType(égal, typeof(Egal));
 
             Assert.AreEqual(2, égal.Childs.Count);
@@ -508,7 +508,7 @@ namespace HLHML.Test
 
                 var interpreteur = new Interpreteur();
 
-                interpreteur.Interprete(File.ReadAllText("DemoProgram.txt"));
+                interpreteur.Interprete(File.ReadAllText("DemoProgram.fr"));
 
                 Assert.AreEqual("5 + 7 = ? Bonne réponse!", sw.ToString());
             }
@@ -524,7 +524,7 @@ namespace HLHML.Test
 
                 Console.SetIn(sr);
 
-                Program.Main(new string[] { "DemoProgram.txt" });
+                Program.Main(new string[] { "DemoProgram.fr" });
 
                 Assert.AreEqual("5 + 7 = ? Bonne réponse!", sw.ToString());
             }
@@ -540,7 +540,7 @@ namespace HLHML.Test
 
                 Console.SetIn(sr);
 
-                Program.Main(new string[] { "BadEncoding.txt" });
+                Program.Main(new string[] { "BadEncoding.fr" });
 
                 Assert.AreEqual("5 + 7 = ? Bonne réponse!", sw.ToString());
             }

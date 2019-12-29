@@ -13,6 +13,30 @@ namespace HLHML.Test
     public class Goal_EuclideAlgorythm
     {
         [TestMethod]
+        [Timeout(2000)]
+        public void Euclide0()
+        {
+            var program = "a vaut 15.\n" +
+                          "b vaut 21.\n" +
+                          "Tant que b n'est pas égal à 0,\n" +
+                          "    t = b.\n" +
+                          "    b = a modulo b.\n" +
+                          "    a = t.\n" +
+                          "Ensuite, afficher a.\n";
+
+            using (var sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+
+                var interpreteur = new Interpreteur();
+
+                interpreteur.Interprete(program);
+
+                Assert.AreEqual("3", sw.ToString());
+            }
+        }
+
+        [TestMethod]
         public void TestLexer()
         {
             var lexer = new Lexer("tant que b n'est pas égal à 0");
@@ -27,9 +51,7 @@ namespace HLHML.Test
 
             Assert.AreEqual(new Token("pas", TokenType.Negation), lexer.GetNextToken());
 
-            Assert.AreEqual(new Token("égal", TokenType.Adjectif), lexer.GetNextToken());
-
-            Assert.AreEqual(new Token("à", TokenType.Determinant), lexer.GetNextToken());
+            Assert.AreEqual(new Token("égal à", TokenType.Adjectif), lexer.GetNextToken());
 
             Assert.AreEqual(new Token("0", TokenType.Nombre), lexer.GetNextToken());
         }
@@ -295,30 +317,6 @@ namespace HLHML.Test
                 a = t;
             }
             Assert.AreEqual(3, a);
-        }
-
-        [TestMethod]
-        [Timeout(1000)]
-        public void Euclide0()
-        {
-            var program = "a vaut 15.\n" +
-                          "b vaut 21.\n" +
-                          "Tant que b n'est pas égal à 0,\n" +
-                          "    t = b.\n" +
-                          "    b = a modulo b.\n" +
-                          "    a = t.\n" +
-                          "Ensuite, afficher a.\n";
-
-            using (var sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-
-                var interpreteur = new Interpreteur();
-
-                interpreteur.Interprete(program);
-
-                Assert.AreEqual("3", sw.ToString());
-            }
         }
     }
 }
