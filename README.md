@@ -26,3 +26,6 @@ Le programme affiche
 5 + 7 = ? 12
 Bonne réponse!
 ```
+
+## Lexique
+<a href="https://github.com/freddycoder/HLHML/wiki/Lexique">Visiter la documentation</a>
