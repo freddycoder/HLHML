@@ -85,6 +85,8 @@ namespace HLHML
             }
         }
 
+        public AST Parent => _parent;
+
         public override string ToString()
         {
             return $"{_token} : Childs Count : {Childs.Count}";

@@ -540,7 +540,7 @@ namespace HLHML.Test
 
                 Console.SetIn(sr);
 
-                Program.Main(new string[] { "BadEncoding.fr" });
+                Program.Main(new string[] { "AINSI_Encoding.fr" });
 
                 Assert.AreEqual("5 + 7 = ? Bonne réponse!", sw.ToString());
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,8 @@ namespace HLHML
 {
     public class Program
     {
+        public static AppSettingsReader Settings { get; } = new AppSettingsReader();
+
         public static void Main(string[] args)
         {
             var interpreteur = new Interpreteur();
@@ -18,32 +21,23 @@ namespace HLHML
                 string input = "";
                 while (input != "quitter")
                 {
-                    try
+                    Try(() =>
                     {
                         Console.Write(">>> ");
                         input = Console.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(input))
+                        if (!string.IsNullOrWhiteSpace(input) && !input.Equals("quitter", StringComparison.OrdinalIgnoreCase))
                         {
                             interpreteur.Interprete(input);
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        while (e != null)
-                        {
-                            Console.WriteLine(e.Message);
-                            Console.WriteLine();
-                            Console.WriteLine(e.StackTrace);
-                            Console.WriteLine();
-
-                            e = e.InnerException;
-                        }
-                    }
+                    });
                 }
             }
             else
             {
-                interpreteur.Interprete(ReadAllText(args[0]));
+                Try(() =>
+                {
+                    interpreteur.Interprete(ReadAllText(args[0]));
+                });
             }
         }
 
@@ -63,11 +57,59 @@ namespace HLHML
 
             // Analyze the BOM
             if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
-            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
+            if ((bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) || 
+                (bom[0] == 13 && bom[1] == 10 && bom[2] == 97 && bom[3] == 32) ||
+                (bom[0] == 108 && bom[1] == 97 && bom[2] == 32 && bom[3] == 108)) return Encoding.UTF8;
             if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
             if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
             if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Encoding.UTF32;
             return Encoding.Default;
+        }
+
+        private static void Try(Action action)
+        {
+            try
+            {
+                action.Invoke();
+            }
+            catch (Exception e)
+            {
+                while (e != null)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
+
+                    if (Settings.GetValue<bool>("printStackTrace"))
+                    {
+                        Console.WriteLine(e.StackTrace);
+                        Console.WriteLine();
+                    }
+
+                    if (Settings.GetValue<bool>("printEveryException"))
+                    {
+                        e = e.InnerException;
+                    }
+                    else
+                    {
+                        e = null;
+                    }
+                }
+            }
+        }
+    }
+
+    public static class AppSettingsExtension
+    {
+        public static T GetValue<T>(this AppSettingsReader appSettingsReader, string key)
+        {
+            try
+            {
+                return (T) appSettingsReader.GetValue(key, typeof(T));
+            }
+            catch
+            {
+                return default;
+            }
         }
     }
 }

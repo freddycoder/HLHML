@@ -37,6 +37,35 @@ namespace HLHML.Test
         }
 
         [TestMethod]
+        [Timeout(2000)]
+        public void Euclide0InFile()
+        {
+            using (var sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+
+                Program.Main(new string[] { "Euclide.fr" });
+
+                Assert.AreEqual("3", sw.ToString());
+            }
+        }
+
+        [TestMethod]
+        //[Timeout(2000)]
+        public void Euclide0InFile2()
+        {
+            using (var sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+
+                Program.Main(new string[] { "Euclideutf-8.fr" });
+
+                Assert.AreEqual("3", sw.ToString());
+            }
+        }
+
+
+        [TestMethod]
         public void TestLexer()
         {
             var lexer = new Lexer("tant que b n'est pas égal à 0");

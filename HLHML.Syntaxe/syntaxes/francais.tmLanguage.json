@@ -7,13 +7,25 @@
 		},
 		{
 			"include": "#strings"
+		},
+		{
+			"include": "#determinant"
+		},
+		{
+			"include": "#est"
 		}
 	],
 	"repository": {
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.francais",
-				"match": "\\b(Si|si|sinon|Tant que|tant que|plus petit que|plus grand que|ensuite|Ensuite|Afficher|afficher|vaut)\\b"
+				"match": "\\b(Si|si|sinon|Tant que|tant que|plus petit que|plus grand que|ensuite|Ensuite|Afficher|afficher|vaut|lire|Lire|égal à)\\b"
+			}]
+		},
+		"est": {
+			"patterns": [{
+				"name": "keyword.other.unit",
+				"match": "\\b(est|n'|pas|ne)\\b"
 			}]
 		},
 		"strings": {
@@ -26,6 +38,12 @@
 					"match": "\\\\."
 				}
 			]
+		},
+		"determinant": {
+			"patterns": [{
+				"name": "keyword.other",
+				"match": "\\b(Le|le|La|la|de)\\b"
+			}]
 		}
 	},
 	"scopeName": "source.fr"

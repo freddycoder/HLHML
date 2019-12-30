@@ -220,11 +220,6 @@ namespace HLHML
                         GetNextToken();
                     }
 
-                    //if (asts.Count > 0 && asts.Last().Type == TokenType.OperateurMathematique)
-                    //{
-                    //    GetNextToken();
-                    //}
-
                 } while (CurrentToken.Type == TokenType.Nombre || CurrentToken.Type == TokenType.Sujet ||
                      CurrentToken.Type == TokenType.Text || CurrentToken.Type == TokenType.Determinant);
             }
@@ -236,7 +231,7 @@ namespace HLHML
         {
             var traiteLeSujet = false;
 
-            return GeneriqueCompound(new Scope(_parentScope), () =>
+            Func<bool> predicat = () =>
             {
                 var @return = CurrentToken.Type != TokenType.None && CurrentToken.Type != TokenType.Adverbe;
 
@@ -248,7 +243,42 @@ namespace HLHML
                 traiteLeSujet = CurrentToken.Value.Equals(subject, StringComparison.OrdinalIgnoreCase);
 
                 return @return;
-                });
+            };
+
+            UpdateScopeReference(new Scope(_parentScope));
+
+            var root = new AST(new Token("Compound", TokenType.Compound), _parentScope);
+
+            GetNextToken();
+
+            while (predicat.Invoke())
+            {
+                if (CurrentToken.Type == TokenType.Sujet || CurrentToken.Type == TokenType.Nombre)
+                {
+                    var token = CurrentToken;
+
+                    var ast = AfterBeginingWithSubjectOrNumber();
+
+                    root.AddChilds(ast.AddChildsAsFirstChild(new AST(token)));
+                }
+                else if (CurrentToken.Type == TokenType.Verbe)
+                {
+                    root.AddChilds(InitialiserVerbe(""));
+                }
+                else if (CurrentToken.Type == TokenType.Conjonction)
+                {
+                    root.AddChilds(InitialiserConjnction());
+                }
+
+                if (predicat.Invoke())
+                {
+                    GetNextToken();
+                }
+            }
+
+            _parentScope = _parentScope.Parent;
+
+            return root;
         }
 
         private AST GeneriqueCompound(Scope scope, Func<bool> predicat)
@@ -290,30 +320,25 @@ namespace HLHML
         {
             var first = CurrentToken;
 
+            var ast = new AST(first);
+
             GetNextToken();
 
-            if (CurrentToken.Type == TokenType.OperateurMathematique)
+            while (CurrentToken.Type == TokenType.OperateurMathematique)
             {
-                return InialiserMathOperator().AddChildsAsFirstChild(new AST(first));
+                ast = InialiserMathOperator().AddChildsAsFirstChild(ast);
+
+                GetNextToken();
             }
 
-            return new AST(first);
+            return ast;
         }
 
         private AST InialiserMathOperator()
         {
-            var ast = new MathOperator(CurrentToken);
+            AST ast = new MathOperator(CurrentToken);
 
-            var first = new AST(GetNextToken());
-
-            if (GetNextToken().Type == TokenType.OperateurMathematique)
-            {
-                ast.AddChilds(InialiserMathOperator().AddChildsAsFirstChild(first));
-            }
-            else
-            {
-                ast.AddChilds(first);
-            }
+            ast.AddChilds(new AST(GetNextToken()));
 
             return ast;
         }

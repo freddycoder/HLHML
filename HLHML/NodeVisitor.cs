@@ -31,6 +31,12 @@ namespace HLHML
             {
                 return ast.Scope[ast.Value];
             }
+            else if (ast.Type == TokenType.Compound)
+            {
+                Visit(ast);
+
+                return ast.Scope[ast.Parent.Childs[0].Value];
+            }
 
             return ast.Value;
         }

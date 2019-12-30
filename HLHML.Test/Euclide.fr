@@ -1,0 +1,7 @@
+﻿a vaut 15.
+b vaut 21.
+Tant que b n'est pas égal à 0,
+    t = b.
+    b = a modulo b.
+    a = t.
+Ensuite, afficher a.

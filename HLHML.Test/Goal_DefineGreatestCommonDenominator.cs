@@ -82,6 +82,49 @@ namespace HLHML.Test
             Assert.AreEqual(Token("Afficher", TokenType.Verbe), Token(root.Childs[1]));
         }
 
+        [TestMethod]
+        public void TestScopesWithDefinition()
+        {
+            var program = "Le plus grand denominateur commun se définit comme suit :" +
+                          "le plus grand denominateur commun vaut 3." +
+                          "" +
+                          "Afficher le plus grand denominateur commun.";
+
+            var root = new Parseur(new Lexer(program)).Parse();
+
+            Assert.IsNotNull(root.Scope);
+            Assert.IsNotNull(root.Childs[0].Childs[0].Scope);
+            Assert.IsNotNull(root.Childs[0].Childs[1].Scope);
+            Assert.IsTrue(root.Childs[0].Childs[1].Scope != root.Scope);
+            Assert.IsTrue(root.Childs[0].Childs[0].Scope == root.Scope);
+        }
+
+        [TestMethod]
+        [Timeout(1000)]
+        public void TestInterpretationWithDefinition()
+        {
+            var program = "Le plus grand denominateur commun se définit comme suit :" +
+                          "le plus grand denominateur commun vaut 3." +
+                          "" +
+                          "Afficher le plus grand denominateur commun.";
+
+            Interprete(program, "3");
+        }
+
+        private void Interprete(string program, string expectedOuput)
+        {
+            using (var sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+
+                var interpreteur = new Interpreteur();
+
+                interpreteur.Interprete(program);
+
+                Assert.AreEqual(expectedOuput, sw.ToString());
+            }
+        }
+
         private Token Token(AST ast)
         {
             return Token(ast.Value, ast.Type);
