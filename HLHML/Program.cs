@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,10 +35,35 @@ namespace HLHML
             }
             else
             {
-                Try(() =>
+                var fileName = args.First(f => File.Exists(f));
+
+                if (args.Any(a => a == "-t"))
                 {
-                    interpreteur.Interprete(ReadAllText(args[0]));
-                });
+                    Try(() =>
+                    {
+                        var parseur = new Parseur(new Lexer(ReadAllText(fileName)));
+
+                        var ast = parseur.Parse();
+
+                        var destination = args.Last(f => Path.HasExtension(f) && f != fileName);
+
+                        var drawer = new ASTDrawer(ast);
+
+                        drawer.DrawToFile(destination);
+
+                        if (Settings.GetValue<bool>("openFileAfterGeneration"))
+                        {
+                            Process.Start(destination);
+                        }
+                    });
+                }
+                else
+                {
+                    Try(() =>
+                    {
+                        interpreteur.Interprete(ReadAllText(fileName));
+                    });
+                }
             }
         }
 

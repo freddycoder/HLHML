@@ -26,6 +26,19 @@ namespace HLHML.Test
         }
 
         [TestMethod]
+        [Timeout(2000)]
+        public void ScopeIteration()
+        {
+            var program = "i vaut 0." +
+                          "Tant que i est plus petit que 3, " +
+                          "i = i + 1." +
+                          "Si i est égal à 3, afficher i \" \"." +
+                          "Ensuite, afficher i.";
+
+            Interprete(program, "3 3");
+        }
+
+        [TestMethod]
         public void AdditionDeTroisNombres()
         {
             Interprete("Afficher 3 + 3 + 3.", "9");

@@ -283,8 +283,8 @@ namespace HLHML.Test
             var plusOperator = ast.Childs.First();
 
             Assert.AreEqual(TokenType.OperateurMathematique, plusOperator.Type);
-            Assert.AreEqual("+", (plusOperator as MathOperator).Operator);
-            Assert.AreEqual("122", plusOperator.Value);
+            Assert.AreEqual("+", plusOperator.Value);
+            Assert.AreEqual("122", (plusOperator as MathOperator).Eval());
 
             Assert.AreEqual(2, plusOperator.Childs.Count);
 
@@ -316,7 +316,7 @@ namespace HLHML.Test
 
             var @operator = plus as MathOperator;
 
-            Assert.AreEqual("3", @operator.Value);
+            Assert.AreEqual("3", @operator.Eval());
         }
 
         [TestMethod]
@@ -353,6 +353,7 @@ namespace HLHML.Test
 
             var conjonction = parseur.Parse().Childs.Single();
 
+            Assert.AreEqual(2, conjonction.Childs.Count);
             Assert.AreEqual(TokenType.Conjonction, conjonction.Type);
             Assert.AreEqual("Si", conjonction.Value);
             Assert.IsInstanceOfType(conjonction, typeof(Conjonction));
@@ -362,6 +363,11 @@ namespace HLHML.Test
             Assert.AreEqual(TokenType.Adjectif, predicat.Type);
             Assert.AreEqual("égal à", predicat.Value);
             Assert.IsInstanceOfType(predicat, typeof(Egal));
+
+            var action = conjonction.Childs.Last();
+
+            Assert.AreEqual("afficher", action.Value);
+            Assert.AreEqual(TokenType.Verbe, action.Type);
         }
 
         [TestMethod]

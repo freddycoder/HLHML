@@ -9,7 +9,7 @@ namespace HLHML.LanguageElements
 {
     public class MathOperator : AST
     {
-        public string Operator { get; }
+        private string Operator { get; }
 
         public MathOperator(Token token) : base(token)
         {
@@ -18,26 +18,18 @@ namespace HLHML.LanguageElements
             Operator = token.Value.ToLower();
         }
 
-        public override string Value 
+        public string Eval()
         {
-            get
+            return Operator switch
             {
-                switch(Operator)
-                {
-                    case "+":
-                        return EvalPlus();
-                    case "modulo":
-                        return EvalModulo();
-                    case "*":
-                        return EvalMultiplication();
-                    case "-":
-                        return EvalSoustraction();
-                    case "/":
-                        return EvalDivision();
-                }
+                "+" => EvalPlus(),
+                "modulo" => EvalModulo(),
+                "*" => EvalMultiplication(),
+                "-" => EvalSoustraction(),
+                "/" => EvalDivision(),
 
-                throw new NotImplementedException($"L'operateur {Operator} n'est pas implémenté");
-            }
+                _ => throw new NotImplementedException($"L'operateur {Operator} n'est pas implémenté"),
+            };
         }
 
         private string EvalDivision()

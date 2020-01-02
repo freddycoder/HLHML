@@ -40,7 +40,7 @@ namespace HLHML
             }
             else if (scope != null && _parentScope != null)
             {
-                if (!(scope.Parent == _parentScope))
+                if (scope.Parent != _parentScope)
                 {
                     throw new InvalidScopeException("Scopes does not reference each others properly");
                 }
@@ -54,7 +54,7 @@ namespace HLHML
             return GeneriqueCompound(scope, () => CurrentToken.Type != TokenType.None && CurrentToken.Type != TokenType.Adverbe);
         }
 
-        private AST InitialiserConjnction()
+        private AST InitialiserConjonction()
         {
             var conjonction = new Conjonction(CurrentToken);
 
@@ -87,10 +87,16 @@ namespace HLHML
                          conjonction.Childs.Count == 1)
                 {
                     conjonction.AddChilds(Parse(new Scope(_parentScope)));
+
+                    break;
                 }
                 else if (CurrentToken.Type == TokenType.Verbe)
                 {
                     conjonction.AddChilds(InitialiserVerbe(first.Value));
+                }
+                else if (CurrentToken.Type == TokenType.Conjonction)
+                {
+                    conjonction.AddChilds(InitialiserConjonction());
                 }
 
                 if (isFirst && CurrentToken.Type != TokenType.Negation)
@@ -267,7 +273,7 @@ namespace HLHML
                 }
                 else if (CurrentToken.Type == TokenType.Conjonction)
                 {
-                    root.AddChilds(InitialiserConjnction());
+                    root.AddChilds(InitialiserConjonction());
                 }
 
                 if (predicat.Invoke())
@@ -305,9 +311,17 @@ namespace HLHML
                 }
                 else if (CurrentToken.Type == TokenType.Conjonction)
                 {
-                    root.AddChilds(InitialiserConjnction());
+                    root.AddChilds(InitialiserConjonction());
                 }
 
+                if (CurrentToken.Type != TokenType.Adverbe)
+                {
+                    GetNextToken();
+                }
+            }
+
+            if (CurrentToken.Type == TokenType.Adverbe)
+            {
                 GetNextToken();
             }
 

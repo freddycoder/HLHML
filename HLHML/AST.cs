@@ -6,8 +6,8 @@ namespace HLHML
     public class AST
     {
         private AST _parent;
-        protected List<AST> _childs = new List<AST>();
-        private Token _token;
+        protected readonly List<AST> _childs = new List<AST>();
+        private readonly Token _token;
         private Scope _scope;
 
         public AST(Token token)
@@ -89,7 +89,7 @@ namespace HLHML
 
         public override string ToString()
         {
-            return $"{_token} : Childs Count : {Childs.Count}";
+            return $"{_token} Childs Count: {Childs.Count}";
         }
     }
 }

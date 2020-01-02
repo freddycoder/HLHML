@@ -20,7 +20,7 @@ namespace HLHML.LanguageElements
                 throw new InvalidNodeNumberException("An assignation must have only tow child node.");
             }
 
-            Scope[Childs.First().Value] = NodeVisitor.Eval(Childs.Last());
+            Scope[Childs[0].Value] = NodeVisitor.Eval(Childs[1]);
         }
     }
 }

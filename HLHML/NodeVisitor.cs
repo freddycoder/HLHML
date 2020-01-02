@@ -37,6 +37,10 @@ namespace HLHML
 
                 return ast.Scope[ast.Parent.Childs[0].Value];
             }
+            else if (ast is MathOperator op)
+            {
+                return op.Eval();
+            }
 
             return ast.Value;
         }

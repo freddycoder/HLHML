@@ -16,13 +16,17 @@ namespace HLHML.LanguageElements
         {
             foreach (var child in Childs)
             {
-                if (child.Type == TokenType.Text || child.Type == TokenType.OperateurMathematique)
+                if (child.Type == TokenType.Text)
                 {
                     Console.Write(child.Value);
                 }
                 else if (child.Type == TokenType.Sujet)
                 {
                     Console.Write(Scope[child.Value] ?? "");
+                }
+                else if (child is MathOperator op)
+                {
+                    Console.Write(op.Eval());
                 }
             }
         }

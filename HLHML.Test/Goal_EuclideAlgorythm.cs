@@ -51,7 +51,7 @@ namespace HLHML.Test
         }
 
         [TestMethod]
-        //[Timeout(2000)]
+        [Timeout(2000)]
         public void Euclide0InFile2()
         {
             using (var sw = new StringWriter())
