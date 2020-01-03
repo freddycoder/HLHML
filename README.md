@@ -34,7 +34,7 @@ Bonne réponse!
 Selon le script suivant : 
 ```
 i vaut 0.
-Tant que i est plus petit que 4,
+Tant que i est plus petit que 3,
 i = i + 1.
 Si i est égal à 3, afficher i " ".
 Ensuite, afficher i
