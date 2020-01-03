@@ -29,3 +29,28 @@ Bonne réponse!
 
 ## Lexique
 <a href="https://github.com/freddycoder/HLHML/wiki/Lexique">Visiter la documentation</a>
+
+## Générer l'image de l'arbre syntaxique
+Selon le script suivant : 
+```
+i vaut 0.
+Tant que i est plus petit que 4,
+i = i + 1.
+Si i est égal à 3, afficher i " ".
+Ensuite, afficher i
+```
+En appelant l'executable en ligne de commande :
+```
+HLHML.exe monScript.fr -t imageDestination.bmp
+```
+Le programme va produire l'image suvante
+![impossible de trouver l'image...](https://raw.githubusercontent.com/freddycoder/HLHML/master/exempleAST.bmp)
+</br>
+Executer le même script en ligne de commande
+```
+HLHML.exe monScript.fr
+```
+La sortie sera
+```
+3 3
+```
