@@ -44,8 +44,10 @@ En appelant l'executable en ligne de commande :
 HLHML.exe monScript.fr -t imageDestination.bmp
 ```
 Le programme va produire l'image suvante
-![impossible de trouver l'image...](https://raw.githubusercontent.com/freddycoder/HLHML/master/exempleAST.bmp)
-</br>
+<p align=center>
+   <i>monScript.fr</i><br/>
+   <img src="https://raw.githubusercontent.com/freddycoder/HLHML/master/exempleAST.bmp" alt="Apperçu de la fenêtre principale" /><br/>
+</p>
 Executer le même script en ligne de commande
 ```
 HLHML.exe monScript.fr
