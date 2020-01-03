@@ -45,9 +45,10 @@ HLHML.exe monScript.fr -t imageDestination.bmp
 ```
 Le programme va produire l'image suvante
 <p align=center>
-   <i>monScript.fr</i><br/>
-   <img src="https://raw.githubusercontent.com/freddycoder/HLHML/master/exempleAST.bmp" alt="Apperçu de la fenêtre principale" /><br/>
+   <img src="https://raw.githubusercontent.com/freddycoder/HLHML/master/exempleAST.bmp" alt="Apperçu de la fenêtre principale" />
+   <br/>
 </p>
+<br/>
 Executer le même script en ligne de commande
 ```
 HLHML.exe monScript.fr
