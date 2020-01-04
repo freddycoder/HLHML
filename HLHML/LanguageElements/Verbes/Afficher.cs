@@ -8,6 +8,8 @@ namespace HLHML.LanguageElements
 {
     public class Afficher : AST, Actionnable
     {
+        private static readonly bool NewLines = Program.Settings.GetValue<bool>("newLineWhenAfficher");
+
         public Afficher(Token token) : base(token)
         {
         }
@@ -16,7 +18,7 @@ namespace HLHML.LanguageElements
         {
             foreach (var child in Childs)
             {
-                if (child.Type == TokenType.Text)
+                if (child.Type == TokenType.Text || child.Type == TokenType.Nombre)
                 {
                     Console.Write(child.Value);
                 }
@@ -28,6 +30,11 @@ namespace HLHML.LanguageElements
                 {
                     Console.Write(op.Eval());
                 }
+            }
+
+            if (NewLines)
+            {
+                Console.WriteLine();
             }
         }
     }

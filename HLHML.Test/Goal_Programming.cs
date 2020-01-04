@@ -74,6 +74,83 @@ namespace HLHML.Test
             Interprete("Afficher 10 / 5.", "2");
         }
 
+        [TestMethod]
+        public void Division2()
+        {
+            Interprete("Afficher 1 / 2.", "0,5");
+        }
+
+        [TestMethod]
+        public void Division3()
+        {
+            Interprete("n vaut 1 / 4. Afficher n.", "0,25");
+        }
+
+        [TestMethod]
+        public void NombreDecimale()
+        {
+            Interprete("Afficher 3,14159.", "3,14159");
+        }
+
+        [TestMethod]
+        public void NombreDecimale2()
+        {
+            Interprete("Afficher 3.14159.", "3.14159");
+        }
+
+        [TestMethod]
+        public void NombreNegatif()
+        {
+            Interprete("Afficher -123.", "-123");
+        }
+
+        [TestMethod]
+        public void NombreNegatif2()
+        {
+            Interprete("Afficher - 123.", "-123");
+        }
+
+        [TestMethod]
+        public void NombreNegatif3()
+        {
+            Interprete("Afficher - 123 - 123.", "-246");
+        }
+
+        [TestMethod]
+        public void NombreNegatif4()
+        {
+            Interprete("Afficher 10 * - 3.", "-30");
+        }
+
+        [TestMethod]
+        public void NombreNegatif5()
+        {
+            Interprete("Afficher -5--5", "0");
+        }
+
+        [TestMethod]
+        [Timeout(2000)]
+        public void NombreNegatif6()
+        {
+            Interprete("Tant que -5--5 n'est pas égal à 0, afficher \"bouble infinit\"", "");
+        }
+
+        [TestMethod]
+        [Timeout(2000)]
+        public void NombreNegatif6_1()
+        {
+            Interprete("Tant que 0 n'est pas égal à -5--5, afficher \"bouble infinit\"", "");
+        }
+
+        [TestMethod]
+        public void NombreNegatif7()
+        {
+            Interprete("Si -5--5 n'est pas égal à 0, afficher \"bouble infinit\"", "");
+            Interprete("Si 0 n'est pas égal à -5--5, afficher \"bouble infinit\"", "");
+            Interprete("Si -5--5 n'est pas égal à 0, afficher \"bouble infinit\" sinon afficher \"youpi\"", "youpi");
+            Interprete("Si 0 n'est pas égal à -5--5, afficher \"bouble infinit\" sinon afficher \"youpi\"", "youpi");
+        }
+
         private void Interprete(string program, string expectedOuput)
         {
             using (var sw = new StringWriter())

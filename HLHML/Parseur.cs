@@ -159,30 +159,6 @@ namespace HLHML
             return adj;
         }
 
-        private AST AfterBeginingWithSubjectOrNumber()
-        {
-            var first = CurrentToken;
-
-            GetNextToken();
-
-            if (CurrentToken.Type == TokenType.Determinant)
-            {
-                GetNextToken();
-            }
-
-            if (CurrentToken.Type == TokenType.OperateurMathematique)
-            {
-                return InialiserMathOperator();
-            }
-            else if (CurrentToken.Value.Equals("Vaut", StringComparison.OrdinalIgnoreCase) ||
-                     CurrentToken.Value.Equals("définit", StringComparison.OrdinalIgnoreCase))
-            {
-                return InitialiserVerbe(first.Value);
-            }
-
-            throw new InvalidSentenceException($"Cannot begin a sentence with token {first} and {CurrentToken}");
-        }
-
         private List<AST> AfterVerbeAndAdjectifs(string subject)
         {
             var asts = new List<AST>();
@@ -207,9 +183,9 @@ namespace HLHML
             {
                 do
                 {
-                    if (CurrentToken.Type == TokenType.Nombre || CurrentToken.Type == TokenType.Sujet)
+                    if (CurrentToken.Type == TokenType.Nombre || CurrentToken.Type == TokenType.Sujet || CurrentToken.Type == TokenType.OperateurMathematique)
                     {
-                        asts.Add(AfterSubjectOrNumber());
+                        asts.Add(Expression());
                     }
                     else if (CurrentToken.Type == TokenType.Text)
                     {
@@ -237,7 +213,7 @@ namespace HLHML
         {
             var traiteLeSujet = false;
 
-            Func<bool> predicat = () =>
+            bool predicat()
             {
                 var @return = CurrentToken.Type != TokenType.None && CurrentToken.Type != TokenType.Adverbe;
 
@@ -249,7 +225,7 @@ namespace HLHML
                 traiteLeSujet = CurrentToken.Value.Equals(subject, StringComparison.OrdinalIgnoreCase);
 
                 return @return;
-            };
+            }
 
             UpdateScopeReference(new Scope(_parentScope));
 
@@ -257,15 +233,11 @@ namespace HLHML
 
             GetNextToken();
 
-            while (predicat.Invoke())
+            while (predicat())
             {
                 if (CurrentToken.Type == TokenType.Sujet || CurrentToken.Type == TokenType.Nombre)
                 {
-                    var token = CurrentToken;
-
-                    var ast = AfterBeginingWithSubjectOrNumber();
-
-                    root.AddChilds(ast.AddChildsAsFirstChild(new AST(token)));
+                    root.AddChilds(Expression());
                 }
                 else if (CurrentToken.Type == TokenType.Verbe)
                 {
@@ -276,7 +248,7 @@ namespace HLHML
                     root.AddChilds(InitialiserConjonction());
                 }
 
-                if (predicat.Invoke())
+                if (predicat())
                 {
                     GetNextToken();
                 }
@@ -299,11 +271,7 @@ namespace HLHML
             {
                 if (CurrentToken.Type == TokenType.Sujet || CurrentToken.Type == TokenType.Nombre)
                 {
-                    var token = CurrentToken;
-
-                    var ast = AfterBeginingWithSubjectOrNumber();
-
-                    root.AddChilds(ast.AddChildsAsFirstChild(new AST(token)));
+                    root.AddChilds(Expression());
                 }
                 else if (CurrentToken.Type == TokenType.Verbe)
                 {
@@ -330,31 +298,127 @@ namespace HLHML
             return root;
         }
 
-        private AST AfterSubjectOrNumber()
+        private AST Expression()
         {
-            var first = CurrentToken;
+            var node = Level_16();
 
-            var ast = new AST(first);
+            return node;
+        }
 
-            GetNextToken();
+        private AST Level_16()
+        {
+            var node = Level_9();
 
-            while (CurrentToken.Type == TokenType.OperateurMathematique)
+            if (CurrentToken.Value.Equals("Vaut", StringComparison.OrdinalIgnoreCase) ||
+                     CurrentToken.Value.Equals("définit", StringComparison.OrdinalIgnoreCase))
             {
-                ast = InialiserMathOperator().AddChildsAsFirstChild(ast);
+                var t = CurrentToken;
+                GetNextToken();
+                node = new Vaut(node, t, Expression());
+            }
 
+            return node;
+        }
+
+        private AST Level_9()
+        {
+            var node = Level_7();
+
+            if (CurrentToken.Value.Equals("est", StringComparison.OrdinalIgnoreCase))
+            {
+                var t = CurrentToken;
+                GetNextToken();
+                node = new Vaut(node, t, Expression());
+            }
+
+            return node;
+        }
+
+        private AST Level_7()
+        {
+            AST node = Level_6();
+
+            return node;
+        }
+
+        private AST Level_6()
+        {
+            var node = Level_5();
+
+            return node;
+        }
+        private AST Level_5()
+        {
+            var node = Level_4();
+
+            return node;
+        }
+
+        private AST Level_4()
+        {
+            var node = Level_3();
+
+            while (CurrentToken.Type == TokenType.OperateurMathematique && 
+                  (CurrentToken.Value == "+" || CurrentToken.Value == "-"))
+            {
+                var t = CurrentToken;
+                GetNextToken();
+                node = new MathOperator(node, t, Level_3());
+            }
+
+            return node;
+        }
+        private AST Level_3()
+        {
+            var node = Level_2();
+
+            while (CurrentToken.Type == TokenType.OperateurMathematique &&
+                  (CurrentToken.Value == "/" || CurrentToken.Value == "modulo" || 
+                   CurrentToken.Value == "%") || CurrentToken.Value == "*")
+            {
+                var t = CurrentToken;
+                GetNextToken();
+                node = new MathOperator(node, t, Expression());
+            }
+
+            return node;
+        }
+
+        private AST Level_2()
+        {
+            var node = Level_1();
+
+            return node;
+        }
+        private AST Level_1()
+        {
+            var node = Level_0();
+
+            while (node == null && CurrentToken.Type == TokenType.OperateurMathematique && CurrentToken.Value == "-")
+            {
+                var t = CurrentToken;
+                GetNextToken();
+                node = new MathOperator(t, Level_1());
+            }
+
+            return node;
+        }
+        private AST Level_0()
+        {
+            AST node = default;
+
+            if (CurrentToken.Type == TokenType.Sujet)
+            {
+                node = new AST(CurrentToken);
+                GetNextToken();
+            }
+            if (CurrentToken.Type == TokenType.Nombre)
+            {
+                node = new AST(CurrentToken);
                 GetNextToken();
             }
 
-            return ast;
-        }
-
-        private AST InialiserMathOperator()
-        {
-            AST ast = new MathOperator(CurrentToken);
-
-            ast.AddChilds(new AST(GetNextToken()));
-
-            return ast;
+            return node;
         }
     }
 }

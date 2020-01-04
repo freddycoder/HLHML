@@ -15,6 +15,19 @@ namespace HLHML
             _token = token;
         }
 
+        public AST(Token token, AST firstChild)
+        {
+            _token = token;
+            AddChilds(firstChild);
+        }
+
+        public AST(AST firstChild, Token token, AST secondChild)
+        {
+            _token = token;
+            AddChilds(firstChild);
+            AddChilds(secondChild);
+        }
+
         public AST(Token token, Scope scope)
         {
             _token = token;
@@ -60,7 +73,7 @@ namespace HLHML
             return this;
         }
 
-        public virtual string Value => _token.Value;
+        public string Value => _token.Value;
 
         public TokenType Type => _token.Type;
 

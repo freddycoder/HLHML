@@ -21,17 +21,14 @@ namespace HLHML
             _bitMaps = new SortedDictionary<float, SortedDictionary<float, BitmapEnhance>>();
             InitNodeDictionary(_ast);
 
-            int width = CalculateWidth();
-            int height = CalulateHeight();
-
-            _bitmap = new Bitmap(width, height);
+            _bitmap = new Bitmap(CalculateWidth(), CalulateHeight());
             _graphics = Graphics.FromImage(_bitmap);
             _graphics.Clear(Color.White);
         }
 
         public void DrawToFile(string filename)
         {
-            BuildBitmap(_ast);
+            BuildBitmap();
 
             _bitmap.Save(filename, ImageFormat.Bmp);
         }
@@ -60,7 +57,7 @@ namespace HLHML
             return (int)Math.Floor(nbNode * (_bitMaps.Values.First().Values.First().Height + 25));
         }
 
-        private void BuildBitmap(AST ast)
+        private void BuildBitmap()
         {
             foreach (var level in _bitMaps.Reverse())
             {
@@ -109,9 +106,7 @@ namespace HLHML
                 _bitMaps.Add(y, new SortedDictionary<float, BitmapEnhance>());
             }
 
-            var node = GetBitmapNode(ast);
-
-            _bitMaps[y].Add(x, node);
+            _bitMaps[y].Add(x, GetBitmapNode(ast));
         }
 
         private void AddNodeToBitmap(BitmapEnhance bitmap, float x, float y)
@@ -177,12 +172,11 @@ namespace HLHML
     public class BitmapEnhance
     {
         private readonly Bitmap _bitmap;
-        private readonly AST _ast;
 
         public BitmapEnhance(Bitmap bitmap, AST ast)
         {
             _bitmap = bitmap;
-            _ast = ast;
+            NodeInfo = ast;
         }
 
         public int Width => _bitmap.Width;
@@ -193,11 +187,8 @@ namespace HLHML
 
         public Point BottomCenter { get; set; }
 
-        public static implicit operator Bitmap(BitmapEnhance bitmapWithPosition)
-        {
-            return bitmapWithPosition._bitmap;
-        }
+        public static implicit operator Bitmap(BitmapEnhance bitmapWithPosition) => bitmapWithPosition._bitmap;
 
-        public AST NodeInfo => _ast;
+        public AST NodeInfo { get; }
     }
 }

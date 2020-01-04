@@ -40,6 +40,8 @@ namespace HLHML
 
         private char CurrentChar => _pos >= _text.Length ? '\0' : _text[_pos];
 
+        private char PeekChar => _pos + 1 >= _text.Length ? '\0' : _text[_pos + 1];
+
         public Lexer(string text)
         {
             _text = text;
@@ -108,10 +110,19 @@ namespace HLHML
         {
             var sb = new StringBuilder();
 
+            var partieDecimaleCommencé = false;
+
             while (char.IsDigit(CurrentChar))
             {
                 sb.Append(CurrentChar);
                 _pos++;
+
+                if (!partieDecimaleCommencé && (CurrentChar == ',' || CurrentChar == '.') && char.IsDigit(PeekChar))
+                {
+                    sb.Append(CurrentChar);
+                    _pos++;
+                    partieDecimaleCommencé = true;
+                }
             }
 
             return sb.ToString();

@@ -9,7 +9,8 @@ namespace HLHML
         Negation,
         Adverbe,
         Complement,
-        Preposition
+        Preposition,
+        OuvertureParentèse
     }
 
     public class Token

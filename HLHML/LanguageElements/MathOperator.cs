@@ -18,6 +18,20 @@ namespace HLHML.LanguageElements
             Operator = token.Value.ToLower();
         }
 
+        public MathOperator(Token token, AST firstChild) : base(token, firstChild)
+        {
+            Debug.Assert(token.Type == TokenType.OperateurMathematique && token.Value == "-");
+
+            Operator = token.Value.ToLower();
+        }
+
+        public MathOperator(AST firstChild, Token token, AST secondChild) : base(firstChild, token, secondChild)
+        {
+            Debug.Assert(token.Type == TokenType.OperateurMathematique);
+
+            Operator = token.Value.ToLower();
+        }
+
         public string Eval()
         {
             return Operator switch
@@ -36,8 +50,8 @@ namespace HLHML.LanguageElements
         {
             if (Childs.Count == 2)
             {
-                var x = int.Parse(NodeVisitor.Eval(Childs[0]));
-                var y = int.Parse(NodeVisitor.Eval(Childs[1]));
+                var x = double.Parse(NodeVisitor.Eval(Childs[0]));
+                var y = double.Parse(NodeVisitor.Eval(Childs[1]));
 
                 return (x / y).ToString();
             }
@@ -53,12 +67,12 @@ namespace HLHML.LanguageElements
         {
             if (Childs.Count == 1)
             {
-                return (- int.Parse(Childs[0].Value)).ToString();
+                return (- double.Parse(Childs[0].Value)).ToString();
             }
             if (Childs.Count == 2)
             {
-                var x = int.Parse(NodeVisitor.Eval(Childs[0]));
-                var y = int.Parse(NodeVisitor.Eval(Childs[1]));
+                var x = double.Parse(NodeVisitor.Eval(Childs[0]));
+                var y = double.Parse(NodeVisitor.Eval(Childs[1]));
 
                 return (x - y).ToString();
             }
@@ -74,8 +88,8 @@ namespace HLHML.LanguageElements
         {
             if (Childs.Count == 2)
             {
-                var x = int.Parse(NodeVisitor.Eval(Childs[0]));
-                var y = int.Parse(NodeVisitor.Eval(Childs[1]));
+                var x = double.Parse(NodeVisitor.Eval(Childs[0]));
+                var y = double.Parse(NodeVisitor.Eval(Childs[1]));
 
                 return (x * y).ToString();
             }
@@ -95,8 +109,8 @@ namespace HLHML.LanguageElements
             }
             else if (Childs.Count == 2)
             {
-                var x = int.Parse(NodeVisitor.Eval(Childs[0]));
-                var y = int.Parse(NodeVisitor.Eval(Childs[1]));
+                var x = double.Parse(NodeVisitor.Eval(Childs[0]));
+                var y = double.Parse(NodeVisitor.Eval(Childs[1]));
 
                 return (x + y).ToString();
             }
@@ -112,8 +126,8 @@ namespace HLHML.LanguageElements
         {
             if (Childs.Count == 2)
             {
-                var x = int.Parse(NodeVisitor.Eval(Childs[0]));
-                var y = int.Parse(NodeVisitor.Eval(Childs[1]));
+                var x = double.Parse(NodeVisitor.Eval(Childs[0]));
+                var y = double.Parse(NodeVisitor.Eval(Childs[1]));
 
                 return (x % y).ToString();
             }

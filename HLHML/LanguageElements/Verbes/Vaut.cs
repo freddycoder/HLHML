@@ -13,6 +13,10 @@ namespace HLHML.LanguageElements
         {
         }
 
+        public Vaut(AST firstChild, Token token, AST secondChild) : base(firstChild, token, secondChild)
+        {
+        }
+
         public void Actionner()
         {
             if (Childs.Count != 2)
