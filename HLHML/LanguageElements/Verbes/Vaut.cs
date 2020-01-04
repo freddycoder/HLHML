@@ -21,7 +21,7 @@ namespace HLHML.LanguageElements
         {
             if (Childs.Count != 2)
             {
-                throw new InvalidNodeNumberException("An assignation must have only tow child node.");
+                throw new InvalidNodeNumberException("An assignation must have only tow childs nodes.");
             }
 
             Scope[Childs[0].Value] = NodeVisitor.Eval(Childs[1]);

@@ -130,7 +130,7 @@ namespace HLHML
 
         private string GetString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             _pos++;
 

@@ -335,6 +335,7 @@ namespace HLHML.Test
         }
 
         [TestMethod]
+        [Timeout(2000)]
         public void ConjonctionPremierJeton()
         {
             var parseur = new Parseur(new Lexer("Si 5 est égal à 5, afficher \"Oui\""));
@@ -347,6 +348,7 @@ namespace HLHML.Test
         }
 
         [TestMethod]
+        [Timeout(2000)]
         public void ConjonctionPredicatParseur()
         {
             var parseur = new Parseur(new Lexer("Si 5 est égal à 5, afficher \"Oui\""));
@@ -371,6 +373,7 @@ namespace HLHML.Test
         }
 
         [TestMethod]
+        [Timeout(2000)]
         public void ConjonctionPredicatAdjectfParseur()
         {
             var parseur = new Parseur(new Lexer("Si 5 est égal à 5, afficher \"Oui\""));

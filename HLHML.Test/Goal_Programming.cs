@@ -143,6 +143,7 @@ namespace HLHML.Test
         }
 
         [TestMethod]
+        [Timeout(2000)]
         public void NombreNegatif7()
         {
             Interprete("Si -5--5 n'est pas égal à 0, afficher \"bouble infinit\"", "");

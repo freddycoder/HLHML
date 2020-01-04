@@ -14,6 +14,11 @@ namespace HLHML.LanguageElements.Adjectifs
 
         public bool Valider()
         {
+            if (Childs.Count != 2)
+            {
+                throw new InvalidNodeNumberException($"The node 'Egal' must have exactly two node. It only has {Childs.Count} node.");
+            }
+
             var x = NodeVisitor.Eval(Childs[0]);
             var y = NodeVisitor.Eval(Childs[1]);
 

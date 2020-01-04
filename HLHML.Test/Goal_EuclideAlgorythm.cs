@@ -141,7 +141,7 @@ namespace HLHML.Test
         }
 
         [TestMethod]
-        [Timeout(1000)]
+        //[Timeout(2000)]
         public void NoInfiniteLoop()
         {
             var program = "a vaut 1." +

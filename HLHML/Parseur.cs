@@ -62,19 +62,25 @@ namespace HLHML
 
             var predicatIsNegated = false;
 
-            var first = GetNextToken();
+            GetNextToken();
 
-            if (first.Type == TokenType.Determinant)
+            if (CurrentToken.Type == TokenType.Determinant)
             {
-                first = GetNextToken();
+                GetNextToken();
             }
+
+            var first = Expression();
 
             while ((CurrentToken.Type != TokenType.None ||
                    CurrentToken.Type == TokenType.Ponctuation) &&
-                   CurrentToken.Type != TokenType.Adverbe)
+                   CurrentToken.Type != TokenType.Adverbe &&
+                   conjonction.Childs.Count < 3)
             {
-                if (!(conjonction.Value.Equals("tant que", StringComparison.OrdinalIgnoreCase) &&
-                         conjonction.Childs.Count == 1))
+                if (CurrentToken.Type == TokenType.Ponctuation)
+                {
+                    GetNextToken();
+                }
+                if (CurrentToken.Equals(new Token("sinon", TokenType.Conjonction)))
                 {
                     GetNextToken();
                 }
@@ -101,9 +107,13 @@ namespace HLHML
 
                 if (isFirst && CurrentToken.Type != TokenType.Negation)
                 {
-                    conjonction.Childs[0].AddChildsAsFirstChild(new AST(first));
+                    conjonction.Childs[0].AddChildsAsFirstChild(first);
 
                     isFirst = false;
+                }
+                else if (CurrentToken.Type == TokenType.Negation)
+                {
+                    GetNextToken();
                 }
             }
 
@@ -117,11 +127,6 @@ namespace HLHML
             if (CurrentToken.Value.Equals("Afficher", StringComparison.OrdinalIgnoreCase))
             {
                 return new Afficher(CurrentToken).AddChilds(AfterVerbeAndAdjectifs(subject));
-            }
-            else if (CurrentToken.Value.Equals("Vaut", StringComparison.OrdinalIgnoreCase) ||
-                     CurrentToken.Value.Equals("définit", StringComparison.OrdinalIgnoreCase))
-            {
-                return new Vaut(CurrentToken).AddChilds(AfterVerbeAndAdjectifs(subject));
             }
             else if (CurrentToken.Value.Equals("Lire", StringComparison.OrdinalIgnoreCase))
             {
@@ -137,7 +142,7 @@ namespace HLHML
 
         private AST ParseNextAdjectif(string subject)
         {
-            AST adj;
+            AST adj = default;
 
             GetNextToken();
 
@@ -153,6 +158,15 @@ namespace HLHML
             {
                 adj = new Egal(CurrentToken);
             }
+            //else if (CurrentToken.Value.Equals("égal à", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    adj = new Egal(CurrentToken);
+            //}
+
+            //if (adj == null)
+            //{
+            //    throw new InvalidSentenceException($"There is no adjectif know as {CurrentToken}.");
+            //}
 
             adj.AddChilds(AfterVerbeAndAdjectifs(subject));
 
@@ -183,7 +197,9 @@ namespace HLHML
             {
                 do
                 {
-                    if (CurrentToken.Type == TokenType.Nombre || CurrentToken.Type == TokenType.Sujet || CurrentToken.Type == TokenType.OperateurMathematique)
+                    if (CurrentToken.Type == TokenType.Nombre || 
+                        CurrentToken.Type == TokenType.Sujet || 
+                        CurrentToken.Type == TokenType.OperateurMathematique)
                     {
                         asts.Add(Expression());
                     }
@@ -203,7 +219,8 @@ namespace HLHML
                     }
 
                 } while (CurrentToken.Type == TokenType.Nombre || CurrentToken.Type == TokenType.Sujet ||
-                     CurrentToken.Type == TokenType.Text || CurrentToken.Type == TokenType.Determinant);
+                        CurrentToken.Type == TokenType.Text || CurrentToken.Type == TokenType.Determinant ||
+                        CurrentToken.Type == TokenType.OperateurMathematique);
             }
 
             return asts;
@@ -265,7 +282,10 @@ namespace HLHML
 
             var root = new AST(new Token("Compound", TokenType.Compound), _parentScope);
 
-            GetNextToken();
+            if (CurrentToken == null)
+            {
+                GetNextToken();
+            }
 
             while (predicat.Invoke())
             {
@@ -309,12 +329,17 @@ namespace HLHML
         {
             var node = Level_9();
 
+            if (CurrentToken.Type == TokenType.Determinant)
+            {
+                GetNextToken();
+            }
+
             if (CurrentToken.Value.Equals("Vaut", StringComparison.OrdinalIgnoreCase) ||
-                     CurrentToken.Value.Equals("définit", StringComparison.OrdinalIgnoreCase))
+                CurrentToken.Value.Equals("définit", StringComparison.OrdinalIgnoreCase))
             {
                 var t = CurrentToken;
                 GetNextToken();
-                node = new Vaut(node, t, Expression());
+                node = new Vaut(node, t, t.Value.Equals("Vaut", StringComparison.OrdinalIgnoreCase) ? Expression() : BuildDefinition(node.Value));
             }
 
             return node;
@@ -323,13 +348,6 @@ namespace HLHML
         private AST Level_9()
         {
             var node = Level_7();
-
-            if (CurrentToken.Value.Equals("est", StringComparison.OrdinalIgnoreCase))
-            {
-                var t = CurrentToken;
-                GetNextToken();
-                node = new Vaut(node, t, Expression());
-            }
 
             return node;
         }
@@ -412,7 +430,12 @@ namespace HLHML
                 node = new AST(CurrentToken);
                 GetNextToken();
             }
-            if (CurrentToken.Type == TokenType.Nombre)
+            else if (CurrentToken.Type == TokenType.Nombre)
+            {
+                node = new AST(CurrentToken);
+                GetNextToken();
+            }
+            else if (CurrentToken.Type == TokenType.Text)
             {
                 node = new AST(CurrentToken);
                 GetNextToken();
