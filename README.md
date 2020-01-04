@@ -34,7 +34,7 @@ Bonne réponse!
 Selon le script suivant : 
 ```
 i vaut 0.
-Tant que i est plus petit que 4,
+Tant que i est plus petit que 3,
 i = i + 1.
 Si i est égal à 3, afficher i " ".
 Ensuite, afficher i
@@ -44,11 +44,8 @@ En appelant l'executable en ligne de commande :
 HLHML.exe monScript.fr -t imageDestination.bmp
 ```
 Le programme va produire l'image suvante
-<p align=center>
-   <img src="https://raw.githubusercontent.com/freddycoder/HLHML/master/exempleAST.bmp" alt="Apperçu de la fenêtre principale" />
-   <br/>
-</p>
-<br/>
+![impossible de trouver l'image...](https://raw.githubusercontent.com/freddycoder/HLHML/master/exempleAST.bmp)
+</br>
 Executer le même script en ligne de commande
 ```
 HLHML.exe monScript.fr
