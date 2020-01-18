@@ -57,6 +57,7 @@
     <Compile Include="Exceptions\InvalidScopeException.cs" />
     <Compile Include="LanguageElements\Adjectifs\Adjectif.cs" />
     <Compile Include="LanguageElements\Adjectifs\Egal.cs" />
+    <Compile Include="Exceptions\InvalidNodeException.cs" />
     <Compile Include="LanguageElements\Adjectifs\PlusGrand.cs" />
     <Compile Include="LanguageElements\Adjectifs\PlusPetit.cs" />
     <Compile Include="LanguageElements\Conjonction.cs" />

@@ -230,7 +230,7 @@ namespace HLHML
         {
             var traiteLeSujet = false;
 
-            bool predicat()
+            bool sujet_pas_traité_ou_definition_pas_terminer()
             {
                 var @return = CurrentToken.Type != TokenType.None && CurrentToken.Type != TokenType.Adverbe;
 
@@ -250,7 +250,7 @@ namespace HLHML
 
             GetNextToken();
 
-            while (predicat())
+            while (sujet_pas_traité_ou_definition_pas_terminer())
             {
                 if (CurrentToken.Type == TokenType.Sujet || CurrentToken.Type == TokenType.Nombre)
                 {
@@ -265,7 +265,7 @@ namespace HLHML
                     root.AddChilds(InitialiserConjonction());
                 }
 
-                if (predicat())
+                if (sujet_pas_traité_ou_definition_pas_terminer())
                 {
                     GetNextToken();
                 }
@@ -396,12 +396,11 @@ namespace HLHML
             {
                 var t = CurrentToken;
                 GetNextToken();
-                node = new MathOperator(node, t, Expression());
+                node = new MathOperator(node, t, Level_2());
             }
 
             return node;
         }
-
         private AST Level_2()
         {
             var node = Level_1();
@@ -442,6 +441,11 @@ namespace HLHML
             }
 
             return node;
+        }
+
+        public override string ToString()
+        {
+            return $"Parseur : {{ CurrentToken : {CurrentToken.ToString()} }} ";
         }
     }
 }

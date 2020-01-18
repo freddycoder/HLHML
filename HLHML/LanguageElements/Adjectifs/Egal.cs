@@ -10,6 +10,10 @@ namespace HLHML.LanguageElements.Adjectifs
     {
         public Egal(Token token) : base(token)
         {
+            //if (token.Type != TokenType.Adjectif || !token.Value.Equals("égal à", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    throw new InvalidNodeException($"Cannot create a Egal node form {token}");
+            //}
         }
 
         public bool Valider()

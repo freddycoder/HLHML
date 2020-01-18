@@ -80,5 +80,19 @@ namespace HLHML
                 }
             }
         }
+
+        public override string ToString()
+        {
+            var s = this;
+
+            int child = 0;
+
+            for (; s.Parent != null; child++)
+            {
+                s = s.Parent;
+            };
+
+            return $"Scope {child} : VarCount {_variables.Count}";
+        }
     }
 }

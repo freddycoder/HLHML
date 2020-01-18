@@ -24,7 +24,16 @@ namespace HLHML.LanguageElements
                 throw new InvalidNodeNumberException("An assignation must have only tow childs nodes.");
             }
 
-            Scope[Childs[0].Value] = NodeVisitor.Eval(Childs[1]);
+            if (Value.Equals("vaut", StringComparison.OrdinalIgnoreCase))
+            {
+                Scope[Childs[0].Value] = NodeVisitor.Eval(Childs[1]);
+            }
+            else
+            {
+                NodeVisitor.Visit(Childs[1]);
+
+                Scope[Childs[0].Value] = Childs[1].Scope[Childs[0].Value];
+            }
         }
     }
 }

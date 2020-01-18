@@ -152,6 +152,12 @@ namespace HLHML.Test
             Interprete("Si 0 n'est pas égal à -5--5, afficher \"bouble infinit\" sinon afficher \"youpi\"", "youpi");
         }
 
+        [TestMethod]
+        public void MultiplicationAndAddition()
+        {
+            Interprete("Afficher 10 * 10 + 10", "110");
+        }
+
         private void Interprete(string program, string expectedOuput)
         {
             using (var sw = new StringWriter())
