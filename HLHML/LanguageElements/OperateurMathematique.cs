@@ -7,25 +7,25 @@ using System.Threading.Tasks;
 
 namespace HLHML.LanguageElements
 {
-    public class MathOperator : AST
+    public class OperateurMathematique : AST
     {
         private string Operator { get; }
 
-        public MathOperator(Token token) : base(token)
+        public OperateurMathematique(Token token) : base(token)
         {
             Debug.Assert(token.Type == TokenType.OperateurMathematique);
 
             Operator = token.Value.ToLower();
         }
 
-        public MathOperator(Token token, AST firstChild) : base(token, firstChild)
+        public OperateurMathematique(Token token, AST firstChild) : base(token, firstChild)
         {
             Debug.Assert(token.Type == TokenType.OperateurMathematique && token.Value == "-");
 
             Operator = token.Value.ToLower();
         }
 
-        public MathOperator(AST firstChild, Token token, AST secondChild) : base(firstChild, token, secondChild)
+        public OperateurMathematique(AST firstChild, Token token, AST secondChild) : base(firstChild, token, secondChild)
         {
             Debug.Assert(token.Type == TokenType.OperateurMathematique);
 

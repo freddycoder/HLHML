@@ -2,6 +2,7 @@
 using HLHML.LanguageElements.Adjectifs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -10,18 +11,26 @@ namespace HLHML
     public class Parseur
     {
         private readonly Lexer _lexer;
-        private Token CurrentToken { get; set; }
-        private Scope _parentScope;
+        private Token? CurrentToken { get; set; }
+        private Scope? _parentScope;
+
+        private TextWriter _textWriter;
 
         public Parseur(Lexer lexer)
         {
             _lexer = lexer;
+            _textWriter = Console.Out;
         }
 
         private Token GetNextToken()
         {
             CurrentToken = _lexer.GetNextToken();
             return CurrentToken;
+        }
+
+        internal void SetTextWriter(TextWriter textWriter)
+        {
+            _textWriter = textWriter;
         }
 
         private void UpdateScopeReference(Scope scope)
@@ -49,7 +58,7 @@ namespace HLHML
             }
         }
 
-        public AST Parse(Scope scope = null)
+        public AST Parse(Scope? scope = null)
         {
             return GeneriqueCompound(scope, () => CurrentToken.Type != TokenType.None && CurrentToken.Type != TokenType.Adverbe);
         }
@@ -126,7 +135,11 @@ namespace HLHML
         {
             if (CurrentToken.Value.Equals("Afficher", StringComparison.OrdinalIgnoreCase))
             {
-                return new Afficher(CurrentToken).AddChilds(AfterVerbeAndAdjectifs(subject));
+                var ast = new Afficher(CurrentToken);
+
+                ast.SetTextWriter(_textWriter);
+
+                return ast.AddChilds(AfterVerbeAndAdjectifs(subject));
             }
             else if (CurrentToken.Value.Equals("Lire", StringComparison.OrdinalIgnoreCase))
             {
@@ -136,13 +149,22 @@ namespace HLHML
             {
                 return ParseNextAdjectif(subject);
             }
+            else if (CurrentToken.Value.Equals("variant", StringComparison.OrdinalIgnoreCase))
+            {
+                return ParseVariant(subject);
+            }
 
             throw new VerbeNotFoundException(CurrentToken);
         }
 
+        private AST ParseVariant(string subject)
+        {
+            return new AST(CurrentToken).AddChilds(Expression());
+        }
+
         private AST ParseNextAdjectif(string subject)
         {
-            AST adj = default;
+            AST? adj = default;
 
             GetNextToken();
 
@@ -276,7 +298,7 @@ namespace HLHML
             return root;
         }
 
-        private AST GeneriqueCompound(Scope scope, Func<bool> predicat)
+        private AST GeneriqueCompound(Scope? scope, Func<bool> predicat)
         {
             UpdateScopeReference(scope);
 
@@ -381,7 +403,7 @@ namespace HLHML
             {
                 var t = CurrentToken;
                 GetNextToken();
-                node = new MathOperator(node, t, Level_3());
+                node = new OperateurMathematique(node, t, Level_3());
             }
 
             return node;
@@ -396,7 +418,7 @@ namespace HLHML
             {
                 var t = CurrentToken;
                 GetNextToken();
-                node = new MathOperator(node, t, Level_2());
+                node = new OperateurMathematique(node, t, Level_2());
             }
 
             return node;
@@ -415,7 +437,7 @@ namespace HLHML
             {
                 var t = CurrentToken;
                 GetNextToken();
-                node = new MathOperator(t, Level_1());
+                node = new OperateurMathematique(t, Level_1());
             }
 
             return node;
@@ -445,7 +467,7 @@ namespace HLHML
 
         public override string ToString()
         {
-            return $"Parseur : {{ CurrentToken : {CurrentToken.ToString()} }} ";
+            return $"Parseur : {{ CurrentToken : {CurrentToken?.ToString() ?? "null" } }} ";
         }
     }
 }

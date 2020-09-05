@@ -1,18 +1,18 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
-namespace HLHML.Test
+namespace HLHML.Test.Goal
 {
-    [TestClass]
+    
     public class Goal_DefineGreatestCommonDenominator
     {
-        [TestMethod]
-        [Timeout(2000)]
+        [Fact]
         public void GreatestCommonDenominator()
         {
             var program = "Le plus grand diviseur commun de deux nombres se définit comme suit :" +
@@ -29,39 +29,37 @@ namespace HLHML.Test
 
             using (var sw = new StringWriter())
             {
-                Console.SetOut(sw);
-
-                var interpreteur = new Interpreteur();
+                var interpreteur = new Interpreteur(sw);
 
                 interpreteur.Interprete(program);
 
-                Assert.AreEqual("3", sw.ToString());
+                sw.ToString().ShouldBe("3");
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void TestLexerBigSubject()
         {
             var lexer = new Lexer("Le plus grand denominateur commun de deux nombres se définit comme suit :");
 
-            Assert.AreEqual(Token("Le", TokenType.Determinant), lexer.GetNextToken());
+            lexer.GetNextToken().ShouldBe(Token("Le", TokenType.Determinant));
 
-            Assert.AreEqual(Token("plus grand denominateur commun", TokenType.Sujet), lexer.GetNextToken());
+            lexer.GetNextToken().ShouldBe(Token("plus grand denominateur commun", TokenType.Sujet));
 
-            Assert.AreEqual(Token("de", TokenType.Determinant), lexer.GetNextToken());
+            lexer.GetNextToken().ShouldBe(Token("de", TokenType.Determinant));
 
-            Assert.AreEqual(Token("deux nombres", TokenType.Sujet), lexer.GetNextToken());
+            lexer.GetNextToken().ShouldBe(Token("deux nombres", TokenType.Sujet));
 
-            Assert.AreEqual(Token("se", TokenType.Determinant), lexer.GetNextToken());
+            lexer.GetNextToken().ShouldBe(Token("se", TokenType.Determinant));
 
-            Assert.AreEqual(Token("définit", TokenType.Verbe), lexer.GetNextToken());
+            lexer.GetNextToken().ShouldBe(Token("définit", TokenType.Verbe));
 
-            Assert.AreEqual(Token("comme suit", TokenType.Adverbe), lexer.GetNextToken());
+            lexer.GetNextToken().ShouldBe(Token("comme suit", TokenType.Adverbe));
 
-            Assert.AreEqual(Token(":", TokenType.Ponctuation), lexer.GetNextToken());
+            lexer.GetNextToken().ShouldBe(Token(":", TokenType.Ponctuation));
         }
 
-        [TestMethod]
+        [Fact]
         public void TestParseurWithDefinition()
         {
             var lexer = new Lexer("Le plus grand denominateur commun se définit comme suit :" +
@@ -73,16 +71,16 @@ namespace HLHML.Test
 
             var root = parseur.Parse();
 
-            Assert.AreEqual(Token("Compound", TokenType.Compound), Token(root.Value, root.Type));
+            Token(root.Value, root.Type).ShouldBe(Token("Compound", TokenType.Compound));
 
-            Assert.AreEqual(2, root.Childs.Count);
+            root.Childs.Count.ShouldBe(2);
 
-            Assert.AreEqual(Token("définit", TokenType.Verbe), Token(root.Childs[0]));
+            Token(root.Childs[0]).ShouldBe(Token("définit", TokenType.Verbe));
 
-            Assert.AreEqual(Token("Afficher", TokenType.Verbe), Token(root.Childs[1]));
+            Token(root.Childs[1]).ShouldBe(Token("Afficher", TokenType.Verbe));
         }
 
-        [TestMethod]
+        [Fact]
         public void TestScopesWithDefinition()
         {
             var program = "Le plus grand denominateur commun se définit comme suit :" +
@@ -92,15 +90,14 @@ namespace HLHML.Test
 
             var root = new Parseur(new Lexer(program)).Parse();
 
-            Assert.IsNotNull(root.Scope);
-            Assert.IsNotNull(root.Childs[0].Childs[0].Scope);
-            Assert.IsNotNull(root.Childs[0].Childs[1].Scope);
-            Assert.IsTrue(root.Childs[0].Childs[1].Scope != root.Scope);
-            Assert.IsTrue(root.Childs[0].Childs[0].Scope == root.Scope);
+            root.Scope.ShouldNotBeNull();
+            root.Childs[0].Childs[0].Scope.ShouldNotBeNull();
+            root.Childs[0].Childs[1].Scope.ShouldNotBeNull();
+            (root.Childs[0].Childs[1].Scope != root.Scope).ShouldBeTrue();
+            (root.Childs[0].Childs[0].Scope == root.Scope).ShouldBeTrue();
         }
 
-        [TestMethod]
-        [Timeout(1000)]
+        [Fact]
         public void TestInterpretationWithDefinition()
         {
             var program = "Le plus grand denominateur commun se définit comme suit :" +
@@ -115,13 +112,11 @@ namespace HLHML.Test
         {
             using (var sw = new StringWriter())
             {
-                Console.SetOut(sw);
-
-                var interpreteur = new Interpreteur();
+                var interpreteur = new Interpreteur(sw);
 
                 interpreteur.Interprete(program);
 
-                Assert.AreEqual(expectedOuput, sw.ToString());
+                sw.ToString().ShouldBe(expectedOuput);
             }
         }
 

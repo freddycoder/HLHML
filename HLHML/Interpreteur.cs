@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HLHML.LanguageElements;
+using System;
+using System.IO;
 
 namespace HLHML
 {
@@ -8,14 +10,19 @@ namespace HLHML
 
         public IReadOnlyScope Scope => _scope;
 
-        public Interpreteur()
+        private readonly TextWriter _textWriter;
+
+        public Interpreteur(TextWriter textWriter)
         {
             _scope = new Scope();
+            _textWriter = textWriter;
         }
 
-        public void Interprete(string input)
+        public void Interprete(string? input)
         {
-            var parseur = new Parseur(new Lexer(input));
+            var parseur = new Parseur(new Lexer(input ?? ""));
+
+            parseur.SetTextWriter(_textWriter);
 
             var ast = parseur.Parse(_scope);
 

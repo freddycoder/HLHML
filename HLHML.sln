@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HLHML", "HLHML\HLHML.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HLHML.Test", "HLHML.Test\HLHML.Test.csproj", "{0C0BE2DB-022F-4026-8984-35E406A3A4EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HMHML.Editor", "HMHML.Editor\HMHML.Editor.csproj", "{466767ED-012F-4C3B-BAF1-DA48CE0C798B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0C0BE2DB-022F-4026-8984-35E406A3A4EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C0BE2DB-022F-4026-8984-35E406A3A4EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C0BE2DB-022F-4026-8984-35E406A3A4EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{466767ED-012F-4C3B-BAF1-DA48CE0C798B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{466767ED-012F-4C3B-BAF1-DA48CE0C798B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{466767ED-012F-4C3B-BAF1-DA48CE0C798B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{466767ED-012F-4C3B-BAF1-DA48CE0C798B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

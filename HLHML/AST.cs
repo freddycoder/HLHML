@@ -1,29 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace HLHML
 {
     public class AST
     {
-        private AST _parent;
+        private AST? _parent;
         protected readonly List<AST> _childs = new List<AST>();
         private readonly Token _token;
-        private Scope _scope;
+        private Scope? _scope;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="token"></param>
         public AST(Token token)
         {
-            _token = token;
+            _token = token ?? throw new ArgumentNullException(nameof(token));
         }
 
+        /// <exception cref="ArgumentNullException"></exception>
         public AST(Token token, AST firstChild)
         {
-            _token = token;
+            _token = token ?? throw new ArgumentNullException(nameof(token));
             AddChilds(firstChild);
         }
 
+        /// <exception cref="ArgumentNullException"></exception>
         public AST(AST firstChild, Token token, AST secondChild)
         {
-            _token = token;
+            _token = token ?? throw new ArgumentNullException(nameof(token));
             AddChilds(firstChild);
             AddChilds(secondChild);
         }
@@ -53,8 +61,16 @@ namespace HLHML
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="ast"></param>
+        /// <returns></returns>
         public AST AddChilds(AST ast)
         {
+            if (ast == default) throw new ArgumentNullException(nameof(ast), $"ast value is : {Value}");
+
             ast._parent = this;
             ast._scope = this._scope;
 
@@ -98,7 +114,7 @@ namespace HLHML
             }
         }
 
-        public AST Parent => _parent;
+        public AST? Parent => _parent;
 
         public override string ToString()
         {

@@ -26,6 +26,13 @@ namespace HLHML
             _graphics.Clear(Color.White);
         }
 
+        public Bitmap GetBitmap()
+        {
+            BuildBitmap();
+
+            return _bitmap;
+        }
+
         public void DrawToFile(string filename)
         {
             BuildBitmap();

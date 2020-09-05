@@ -1,5 +1,7 @@
-﻿using System;
+﻿using HLHML.Exceptions;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +37,9 @@ namespace HLHML
             { "comme suit", TokenType.Adverbe },
             { "définit", TokenType.Verbe },
             { "plus petit que", TokenType.Adjectif },
-            { "plus grand que", TokenType.Adjectif }
+            { "plus grand que", TokenType.Adjectif },
+            { "pour", TokenType.Conjonction },
+            { "variant", TokenType.Verbe }
         };
 
         private char CurrentChar => _pos >= _text.Length ? '\0' : _text[_pos];
@@ -117,9 +121,9 @@ namespace HLHML
                 sb.Append(CurrentChar);
                 _pos++;
 
-                if (!partieDecimaleCommencé && (CurrentChar == ',' || CurrentChar == '.') && char.IsDigit(PeekChar))
+                if (!partieDecimaleCommencé && (CurrentChar == CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]) && char.IsDigit(PeekChar))
                 {
-                    sb.Append(CurrentChar);
+                    sb.Append(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
                     _pos++;
                     partieDecimaleCommencé = true;
                 }
@@ -132,12 +136,19 @@ namespace HLHML
         {
             var sb = new StringBuilder();
 
+            var firstQuoteIndice = _pos;
+
             _pos++;
 
-            while (CurrentChar != '"')
+            while (CurrentChar != '"' && _pos < _text.Length)
             {
                 sb.Append(CurrentChar);
                 _pos++;
+            }
+
+            if (_text.Length == _pos)
+            {
+                throw new NonClosingQuoteException("No closing quote matching", firstQuoteIndice, _text);
             }
 
             _pos++;
@@ -149,7 +160,14 @@ namespace HLHML
         {
             var sublexer = new Lexer(_text.Substring(_pos));
 
-            return sublexer.GetNextToken();
+            try
+            {
+                return sublexer.GetNextToken();
+            }
+            catch
+            {
+                return new Token("", TokenType.None);
+            }
         }
 
         private TokenType GetTokenType(string value)

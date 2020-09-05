@@ -25,10 +25,27 @@ namespace HLHML.LanguageElements
             {
                 ConjonctionTantQue();
             }
+            else if (Value.Equals("pour", StringComparison.OrdinalIgnoreCase))
+            {
+                ConjonctionPour();
+            }
             else
             {
                 throw new InvalideConjonctionException($"Cannot interprete conjonction {this}");
             }
+        }
+
+        private void ConjonctionPour()
+        {
+            while (PredicatCompound())
+            {
+                NodeVisitor.Visit(Childs[1]);
+            }
+        }
+
+        private bool PredicatCompound()
+        {
+            throw new NotImplementedException();
         }
 
         private void ConjonctionTantQue()

@@ -1,18 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Shouldly;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Xunit;
 
-namespace HLHML.Test
+namespace HLHML.Test.Goal
 {
-    [TestClass]
     public class Goal_Programming
     {
-        [TestMethod]
-        [Timeout(2000)]
+        [Fact]
         public void Fibonacci()
         {
             var program = "a = 1. b = 1. c = 1." +
@@ -25,8 +20,7 @@ namespace HLHML.Test
             Interprete(program, "987");
         }
 
-        [TestMethod]
-        [Timeout(2000)]
+        [Fact]
         public void ScopeIteration()
         {
             var program = "i vaut 0." +
@@ -38,112 +32,103 @@ namespace HLHML.Test
             Interprete(program, "3 3");
         }
 
-        [TestMethod]
+        [Fact]
         public void AdditionDeTroisNombres()
         {
             Interprete("Afficher 3 + 3 + 3.", "9");
         }
 
-        [TestMethod]
+        [Fact]
         public void CombinaisonsSoustractionsEtAdditions()
         {
             Interprete("Afficher 5 - 2 + 5 - 1 + 10 + 10 - 50", "-23");
         }
 
-        [TestMethod]
+        [Fact]
         public void Soustraction()
         {
             Interprete("Afficher 12 - 4.", "8");
         }
 
-        [TestMethod]
+        [Fact]
         public void TroisSoustractions()
         {
             Interprete("Afficher 5 - 10 - 10", "-15");
         }
 
-        [TestMethod]
+        [Fact]
         public void Multiplication()
         {
             Interprete("Afficher 4 * 10.", "40");
         }
 
-        [TestMethod]
+        [Fact]
         public void Division()
         {
             Interprete("Afficher 10 / 5.", "2");
         }
 
-        [TestMethod]
+        [Fact]
         public void Division2()
         {
             Interprete("Afficher 1 / 2.", "0,5");
         }
 
-        [TestMethod]
+        [Fact]
         public void Division3()
         {
             Interprete("n vaut 1 / 4. Afficher n.", "0,25");
         }
 
-        [TestMethod]
-        public void NombreDecimale()
+        [Fact]
+        public void NombreDecimale1()
         {
             Interprete("Afficher 3,14159.", "3,14159");
         }
 
-        [TestMethod]
-        public void NombreDecimale2()
-        {
-            Interprete("Afficher 3.14159.", "3.14159");
-        }
-
-        [TestMethod]
+        [Fact]
         public void NombreNegatif()
         {
             Interprete("Afficher -123.", "-123");
         }
 
-        [TestMethod]
+        [Fact]
         public void NombreNegatif2()
         {
             Interprete("Afficher - 123.", "-123");
         }
 
-        [TestMethod]
+        [Fact]
         public void NombreNegatif3()
         {
             Interprete("Afficher - 123 - 123.", "-246");
         }
 
-        [TestMethod]
+        [Fact]
         public void NombreNegatif4()
         {
             Interprete("Afficher 10 * - 3.", "-30");
         }
 
-        [TestMethod]
+        [Fact]
         public void NombreNegatif5()
         {
             Interprete("Afficher -5--5", "0");
         }
 
-        [TestMethod]
-        [Timeout(2000)]
+        [Fact]
         public void NombreNegatif6()
         {
             Interprete("Tant que -5--5 n'est pas égal à 0, afficher \"bouble infinit\"", "");
         }
 
-        [TestMethod]
-        [Timeout(2000)]
+        [Fact]
         public void NombreNegatif6_1()
         {
             Interprete("Tant que 0 n'est pas égal à -5--5, afficher \"bouble infinit\"", "");
         }
 
-        [TestMethod]
-        [Timeout(2000)]
+        [Fact]
         public void NombreNegatif7()
         {
             Interprete("Si -5--5 n'est pas égal à 0, afficher \"bouble infinit\"", "");
@@ -152,24 +137,41 @@ namespace HLHML.Test
             Interprete("Si 0 n'est pas égal à -5--5, afficher \"bouble infinit\" sinon afficher \"youpi\"", "youpi");
         }
 
-        [TestMethod]
+        [Fact]
         public void MultiplicationAndAddition()
         {
             Interprete("Afficher 10 * 10 + 10", "110");
         }
 
+        [Fact]
+        public void NombreDecimale3()
+        {
+            Interprete("Afficher 1,5 + 1,6.", "3,1");
+        }
+
+        [Fact]
+        public void NombreDecimale4()
+        {
+            Interprete("Afficher 100 * 1,5", "150");
+        }
+
+        [Fact]
+        public void NombreDecimale5()
+        {
+            Interprete("Afficher 150 / 1,5", "100");
+        }
+
         private void Interprete(string program, string expectedOuput)
         {
-            using (var sw = new StringWriter())
-            {
-                Console.SetOut(sw);
+            using var textWriter = new StringWriter();
 
-                var interpreteur = new Interpreteur();
+            var interpreteur = new Interpreteur(textWriter);
 
-                interpreteur.Interprete(program);
+            interpreteur.Interprete(program);
 
-                Assert.AreEqual(expectedOuput, sw.ToString());
-            }
+            textWriter.ToString().ShouldBe(expectedOuput);
+
+            textWriter.Close();
         }
     }
 }

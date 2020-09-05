@@ -29,7 +29,7 @@ namespace HLHML
             return $"{Type}: {Value}";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is Token t)
             {
