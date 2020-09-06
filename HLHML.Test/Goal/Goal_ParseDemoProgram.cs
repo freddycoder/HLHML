@@ -136,10 +136,10 @@ namespace HLHML.Test.Goal
 
             root.Scope.ShouldNotBeNull();
 
-            root.AddChilds(new AST(new Token("a", TokenType.Sujet))
+            root.AddChild(new AST(new Token("a", TokenType.Sujet))
                 .AddParent(new AST(new Token("vaut", TokenType.Verbe))));
 
-            root.Childs.First().AddChilds(new AST(new Token("5", TokenType.Nombre)));
+            root.Childs.First().AddChild(new AST(new Token("5", TokenType.Nombre)));
 
             root.Childs.Count.ShouldBe(1);
 
@@ -432,48 +432,6 @@ namespace HLHML.Test.Goal
 
                 sw.ToString().ShouldBe("5 + 7 = ? Bonne réponse!");
             }
-        }
-
-        [Fact]
-        public void TestScript()
-        {
-            using (var sr = new StringReader("12"))
-            using (var sw = new StringWriter())
-            {
-                Console.SetIn(sr);
-
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete(File.ReadAllText("DemoProgram.fr"));
-
-                sw.ToString().ShouldBe("5 + 7 = ? Bonne réponse!");
-            }
-        }
-
-        [Fact]
-        public void TestScriptUTF8BOM()
-        {
-            using var sr = new StringReader("12");
-            using var sw = new StringWriter();
-
-            Console.SetIn(sr);
-
-            Program.MainProgram(new string[] { "DemoProgram.fr" }, sw);
-
-            sw.ToString().ShouldBe("5 + 7 = ? Bonne réponse!");
-        }
-
-        [Fact]
-        public void TestScriptAINSI()
-        {
-            using var sr = new StringReader("12");
-            using var sw = new StringWriter();
-
-            Console.SetIn(sr);
-
-            Program.MainProgram(new string[] { "AINSI_Encoding.fr" }, sw);
-
-            sw.ToString().ShouldBe("5 + 7 = ? Bonne réponse!");
         }
 
         [Fact]

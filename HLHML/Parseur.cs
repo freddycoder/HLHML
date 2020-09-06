@@ -2,7 +2,6 @@
 using HLHML.LanguageElements.Adjectifs;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 
 namespace HLHML
@@ -10,7 +9,7 @@ namespace HLHML
     public class Parseur
     {
         private readonly Lexer _lexer;
-        private Token? CurrentToken { get; set; }
+        private Token CurrentToken { get; set; }
         private Scope? _actuelScope;
 
         private TextWriter _textWriter;
@@ -20,6 +19,8 @@ namespace HLHML
         {
             _lexer = lexer;
             _textWriter = Console.Out;
+
+            CurrentToken = GetNextToken();
         }
 
         private Token GetNextToken()
@@ -59,6 +60,11 @@ namespace HLHML
             }
         }
 
+        /// <summary>
+        /// Parser le programme et le transformer sous la représentation d'un arbre de syntaxe abstrait
+        /// </summary>
+        /// <param name="scope">La scope des variables. Si null, une nouvelle scope sera initialisé</param>
+        /// <returns>L'arbre de syntaxe abstrait représentant le programme</returns>
         public AST Parse(Scope? scope = null)
         {
             return GeneriqueCompound(scope, () => CurrentToken.Type != TokenType.None && CurrentToken.Type != TokenType.Adverbe);
@@ -102,17 +108,17 @@ namespace HLHML
                 else if (conjonction.Value.Equals("tant que", StringComparison.OrdinalIgnoreCase) &&
                          conjonction.Childs.Count == 1)
                 {
-                    conjonction.AddChilds(Parse(new Scope(_actuelScope)));
+                    conjonction.AddChild(Parse(new Scope(_actuelScope)));
 
                     break;
                 }
                 else if (CurrentToken.Type == TokenType.Verbe)
                 {
-                    conjonction.AddChilds(InitialiserVerbe(first.Value));
+                    conjonction.AddChild(InitialiserVerbe(first.Value));
                 }
                 else if (CurrentToken.Type == TokenType.Conjonction)
                 {
-                    conjonction.AddChilds(InitialiserConjonction());
+                    conjonction.AddChild(InitialiserConjonction());
                 }
 
                 if (isFirst && CurrentToken.Type != TokenType.Negation)
@@ -164,15 +170,14 @@ namespace HLHML
 
         private AST ParseVariant(string subject)
         {
-            return new AST(CurrentToken).AddChilds(Expression());
+            return new AST(CurrentToken).AddChild(Expression());
         }
 
         private AST ParseNextAdjectif(string subject)
         {
-            AST? adj = default;
-
             GetNextToken();
 
+            AST? adj;
             if (CurrentToken.Value.Equals("plus petit que", StringComparison.OrdinalIgnoreCase))
             {
                 adj = new PlusPetit(CurrentToken);
@@ -271,11 +276,7 @@ namespace HLHML
                 return @return;
             }
 
-            var actualParentScope = _actuelScope;
-
-            UpdateScopeReference(new Scope(_actuelScope));
-
-            Debug.Assert(actualParentScope != _actuelScope, "Parent scope hasen't changed");
+            _actuelScope = new Scope(_actuelScope);
 
             var root = new AST(new Token("Compound", TokenType.Compound), _actuelScope);
 
@@ -285,15 +286,15 @@ namespace HLHML
             {
                 if (CurrentToken.Type == TokenType.Sujet || CurrentToken.Type == TokenType.Nombre)
                 {
-                    root.AddChilds(Expression());
+                    root.AddChild(Expression());
                 }
                 else if (CurrentToken.Type == TokenType.Verbe)
                 {
-                    root.AddChilds(InitialiserVerbe(""));
+                    root.AddChild(InitialiserVerbe(subject));
                 }
                 else if (CurrentToken.Type == TokenType.Conjonction)
                 {
-                    root.AddChilds(InitialiserConjonction());
+                    root.AddChild(InitialiserConjonction());
                 }
 
                 if (sujet_pas_traité_ou_definition_pas_terminer())
@@ -313,24 +314,19 @@ namespace HLHML
 
             var root = new AST(new Token("Compound", TokenType.Compound), _actuelScope);
 
-            if (CurrentToken == null)
-            {
-                GetNextToken();
-            }
-
             while (predicat.Invoke())
             {
                 if (CurrentToken.Type == TokenType.Sujet || CurrentToken.Type == TokenType.Nombre)
                 {
-                    root.AddChilds(Expression());
+                    root.AddChild(Expression());
                 }
                 else if (CurrentToken.Type == TokenType.Verbe)
                 {
-                    root.AddChilds(InitialiserVerbe(""));
+                    root.AddChild(InitialiserVerbe(""));
                 }
                 else if (CurrentToken.Type == TokenType.Conjonction)
                 {
-                    root.AddChilds(InitialiserConjonction());
+                    root.AddChild(InitialiserConjonction());
                 }
 
                 if (CurrentToken.Type != TokenType.Adverbe)
@@ -381,7 +377,7 @@ namespace HLHML
             return node;
         }
 
-        private AST Level_9()
+        private AST? Level_9()
         {
             var node = Level_7();
 
@@ -390,7 +386,7 @@ namespace HLHML
 
         private AST? Level_7()
         {
-            AST node = Level_6();
+            AST? node = Level_6();
 
             return node;
         }
@@ -422,6 +418,7 @@ namespace HLHML
 
             return node;
         }
+
         private AST? Level_3()
         {
             var node = Level_2();
@@ -437,12 +434,14 @@ namespace HLHML
 
             return node;
         }
-        private AST Level_2()
+
+        private AST? Level_2()
         {
             var node = Level_1();
 
             return node;
         }
+
         private AST? Level_1()
         {
             var node = Level_0();
@@ -456,6 +455,7 @@ namespace HLHML
 
             return node;
         }
+
         private AST? Level_0()
         {
             AST? node = default;

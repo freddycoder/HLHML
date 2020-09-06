@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace HLHML
+namespace HLHML.Console
 {
     public class Program
     {
@@ -22,7 +22,7 @@ namespace HLHML
 
             var newLineWhenAfficher = Configuration?.GetBool("newLineWhenAfficher") ?? false;
 
-            MainProgram(args, Console.Out, newLineWhenAfficher);
+            MainProgram(args, System.Console.Out, newLineWhenAfficher);
         }
 
         public static void MainProgram(string[] args, TextWriter sdtOut, bool newLineWhenAfficher = false)
@@ -36,8 +36,8 @@ namespace HLHML
                 {
                     Try(() =>
                     {
-                        Console.Write(">>> ");
-                        input = Console.ReadLine();
+                        System.Console.Write(">>> ");
+                        input = System.Console.ReadLine();
                         if (!string.IsNullOrWhiteSpace(input) && !input.Equals("quitter", StringComparison.OrdinalIgnoreCase))
                         {
                             interpreteur.Interprete(input);
@@ -108,13 +108,13 @@ namespace HLHML
             {
                 while (e != null)
                 {
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine();
+                    System.Console.WriteLine(e.Message);
+                    System.Console.WriteLine();
 
                     if (Configuration?.GetBool("printStackTrace") == true)
                     {
-                        Console.WriteLine(e.StackTrace);
-                        Console.WriteLine();
+                        System.Console.WriteLine(e.StackTrace);
+                        System.Console.WriteLine();
                     }
 
                     if (Configuration?.GetBool("printEveryException") == true)

@@ -5,10 +5,10 @@ using static HLHML.Test.Outils.OutilsInterpreteur;
 
 namespace HLHML.Test.Goal
 {
-    
     public class Goal_DefineGreatestCommonDenominator
     {
         [Fact]
+        [Trait("Future", "true")]
         public void GreatestCommonDenominator()
         {
             var program = "Le plus grand diviseur commun de deux nombres se définit comme suit :" +
@@ -84,6 +84,8 @@ namespace HLHML.Test.Goal
             root.Scope.ShouldNotBeNull();
             root.Childs[0].Childs[0].Scope.ShouldNotBeNull();
             root.Childs[0].Childs[1].Scope.ShouldNotBeNull();
+            root.Childs[0].Childs[1].Token.ShouldBe(Token("Compound", TokenType.Compound));
+
             (root.Childs[0].Childs[1].Scope != root.Scope).ShouldBeTrue();
             (root.Childs[0].Childs[0].Scope == root.Scope).ShouldBeTrue();
         }

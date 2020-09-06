@@ -25,15 +25,15 @@ namespace HLHML
         public AST(Token token, AST firstChild)
         {
             _token = token ?? throw new ArgumentNullException(nameof(token));
-            AddChilds(firstChild);
+            AddChild(firstChild);
         }
 
         /// <exception cref="ArgumentNullException"></exception>
         public AST(AST firstChild, Token token, AST secondChild)
         {
             _token = token ?? throw new ArgumentNullException(nameof(token));
-            AddChilds(firstChild);
-            AddChilds(secondChild);
+            AddChild(firstChild);
+            AddChild(secondChild);
         }
 
         public AST(Token token, Scope scope)
@@ -67,13 +67,17 @@ namespace HLHML
         /// <exception cref="ArgumentNullException"></exception>
         /// <param name="ast"></param>
         /// <returns></returns>
-        public AST AddChilds(AST ast)
+        public AST AddChild(AST ast)
         {
             if (ast == default) throw new ArgumentNullException(nameof(ast), $"ast value is : {Value}");
 
             ast._parent = this;
-            ast._scope = this._scope;
 
+            if (ast._scope == null)
+            {
+                ast._scope = this._scope;
+            }
+            
             _childs.Add(ast);
 
             return this;
@@ -83,7 +87,7 @@ namespace HLHML
         {
             foreach (var child in asts)
             {
-                AddChilds(child);
+                AddChild(child);
             }
 
             return this;
