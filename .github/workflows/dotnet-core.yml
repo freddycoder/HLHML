@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Install dependencies
-      run: dotnet restore HLHML.Test\HLHML.Test.csproj
+      run: dotnet restore HLHML.Test/HLHML.Test.csproj
     - name: Build
-      run: dotnet build HLHML.Test\HLHML.Test.csproj --configuration Release --no-restore
+      run: dotnet build HLHML.Test/HLHML.Test.csproj --configuration Release --no-restore
     - name: Test
-      run: dotnet test HLHML.Test\HLHML.Test.csproj --no-restore --verbosity normal
+      run: dotnet test HLHML.Test/HLHML.Test.csproj --no-restore --verbosity normal
