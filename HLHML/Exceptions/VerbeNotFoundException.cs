@@ -6,7 +6,7 @@ namespace HLHML
     [Serializable]
     internal class VerbeNotFoundException : Exception
     {
-        private Token token;
+        private Token? token;
 
         public VerbeNotFoundException()
         {

@@ -25,27 +25,6 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
-        public void Euclide0InFile()
-        {
-            using var sw = new StringWriter();
-
-            Program.MainProgram(new string[] { "Euclide.fr" }, sw);
-
-            sw.ToString().ShouldBe("3");
-        }
-
-        [Fact]
-        public void Euclide0InFile2()
-        {
-            using var sw = new StringWriter();
-
-            Program.MainProgram(new string[] { "Euclideutf-8.fr" }, sw);
-
-            sw.ToString().ShouldBe("3");
-        }
-
-
-        [Fact]
         public void TestLexer()
         {
             var lexer = new Lexer("tant que b n'est pas égal à 0");

@@ -1,11 +1,6 @@
 ﻿using HLHML.LanguageElements;
-using Microsoft.CodeAnalysis;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
-using System.Text;
 using Xunit;
 
 namespace HLHML.Test.Goal
@@ -13,6 +8,7 @@ namespace HLHML.Test.Goal
     public class Goal_GreatyAlgorythm
     {
         [Fact]
+        [Trait("Future", "true")]
         public void BaseScript()
         {
             var s = "Entrée :" +
@@ -29,6 +25,7 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
+        [Trait("Future", "true")]
         public void BouclePour()
         {
             var s = "liste ordonnée V = [1,2,3]. Pour i variant de 1 à n, v = V[i]. Afficher v. Ensuite.";
@@ -39,6 +36,7 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
+        [Trait("Future", "true")]
         public void BouclePour2()
         {
             var s = "Pour i variant de 1 à 5, Afficher i. Ensuite.";
@@ -49,6 +47,7 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
+        [Trait("Future", "true")]
         public void VariantTree()
         {
             var s = "i variant de 1 à 5";
@@ -64,6 +63,7 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
+        [Trait("Future", "true")]
         public void De1A5ListeTree()
         {
             var s = "de 1 à 5";
@@ -74,6 +74,7 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
+        [Trait("Future", "true")]
         public void AfficherDe1A5()
         {
             using var sr = new StringWriter();
@@ -88,6 +89,7 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
+        [Trait("Future", "true")]
         public void AfficherDe1A5_2()
         {
             using var sr = new StringWriter();
@@ -102,6 +104,7 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
+        [Trait("Future", "true")]
         public void AfficherDe1A5_2Tree()
         {
             var s = "Affcher i variant de 1 à 5";

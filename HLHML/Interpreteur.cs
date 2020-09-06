@@ -1,6 +1,8 @@
 ﻿using HLHML.LanguageElements;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 
 namespace HLHML
 {
@@ -18,6 +20,8 @@ namespace HLHML
             _scope = new Scope();
             _textWriter = textWriter ?? Console.Out;
             _newLine = newLineWhenAfficher;
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("fr-FR");
         }
 
         public void Interprete(string? input)

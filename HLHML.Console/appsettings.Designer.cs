@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HLHML {
+namespace HLHML.Console {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
