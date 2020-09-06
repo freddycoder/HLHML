@@ -2,9 +2,8 @@
 using HLHML.LanguageElements.Adjectifs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace HLHML
 {
@@ -12,9 +11,10 @@ namespace HLHML
     {
         private readonly Lexer _lexer;
         private Token? CurrentToken { get; set; }
-        private Scope? _parentScope;
+        private Scope? _actuelScope;
 
         private TextWriter _textWriter;
+        private bool _newLine;
 
         public Parseur(Lexer lexer)
         {
@@ -28,33 +28,34 @@ namespace HLHML
             return CurrentToken;
         }
 
-        internal void SetTextWriter(TextWriter textWriter)
+        internal void SetTextWriter(TextWriter textWriter, bool newLineWhenAfficher = false)
         {
             _textWriter = textWriter;
+            _newLine = newLineWhenAfficher;
         }
 
         private void UpdateScopeReference(Scope scope)
         {
-            if (scope == null && _parentScope == null)
+            if (scope == null && _actuelScope == null)
             {
-                _parentScope = new Scope();
+                _actuelScope = new Scope();
             }
-            else if (scope != null && _parentScope == null)
+            else if (scope != null && _actuelScope == null)
             {
-                _parentScope = scope;
+                _actuelScope = scope;
             }
-            else if (scope == null && _parentScope != null)
+            else if (scope == null && _actuelScope != null)
             {
-                _parentScope = new Scope(_parentScope);
+                _actuelScope = new Scope(_actuelScope);
             }
-            else if (scope != null && _parentScope != null)
+            else if (scope != null && _actuelScope != null)
             {
-                if (scope.Parent != _parentScope)
+                if (scope.Parent != _actuelScope)
                 {
                     throw new InvalidScopeException("Scopes does not reference each others properly");
                 }
 
-                _parentScope = scope;
+                _actuelScope = scope;
             }
         }
 
@@ -101,7 +102,7 @@ namespace HLHML
                 else if (conjonction.Value.Equals("tant que", StringComparison.OrdinalIgnoreCase) &&
                          conjonction.Childs.Count == 1)
                 {
-                    conjonction.AddChilds(Parse(new Scope(_parentScope)));
+                    conjonction.AddChilds(Parse(new Scope(_actuelScope)));
 
                     break;
                 }
@@ -137,7 +138,7 @@ namespace HLHML
             {
                 var ast = new Afficher(CurrentToken);
 
-                ast.SetTextWriter(_textWriter);
+                ast.SetTextWriter(_textWriter, _newLine);
 
                 return ast.AddChilds(AfterVerbeAndAdjectifs(subject));
             }
@@ -152,6 +153,10 @@ namespace HLHML
             else if (CurrentToken.Value.Equals("variant", StringComparison.OrdinalIgnoreCase))
             {
                 return ParseVariant(subject);
+            }
+            else if (CurrentToken.Value.Equals("définit", StringComparison.OrdinalIgnoreCase))
+            {
+                return BuildDefinition(subject);
             }
 
             throw new VerbeNotFoundException(CurrentToken);
@@ -233,7 +238,7 @@ namespace HLHML
                     }
                     else if (CurrentToken.Type == TokenType.Conjonction)
                     {
-                        asts.Add(Parse(new Scope(_parentScope)));
+                        asts.Add(Parse(new Scope(_actuelScope)));
                     }
                     else
                     {
@@ -266,9 +271,13 @@ namespace HLHML
                 return @return;
             }
 
-            UpdateScopeReference(new Scope(_parentScope));
+            var actualParentScope = _actuelScope;
 
-            var root = new AST(new Token("Compound", TokenType.Compound), _parentScope);
+            UpdateScopeReference(new Scope(_actuelScope));
+
+            Debug.Assert(actualParentScope != _actuelScope, "Parent scope hasen't changed");
+
+            var root = new AST(new Token("Compound", TokenType.Compound), _actuelScope);
 
             GetNextToken();
 
@@ -293,7 +302,7 @@ namespace HLHML
                 }
             }
 
-            _parentScope = _parentScope.Parent;
+            _actuelScope = _actuelScope.Parent;
 
             return root;
         }
@@ -302,7 +311,7 @@ namespace HLHML
         {
             UpdateScopeReference(scope);
 
-            var root = new AST(new Token("Compound", TokenType.Compound), _parentScope);
+            var root = new AST(new Token("Compound", TokenType.Compound), _actuelScope);
 
             if (CurrentToken == null)
             {
@@ -335,19 +344,19 @@ namespace HLHML
                 GetNextToken();
             }
 
-            _parentScope = _parentScope.Parent;
+            _actuelScope = _actuelScope.Parent;
 
             return root;
         }
 
-        private AST Expression()
+        private AST? Expression()
         {
             var node = Level_16();
 
             return node;
         }
 
-        private AST Level_16()
+        private AST? Level_16()
         {
             var node = Level_9();
 
@@ -356,12 +365,17 @@ namespace HLHML
                 GetNextToken();
             }
 
-            if (CurrentToken.Value.Equals("Vaut", StringComparison.OrdinalIgnoreCase) ||
-                CurrentToken.Value.Equals("définit", StringComparison.OrdinalIgnoreCase))
+            if (CurrentToken.Value.Equals("Vaut", StringComparison.OrdinalIgnoreCase))
             {
                 var t = CurrentToken;
                 GetNextToken();
-                node = new Vaut(node, t, t.Value.Equals("Vaut", StringComparison.OrdinalIgnoreCase) ? Expression() : BuildDefinition(node.Value));
+                node = new Vaut(node, t, Expression());
+            }
+            else if (CurrentToken.Value.Equals("définit", StringComparison.OrdinalIgnoreCase))
+            {
+                var t = CurrentToken;
+                GetNextToken();
+                node = new Vaut(node, t, BuildDefinition(node.Value));
             }
 
             return node;
@@ -374,27 +388,27 @@ namespace HLHML
             return node;
         }
 
-        private AST Level_7()
+        private AST? Level_7()
         {
             AST node = Level_6();
 
             return node;
         }
 
-        private AST Level_6()
+        private AST? Level_6()
         {
             var node = Level_5();
 
             return node;
         }
-        private AST Level_5()
+        private AST? Level_5()
         {
             var node = Level_4();
 
             return node;
         }
 
-        private AST Level_4()
+        private AST? Level_4()
         {
             var node = Level_3();
 
@@ -408,7 +422,7 @@ namespace HLHML
 
             return node;
         }
-        private AST Level_3()
+        private AST? Level_3()
         {
             var node = Level_2();
 
@@ -429,7 +443,7 @@ namespace HLHML
 
             return node;
         }
-        private AST Level_1()
+        private AST? Level_1()
         {
             var node = Level_0();
 
@@ -442,9 +456,9 @@ namespace HLHML
 
             return node;
         }
-        private AST Level_0()
+        private AST? Level_0()
         {
-            AST node = default;
+            AST? node = default;
 
             if (CurrentToken.Type == TokenType.Sujet)
             {

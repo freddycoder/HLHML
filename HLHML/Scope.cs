@@ -5,25 +5,25 @@ namespace HLHML
 {
     public interface IReadOnlyScope
     {
-        dynamic this[string name] { get; }
+        dynamic? this[string name] { get; }
 
         bool ContainsKey(string name);
     }
 
     public class Scope : IReadOnlyScope
     {
-        private readonly IDictionary<string, dynamic> _variables;
-        public Scope Parent { get; }
+        private readonly IDictionary<string, dynamic?> _variables;
+        public Scope? Parent { get; }
 
         public Scope()
         {
-            _variables = new Dictionary<string, dynamic>(StringComparer.OrdinalIgnoreCase);
+            _variables = new Dictionary<string, dynamic?>(StringComparer.OrdinalIgnoreCase);
         }
 
         public Scope(Scope parent)
         {
             Parent = parent;
-            _variables = new Dictionary<string, dynamic>(StringComparer.OrdinalIgnoreCase);
+            _variables = new Dictionary<string, dynamic?>(StringComparer.OrdinalIgnoreCase);
         }
 
         public bool ContainsKey(string name)
@@ -41,7 +41,7 @@ namespace HLHML
             return keyFounded;
         }
 
-        public dynamic this[string name]
+        public dynamic? this[string name]
         {
             get
             {

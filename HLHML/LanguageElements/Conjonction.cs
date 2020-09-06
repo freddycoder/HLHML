@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HLHML.LanguageElements
 {
-    public class Conjonction : AST, Actionnable
+    public class Conjonction : AST, IActionnable
     {
         public bool PredicatIsNegated { get; set; }
 

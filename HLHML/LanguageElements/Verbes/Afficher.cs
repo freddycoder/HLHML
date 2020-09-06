@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HLHML.LanguageElements
 {
-    public class Afficher : AST, Actionnable
+    public class Afficher : AST, IActionnable
     {
-        private static readonly bool NewLines = Program.Settings.GetValue<bool>("newLineWhenAfficher");
+        private bool _newLine = false;
         private TextWriter _textWriter;
 
         public Afficher(Token token) : base(token)
@@ -17,9 +13,10 @@ namespace HLHML.LanguageElements
             _textWriter = Console.Out;
         }
 
-        public void SetTextWriter(TextWriter textWriter)
+        public void SetTextWriter(TextWriter textWriter, bool newLineWhenAfficher = false)
         {
             _textWriter = textWriter;
+            _newLine = newLineWhenAfficher;
         }
 
         public void Actionner()
@@ -40,7 +37,7 @@ namespace HLHML.LanguageElements
                 }
             }
 
-            if (NewLines)
+            if (_newLine)
             {
                 _textWriter.WriteLine();
             }

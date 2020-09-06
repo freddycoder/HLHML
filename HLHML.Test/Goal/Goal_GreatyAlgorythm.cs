@@ -68,7 +68,7 @@ namespace HLHML.Test.Goal
         {
             var s = "de 1 à 5";
 
-            AST tree = new Parseur(new Lexer(s)).Parse();
+            AST tree = new Parseur(new Lexer(s)).Parse().Childs[0];
 
             tree.Value.ShouldBeOfType<Liste>();
         }

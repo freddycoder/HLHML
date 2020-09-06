@@ -1,7 +1,5 @@
-﻿using Shouldly;
-using System;
-using System.IO;
-using Xunit;
+﻿using Xunit;
+using static HLHML.Test.Outils.OutilsInterpreteur;
 
 namespace HLHML.Test.Goal
 {
@@ -159,19 +157,6 @@ namespace HLHML.Test.Goal
         public void NombreDecimale5()
         {
             Interprete("Afficher 150 / 1,5", "100");
-        }
-
-        private void Interprete(string program, string expectedOuput)
-        {
-            using var textWriter = new StringWriter();
-
-            var interpreteur = new Interpreteur(textWriter);
-
-            interpreteur.Interprete(program);
-
-            textWriter.ToString().ShouldBe(expectedOuput);
-
-            textWriter.Close();
         }
     }
 }

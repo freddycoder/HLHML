@@ -44,4 +44,12 @@ namespace HLHML
             return Type.GetHashCode() + Value.GetHashCode();
         }
     }
+
+    public static class TokenBuilder
+    {
+        public static Token Token(string value, TokenType type)
+        {
+            return new Token(value, type);
+        }
+    }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HLHML.LanguageElements
 {
-    public class Lire : AST, Actionnable
+    public class Lire : AST, IActionnable
     {
         public Lire(Token token) : base(token)
         {

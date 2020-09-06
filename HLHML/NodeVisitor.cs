@@ -19,13 +19,13 @@ namespace HLHML
 
         public static void VisitNode(AST instruction)
         {
-            if (instruction is Actionnable action)
+            if (instruction is IActionnable action)
             {
                 action.Actionner();
             }
         }
 
-        internal static dynamic Eval(AST ast)
+        internal static dynamic? Eval(AST ast)
         {
             if (ast.Type == TokenType.Sujet)
             {

@@ -1,11 +1,7 @@
-﻿using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
+﻿using Xunit;
+using Shouldly;
+using static HLHML.TokenBuilder;
+using static HLHML.Test.Outils.OutilsInterpreteur;
 
 namespace HLHML.Test.Goal
 {
@@ -27,14 +23,7 @@ namespace HLHML.Test.Goal
                           "\n" +
                           "Afficher le plus grand diviseur commun de 15 et 21.";
 
-            using (var sw = new StringWriter())
-            {
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete(program);
-
-                sw.ToString().ShouldBe("3");
-            }
+            Interprete(program, "3");
         }
 
         [Fact]
@@ -75,9 +64,9 @@ namespace HLHML.Test.Goal
 
             root.Childs.Count.ShouldBe(2);
 
-            Token(root.Childs[0]).ShouldBe(Token("définit", TokenType.Verbe));
+            root.Childs[0].Token.ShouldBe(Token("définit", TokenType.Verbe));
 
-            Token(root.Childs[1]).ShouldBe(Token("Afficher", TokenType.Verbe));
+            root.Childs[1].Token.ShouldBe(Token("Afficher", TokenType.Verbe));
         }
 
         [Fact]
@@ -88,7 +77,9 @@ namespace HLHML.Test.Goal
                           "" +
                           "Afficher le plus grand denominateur commun.";
 
-            var root = new Parseur(new Lexer(program)).Parse();
+            var parseur = new Parseur(new Lexer(program));
+
+            var root = parseur.Parse();
 
             root.Scope.ShouldNotBeNull();
             root.Childs[0].Childs[0].Scope.ShouldNotBeNull();
@@ -106,28 +97,6 @@ namespace HLHML.Test.Goal
                           "Afficher le plus grand denominateur commun.";
 
             Interprete(program, "3");
-        }
-
-        private void Interprete(string program, string expectedOuput)
-        {
-            using (var sw = new StringWriter())
-            {
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete(program);
-
-                sw.ToString().ShouldBe(expectedOuput);
-            }
-        }
-
-        private Token Token(AST ast)
-        {
-            return Token(ast.Value, ast.Type);
-        }
-
-        private Token Token(string value, TokenType type)
-        {
-            return new Token(value, type);
         }
     }
 }

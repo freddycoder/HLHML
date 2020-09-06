@@ -93,6 +93,8 @@ namespace HLHML
 
         public TokenType Type => _token.Type;
 
+        public Token Token => _token;
+
         public IReadOnlyList<AST> Childs => _childs;
 
         public Scope Scope

@@ -1,5 +1,5 @@
 # HLHML
-Un interpreteur pour des scripts écrits en français (High Level Humain Machaine Language)
+Un interpreteur pour des scripts écrits en français (High Level Humain Machine Language)
 
 ## Exemple de script
 ```

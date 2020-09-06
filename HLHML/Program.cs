@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,21 +8,26 @@ using System.Text;
 
 namespace HLHML
 {
-    public class AppSettingsReader
-    {
-        public object GetValue(string key, Type type)
-        {
-            return null;
-        }
-    }
-
     public class Program
     {
-        public static AppSettingsReader Settings { get; } = new AppSettingsReader();
+        public static IConfigurationRoot? Configuration;
 
         public static void Main(string[] args)
         {
-            var interpreteur = new Interpreteur(Console.Out);
+            ServiceCollection serviceCollection = new ServiceCollection();
+
+            ConfigureServices(serviceCollection);
+
+            IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+
+            var newLineWhenAfficher = Configuration?.GetBool("newLineWhenAfficher") ?? false;
+
+            MainProgram(args, Console.Out, newLineWhenAfficher);
+        }
+
+        public static void MainProgram(string[] args, TextWriter sdtOut, bool newLineWhenAfficher = false)
+        {
+            var interpreteur = new Interpreteur(sdtOut, newLineWhenAfficher);
 
             if (args.Length == 0)
             {
@@ -56,7 +63,7 @@ namespace HLHML
 
                         drawer.DrawToFile(destination);
 
-                        if (Settings.GetValue<bool>("openFileAfterGeneration"))
+                        if (Configuration?.GetBool("openFileAfterGeneration") == true)
                         {
                             Process.Start(destination);
                         }
@@ -70,6 +77,16 @@ namespace HLHML
                     });
                 }
             }
+        }
+
+        private static void ConfigureServices(ServiceCollection serviceCollection)
+        {
+            Configuration = new ConfigurationBuilder()
+                                    .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
+                                    .AddJsonFile("appsettings.json", false)
+                                    .Build();
+
+            serviceCollection.AddSingleton(Configuration);
         }
 
         private static string ReadAllText(string path)
@@ -87,20 +104,20 @@ namespace HLHML
             {
                 action.Invoke();
             }
-            catch (Exception e)
+            catch (Exception? e)
             {
                 while (e != null)
                 {
                     Console.WriteLine(e.Message);
                     Console.WriteLine();
 
-                    if (Settings.GetValue<bool>("printStackTrace"))
+                    if (Configuration?.GetBool("printStackTrace") == true)
                     {
                         Console.WriteLine(e.StackTrace);
                         Console.WriteLine();
                     }
 
-                    if (Settings.GetValue<bool>("printEveryException"))
+                    if (Configuration?.GetBool("printEveryException") == true)
                     {
                         e = e.InnerException;
                     }
@@ -113,18 +130,11 @@ namespace HLHML
         }
     }
 
-    public static class AppSettingsExtension
+    public static class GetValueExtension
     {
-        public static T GetValue<T>(this AppSettingsReader appSettingsReader, string key)
+        public static bool GetBool(this IConfigurationRoot configurationRoot, string key)
         {
-            try
-            {
-                return (T) appSettingsReader.GetValue(key, typeof(T));
-            }
-            catch
-            {
-                return default;
-            }
+            return bool.Parse(configurationRoot[key]);
         }
     }
 }

@@ -6,6 +6,7 @@ using HLHML.LanguageElements;
 using HLHML.LanguageElements.Adjectifs;
 using Shouldly;
 using Xunit;
+using static HLHML.Test.Outils.OutilsInterpreteur;
 
 namespace HLHML.Test.Goal
 {
@@ -59,14 +60,9 @@ namespace HLHML.Test.Goal
         [Fact]
         public void HelloWorld()
         {
-            using (StringWriter sw = new StringWriter())
-            {
-                var interpreteur = new Interpreteur(sw);
+            var program = "Afficher \"Bonjour le monde!\"";
 
-                interpreteur.Interprete("Afficher \"Bonjour le monde!\"");
-
-                sw.ToString().ShouldBe("Bonjour le monde!");
-            }
+            Interprete(program, "Bonjour le monde!");
         }
 
         [Fact]
@@ -74,7 +70,7 @@ namespace HLHML.Test.Goal
         {
             var eq = StringComparer.OrdinalIgnoreCase;
 
-            (eq.Equals("Vaut", "vaut")).ShouldBeTrue();
+            eq.Equals("Vaut", "vaut").ShouldBeTrue();
         }
 
         [Fact]
@@ -184,14 +180,7 @@ namespace HLHML.Test.Goal
         [Fact]
         public void Variable1()
         {
-            using (StringWriter sw = new StringWriter())
-            {
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete("a vaut 5. Afficher a.");
-
-                sw.ToString().ShouldBe("5");
-            }
+            Interprete("a vaut 5. Afficher a.", "5");
         }
 
         [Fact]
@@ -202,14 +191,7 @@ namespace HLHML.Test.Goal
                           "\n" + 
                           "Afficher a \" + \" b \" = ? \".";
 
-            using (StringWriter sw = new StringWriter())
-            {
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete(program);
-
-                sw.ToString().ShouldBe("5 + 7 = ? ");
-            }
+            Interprete(program, "5 + 7 = ? ");
         }
 
         [Fact]
@@ -225,15 +207,10 @@ namespace HLHML.Test.Goal
                           "Afficher la reponse.";
 
             using (var sr = new StringReader("12"))
-            using (var sw = new StringWriter())
             {
                 Console.SetIn(sr);
 
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete(program);
-
-                sw.ToString().ShouldBe("5 + 7 = ? 12");
+                Interprete(program, "5 + 7 = ? 12");
             }
         }
 
@@ -296,14 +273,7 @@ namespace HLHML.Test.Goal
         [Fact]
         public void Addition()
         {
-            using (var sw = new StringWriter())
-            {
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete("Afficher 5 + 6");
-
-                sw.ToString().ShouldBe("11");
-            }
+            Interprete("Afficher 5 + 6", "11");
         }
 
         [Fact]
@@ -485,12 +455,10 @@ namespace HLHML.Test.Goal
         {
             using var sr = new StringReader("12");
             using var sw = new StringWriter();
-            
-            Console.SetOut(sw);
 
             Console.SetIn(sr);
 
-            Program.Main(new string[] { "DemoProgram.fr" });
+            Program.MainProgram(new string[] { "DemoProgram.fr" }, sw);
 
             sw.ToString().ShouldBe("5 + 7 = ? Bonne réponse!");
         }
@@ -500,12 +468,10 @@ namespace HLHML.Test.Goal
         {
             using var sr = new StringReader("12");
             using var sw = new StringWriter();
-            
-            Console.SetOut(sw);
 
             Console.SetIn(sr);
 
-            Program.Main(new string[] { "AINSI_Encoding.fr" });
+            Program.MainProgram(new string[] { "AINSI_Encoding.fr" }, sw);
 
             sw.ToString().ShouldBe("5 + 7 = ? Bonne réponse!");
         }

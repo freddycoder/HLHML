@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HLHML.LanguageElements
 {
-    public class Vaut : AST, Actionnable
+    public class Vaut : AST, IActionnable
     {
         public Vaut(Token token) : base(token)
         {

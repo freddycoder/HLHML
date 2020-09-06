@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Xunit;
+using static HLHML.Test.Outils.OutilsInterpreteur;
 
 namespace HLHML.Test.Goal
 {
@@ -20,14 +21,7 @@ namespace HLHML.Test.Goal
                           "    a = t.\n" +
                           "Ensuite, afficher a.\n";
 
-            using (var sw = new StringWriter())
-            {
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete(program);
-
-                sw.ToString().ShouldBe("3");
-            }
+            Interprete(program, "3");
         }
 
         [Fact]
@@ -35,9 +29,7 @@ namespace HLHML.Test.Goal
         {
             using var sw = new StringWriter();
 
-            Console.SetOut(sw);
-
-            Program.Main(new string[] { "Euclide.fr" });
+            Program.MainProgram(new string[] { "Euclide.fr" }, sw);
 
             sw.ToString().ShouldBe("3");
         }
@@ -47,9 +39,7 @@ namespace HLHML.Test.Goal
         {
             using var sw = new StringWriter();
 
-            Console.SetOut(sw);
-
-            Program.Main(new string[] { "Euclideutf-8.fr" });
+            Program.MainProgram(new string[] { "Euclideutf-8.fr" }, sw);
 
             sw.ToString().ShouldBe("3");
         }
@@ -96,14 +86,7 @@ namespace HLHML.Test.Goal
         {
             var program = "afficher 5 modulo 2";
 
-            using (var sw = new StringWriter())
-            {
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete(program);
-
-                sw.ToString().ShouldBe("1");
-            }
+            Interprete(program, "1");
         }
 
         [Fact]
@@ -136,14 +119,7 @@ namespace HLHML.Test.Goal
                           "a = a + 1." +
                           "Ensuite, afficher a";
 
-            using (var sw = new StringWriter()) 
-            {
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete(program);
-
-                sw.ToString().ShouldBe("4");
-            }
+            Interprete(program, "4");
         }
 
         [Fact]
@@ -201,14 +177,7 @@ namespace HLHML.Test.Goal
                           "a = 1." +
                           "Ensuite, afficher a";
 
-            using (var sw = new StringWriter())
-            {
-                var interpreteur = new Interpreteur(sw);
-
-                interpreteur.Interprete(program);
-
-                sw.ToString().ShouldBe("1");
-            }
+            Interprete(program, "1");
         }        
 
         [Fact]
