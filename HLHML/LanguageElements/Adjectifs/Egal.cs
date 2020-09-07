@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HLHML.LanguageElements.Adjectifs
+﻿namespace HLHML.LanguageElements.Adjectifs
 {
     public class Egal : AST, Adjectif
     {
         public Egal(Token token) : base(token)
         {
-            //if (token.Type != TokenType.Adjectif || !token.Value.Equals("égal à", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    throw new InvalidNodeException($"Cannot create a Egal node form {token}");
-            //}
         }
 
         public bool Valider()

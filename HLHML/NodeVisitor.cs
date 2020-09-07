@@ -25,7 +25,7 @@ namespace HLHML
             }
         }
 
-        internal static dynamic? Eval(AST ast)
+        public static dynamic? Eval(AST ast)
         {
             if (ast.Type == TokenType.Sujet)
             {
@@ -43,6 +43,11 @@ namespace HLHML
             }
 
             return ast.Value;
+        }
+
+        public static double EvalDouble(AST ast)
+        {
+            return double.Parse(Eval(ast));
         }
     }
 }

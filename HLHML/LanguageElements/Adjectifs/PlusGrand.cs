@@ -19,7 +19,7 @@ namespace HLHML.LanguageElements.Adjectifs
                 throw new InvalidNodeNumberException($"L'adjectif plus 'plus petit que' doit avoir deux noeuds enfants. Celui-ci en à {Childs.Count}.");
             }
 
-            return double.Parse(NodeVisitor.Eval(Childs[0])) > double.Parse(NodeVisitor.Eval(Childs[1]));
+            return NodeVisitor.EvalDouble(Childs[0]) > NodeVisitor.EvalDouble(Childs[1]);
         }
     }
 }
