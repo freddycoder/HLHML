@@ -16,7 +16,7 @@ namespace HLHML.Test
             interpreteur.Interprete("b = 2");
             interpreteur.Interprete("c = 3");
             interpreteur.Interprete("x = a");
-            interpreteur.Interprete("si b est plus grand que x, alors x = b"); // TODO 1, alors
+            interpreteur.Interprete("si b est plus grand que x, alors x = b");
             interpreteur.Interprete("si c est plus grand que x, alors x = c");
 
             (interpreteur.Scope["a"] as string).ShouldBe("1");
