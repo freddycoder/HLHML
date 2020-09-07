@@ -3,6 +3,7 @@ using HLHML.LanguageElements.Adjectifs;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using static HLHML.TokenBuilder;
 
 namespace HLHML
 {
@@ -95,6 +96,11 @@ namespace HLHML
                 if (CurrentToken.Type == TokenType.Ponctuation)
                 {
                     GetNextToken();
+
+                    //if (CurrentToken.Equals(Token("alors", TokenType.Adverbe)))
+                    //{
+                    //    GetNextToken();
+                    //}
                 }
                 if (CurrentToken.Equals(new Token("sinon", TokenType.Conjonction)))
                 {
@@ -120,6 +126,10 @@ namespace HLHML
                 {
                     conjonction.AddChild(InitialiserConjonction());
                 }
+                //else if (CurrentToken.Type == TokenType.Sujet)
+                //{
+                //    conjonction.AddChild(Expression());
+                //}
 
                 if (isFirst && CurrentToken.Type != TokenType.Negation)
                 {
@@ -438,6 +448,13 @@ namespace HLHML
         private AST? Level_2()
         {
             var node = Level_1();
+
+            //if (CurrentToken.Equals(Token("de", TokenType.Preposition)))
+            //{
+            //    GetNextToken();
+
+            //    node.AddChild(Level_1());
+            //}
 
             return node;
         }

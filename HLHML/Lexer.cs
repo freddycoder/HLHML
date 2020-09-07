@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using static HLHML.TokenBuilder;
 
 namespace HLHML
 {
@@ -32,14 +31,15 @@ namespace HLHML
             { "modulo", TokenType.OperateurMathematique },
             { "Ensuite", TokenType.Adverbe },
             { "Le", TokenType.Determinant },
-            { "de", TokenType.Determinant },
+            { "de", TokenType.Preposition },
             { "se", TokenType.Determinant },
             { "comme suit", TokenType.Adverbe },
             { "définit", TokenType.Verbe },
             { "plus petit que", TokenType.Adjectif },
             { "plus grand que", TokenType.Adjectif },
             { "pour", TokenType.Conjonction },
-            { "variant", TokenType.Verbe }
+            { "variant", TokenType.Verbe },
+            { "alors", TokenType.Adverbe }
         };
 
         private char CurrentChar => _pos >= _text.Length ? '\0' : _text[_pos];
@@ -202,7 +202,8 @@ namespace HLHML
                 if (GetTokenType(sb.ToString()) == TokenType.Sujet &&
                      (nextTokenPeeked.Type == TokenType.Sujet ||
                       nextTokenPeeked.Type == TokenType.Complement ||
-                      nextTokenPeeked.Type == TokenType.Preposition))
+                      nextTokenPeeked.Type == TokenType.Preposition) &&
+                      !nextTokenPeeked.Equals(Token("de", TokenType.Preposition)))
                 {
                     Advance();
 

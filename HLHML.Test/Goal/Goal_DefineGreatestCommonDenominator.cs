@@ -8,10 +8,9 @@ namespace HLHML.Test.Goal
     public class Goal_DefineGreatestCommonDenominator
     {
         [Fact]
-        [Trait("Future", "true")]
         public void GreatestCommonDenominator()
         {
-            var program = "Le plus grand diviseur commun de deux nombres se définit comme suit :" +
+            var program = "Le plus grand diviseur commun de deux nombres se définit comme suit :" + // TODO 3, deux nombres
                           "a = premier nombre." +
                           "b = deuxième nombre." +
                           "Tant que b n'est pas égal à 0,\n" +
@@ -35,7 +34,7 @@ namespace HLHML.Test.Goal
 
             lexer.GetNextToken().ShouldBe(Token("plus grand denominateur commun", TokenType.Sujet));
 
-            lexer.GetNextToken().ShouldBe(Token("de", TokenType.Determinant));
+            lexer.GetNextToken().ShouldBe(Token("de", TokenType.Preposition));
 
             lexer.GetNextToken().ShouldBe(Token("deux nombres", TokenType.Sujet));
 
@@ -99,6 +98,20 @@ namespace HLHML.Test.Goal
                           "Afficher le plus grand denominateur commun.";
 
             Interprete(program, "3");
+        }
+
+        [Fact]
+        public void TestDefinitionFonctionMaximum()
+        {
+            var program = "Le maximum de trois nombres se définit comme suit: " + // TODO 2, de 
+                          "x = premier nombre." +
+                          "si le deuxième nombre est plus grand que x, alors x = deuxième nombre." +
+                          "si le troisième nombre est plus grand que x, alors x = troisième nombre." +
+                          "Le maximum vaut x." +
+                          "" +
+                          "Afficher le maximum de 4, 5, 6.";
+
+            Interprete(program, "6");
         }
     }
 }
