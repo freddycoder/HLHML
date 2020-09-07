@@ -88,19 +88,20 @@ namespace HLHML
 
             var first = Expression();
 
-            while ((CurrentToken.Type != TokenType.None ||
-                   CurrentToken.Type == TokenType.Ponctuation) &&
-                   CurrentToken.Type != TokenType.Adverbe &&
+            while (CurrentToken.Type != TokenType.None &&
+                   (CurrentToken.Type == TokenType.Ponctuation ||
+                   CurrentToken.Type != TokenType.Adverbe) &&
+                   CurrentToken.Value != "." &&
                    conjonction.Childs.Count < 3)
             {
                 if (CurrentToken.Type == TokenType.Ponctuation)
                 {
                     GetNextToken();
 
-                    //if (CurrentToken.Equals(Token("alors", TokenType.Adverbe)))
-                    //{
-                    //    GetNextToken();
-                    //}
+                    if (CurrentToken.Equals(Token("alors", TokenType.Adverbe)))
+                    {
+                        GetNextToken();
+                    }
                 }
                 if (CurrentToken.Equals(new Token("sinon", TokenType.Conjonction)))
                 {
@@ -126,10 +127,10 @@ namespace HLHML
                 {
                     conjonction.AddChild(InitialiserConjonction());
                 }
-                //else if (CurrentToken.Type == TokenType.Sujet)
-                //{
-                //    conjonction.AddChild(Expression());
-                //}
+                else if (CurrentToken.Type == TokenType.Sujet)
+                {
+                    conjonction.AddChild(Expression());
+                }
 
                 if (isFirst && CurrentToken.Type != TokenType.Negation)
                 {
@@ -449,12 +450,12 @@ namespace HLHML
         {
             var node = Level_1();
 
-            //if (CurrentToken.Equals(Token("de", TokenType.Preposition)))
-            //{
-            //    GetNextToken();
+            if (CurrentToken.Equals(Token("de", TokenType.Preposition)))
+            {
+                GetNextToken();
 
-            //    node.AddChild(Level_1());
-            //}
+                node.AddChild(Level_1());
+            }
 
             return node;
         }
