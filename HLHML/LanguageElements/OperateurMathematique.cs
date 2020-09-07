@@ -50,8 +50,8 @@ namespace HLHML.LanguageElements
         {
             if (Childs.Count == 2)
             {
-                var x = double.Parse(NodeVisitor.Eval(Childs[0]));
-                var y = double.Parse(NodeVisitor.Eval(Childs[1]));
+                var x = NodeVisitor.EvalDouble(Childs[0]);
+                var y = NodeVisitor.EvalDouble(Childs[1]);
 
                 return (x / y).ToString();
             }
