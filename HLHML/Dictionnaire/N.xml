@@ -8,4 +8,8 @@
     <Mots>n'</Mots>
     <Type>Negation</Type>
   </Terme>
+  <Terme>
+    <Mots>nombre</Mots>
+    <Type>Nom</Type>
+  </Terme>
 </ArrayOfTerme>

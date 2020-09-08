@@ -16,4 +16,8 @@
     <Mots>pour</Mots>
     <Type>Conjonction</Type>
   </Terme>
+  <Terme>
+    <Mots>premier</Mots>
+    <Type>Adjectif</Type>
+  </Terme>
 </ArrayOfTerme>

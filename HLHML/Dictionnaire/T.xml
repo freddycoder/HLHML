@@ -9,4 +9,8 @@
     <Type>Adjectif</Type>
     <ValeurNumérique>3</ValeurNumérique>
   </Terme>
+  <Terme>
+    <Mots>troisième</Mots>
+    <Type>Adjectif</Type>
+  </Terme>
 </ArrayOfTerme>

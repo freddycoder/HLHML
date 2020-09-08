@@ -5,12 +5,16 @@
     <Type>Préposition</Type>
   </Terme>
   <Terme>
+    <Mots>définit</Mots>
+    <Type>Verbe</Type>
+  </Terme>
+  <Terme>
     <Mots>deux</Mots>
     <Type>Adjectif</Type>
     <ValeurNumérique>2</ValeurNumérique>
   </Terme>
   <Terme>
-    <Mots>définit</Mots>
-    <Type>Verbe</Type>
+    <Mots>deuxième</Mots>
+    <Type>Adjectif</Type>
   </Terme>
 </ArrayOfTerme>

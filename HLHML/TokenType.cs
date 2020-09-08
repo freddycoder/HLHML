@@ -4,6 +4,8 @@ namespace HLHML
 {
     public enum TokenType
     {
+        None,
+
         Adjectif, 
         Adverbe,
         Complement,
@@ -11,8 +13,8 @@ namespace HLHML
         Conjonction, 
         Déterminant, 
         Negation,
-        Nombre, 
-        None, 
+        Nom,
+        Nombre,
         OperateurMathematique,
         OuvertureParentèse,
         Ponctuation,

@@ -12,7 +12,7 @@ namespace HLHML.LanguageElements.Adjectifs
         {
             if (Childs.Count != 2)
             {
-                throw new InvalidNodeNumberException($"L'adjectif plus 'plus petit que' doit avoir deux noeuds enfants. Celui-ci en à {Childs.Count}.");
+                throw new InvalidNodeNumberException($"L'adjectif plus 'plus grand que' doit avoir deux noeuds enfants. Celui-ci en à {Childs.Count}.");
             }
 
             return NodeVisitor.EvalDouble(Childs[0]) > NodeVisitor.EvalDouble(Childs[1]);

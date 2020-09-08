@@ -62,11 +62,12 @@ namespace HLHML
         }
 
         /// <summary>
-        /// 
+        /// Ajout le noeud à la liste des noeuds enfants. La scope de ce noeud enfant sera initialiser
+        /// à la référence du scope du noeud parent, saut si celle-ci à déjà été initialisé.
         /// </summary>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <param name="ast"></param>
-        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Si le paramètres est nul</exception>
+        /// <param name="ast">Le noeud enfant à ajouter.</param>
+        /// <returns>Le noeud courrant</returns>
         public AST AddChild(AST ast)
         {
             if (ast == default) throw new ArgumentNullException(nameof(ast), $"ast value is : {Value}");

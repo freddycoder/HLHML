@@ -1,19 +1,14 @@
 ﻿using HLHML.Dictionnaire;
 using HLHML.Exceptions;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text;
-using System.Xml.Serialization;
 using static HLHML.Dictionnaire.TermeBuilder;
+using static HLHML.Dictionnaire.DictionnaireTermeConnue;
 
 namespace HLHML
 {
     public class Lexer
     {
-        private static readonly IDictionary<string, TokenType> _termesConnues = ObtenirLesTermesConnues();
-
         private readonly string _text;
         private int _pos;
         
@@ -35,19 +30,19 @@ namespace HLHML
             {
                 var value = GetNextWord();
 
-                return new Terme(value, GetTokenType(value));
+                return Terme(value, ObtenirTokenType(value));
             }
             else if (CurrentChar == '"')
             {
-                var value = GetString();
+                var value = ObtenirChaineDeTexte();
 
-                return new Terme(value, TokenType.Text);
+                return Terme(value, TokenType.Text);
             }
             else if (char.IsDigit(CurrentChar))
             {
                 var nombre = GetNumber();
 
-                return new Terme(nombre, TokenType.Nombre);
+                return Terme(nombre, TokenType.Nombre);
             }
             else if (CurrentChar == '.' || CurrentChar == ',' || CurrentChar == ':')
             {
@@ -55,11 +50,11 @@ namespace HLHML
 
                 _pos++;
 
-                return new Terme(point, TokenType.Ponctuation);
+                return Terme(point, TokenType.Ponctuation);
             }
             else if (CurrentChar == '+' || CurrentChar == '-' || CurrentChar == '*' || CurrentChar == '/')
             {
-                var operateur = new Terme(CurrentChar.ToString(), TokenType.OperateurMathematique);
+                var operateur = Terme(CurrentChar.ToString(), TokenType.OperateurMathematique);
 
                 _pos++;
 
@@ -67,7 +62,7 @@ namespace HLHML
             }
             else if (CurrentChar == '=')
             {
-                var vaut = new Terme("vaut", TokenType.Verbe);
+                var vaut = Terme("vaut", TokenType.Verbe);
 
                 _pos++;
 
@@ -75,14 +70,14 @@ namespace HLHML
             }
             else if (CurrentChar == '%')
             {
-                var modulo = new Terme("modulo", TokenType.OperateurMathematique);
+                var modulo = Terme("modulo", TokenType.OperateurMathematique);
 
                 _pos++;
 
                 return modulo;
             }
 
-            return new Terme("", TokenType.None);
+            return Terme("", TokenType.None);
         }
 
         private string GetNumber()
@@ -107,7 +102,7 @@ namespace HLHML
             return sb.ToString();
         }
 
-        private string GetString()
+        private string ObtenirChaineDeTexte()
         {
             var sb = new StringBuilder();
 
@@ -141,15 +136,20 @@ namespace HLHML
             }
             catch
             {
-                return new Terme("", TokenType.None);
+                return Terme("", TokenType.None);
             }
         }
 
-        private TokenType GetTokenType(string value)
+        private TokenType ObtenirTokenType(string mots)
         {
-            if (_termesConnues.ContainsKey(value))
+            if (mots.Length > 1 && mots.EstPluriel())
             {
-                return _termesConnues[value];
+                mots = mots.AccorderSingulier();
+            }
+
+            if (TermesConnues.ContainsKey(mots))
+            {
+                return TermesConnues[mots].Type;
             }
 
             return TokenType.Sujet;
@@ -174,7 +174,10 @@ namespace HLHML
             {
                 var nextTokenPeeked = PeekNextToken();
 
-                if (GetTokenType(sb.ToString()) == TokenType.Sujet &&
+                var actuelTokenType = ObtenirTokenType(sb.ToString());
+
+                if (actuelTokenType != TokenType.Adverbe &&
+                    actuelTokenType == TokenType.Sujet &&
                      (nextTokenPeeked.Type == TokenType.Sujet ||
                       nextTokenPeeked.Type == TokenType.Complement ||
                       nextTokenPeeked.Type == TokenType.Préposition) &&
@@ -198,36 +201,6 @@ namespace HLHML
             {
                 _pos++;
             }
-        }
-
-        /// <summary>
-        /// Crée un nouveau dictionnaire contenant les terme connue à partire des fichier XML dans le dossier Dictionnare.
-        /// </summary>
-        /// <returns>Un dictionnaire avec les termes</returns>
-        private static IDictionary<string, TokenType> ObtenirLesTermesConnues()
-        {
-            var words = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase);
-
-            var serialiser = new XmlSerializer(typeof(Terme[]));
-
-            for (char i = 'A'; i <= 'Z'; i++)
-            {
-                var file = Path.Combine(AppContext.BaseDirectory, "Dictionnaire", $"{i}.xml");
-
-                if (File.Exists(file))
-                {
-                    using var stream = new StreamReader(file);
-
-                    var termes = serialiser.Deserialize(stream) as Terme[];
-
-                    foreach (Terme terme in termes ?? new Terme[0])
-                    {
-                        words.Add(terme.Mots, terme.Type);
-                    }
-                }
-            }
-
-            return words;
         }
     }
 }
