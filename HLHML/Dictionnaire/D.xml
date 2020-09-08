@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArrayOfTerme>
+  <Terme>
+    <Mots>de</Mots>
+    <Type>Préposition</Type>
+  </Terme>
+  <Terme>
+    <Mots>deux</Mots>
+    <Type>Adjectif</Type>
+    <ValeurNumérique>2</ValeurNumérique>
+  </Terme>
+  <Terme>
+    <Mots>définit</Mots>
+    <Type>Verbe</Type>
+  </Terme>
+</ArrayOfTerme>

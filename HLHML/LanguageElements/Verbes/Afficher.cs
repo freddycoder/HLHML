@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements
 {
@@ -8,7 +9,7 @@ namespace HLHML.LanguageElements
         private bool _newLine = false;
         private TextWriter _textWriter;
 
-        public Afficher(Token token) : base(token)
+        public Afficher(Terme terme) : base(terme)
         {
             _textWriter = Console.Out;
         }

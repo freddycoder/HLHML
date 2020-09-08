@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements.Adjectifs
 {
     public class PlusGrand : AST, Adjectif
     {
-        public PlusGrand(Token token) : base(token)
+        public PlusGrand(Terme terme) : base(terme)
         {
         }
 

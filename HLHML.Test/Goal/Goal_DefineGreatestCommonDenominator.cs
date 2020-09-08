@@ -1,6 +1,6 @@
 ﻿using Xunit;
 using Shouldly;
-using static HLHML.TokenBuilder;
+using static HLHML.Dictionnaire.TermeBuilder;
 using static HLHML.Test.Outils.OutilsInterpreteur;
 
 namespace HLHML.Test.Goal
@@ -8,9 +8,10 @@ namespace HLHML.Test.Goal
     public class Goal_DefineGreatestCommonDenominator
     {
         [Fact]
+        [Trait("Future", "true")]
         public void GreatestCommonDenominator()
         {
-            var program = "Le plus grand diviseur commun de deux nombres se définit comme suit :" + // TODO 3, deux nombres
+            var program = "Le plus grand diviseur commun de deux nombres se définit comme suit :" +
                           "a = premier nombre." +
                           "b = deuxième nombre." +
                           "Tant que b n'est pas égal à 0,\n" +
@@ -30,21 +31,23 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("Le plus grand denominateur commun de deux nombres se définit comme suit :");
 
-            lexer.GetNextToken().ShouldBe(Token("Le", TokenType.Determinant));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("Le", TokenType.Déterminant));
 
-            lexer.GetNextToken().ShouldBe(Token("plus grand denominateur commun", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("plus grand denominateur commun", TokenType.Sujet));
 
-            lexer.GetNextToken().ShouldBe(Token("de", TokenType.Preposition));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("de", TokenType.Préposition));
 
-            lexer.GetNextToken().ShouldBe(Token("deux nombres", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("deux", TokenType.Adjectif));
 
-            lexer.GetNextToken().ShouldBe(Token("se", TokenType.Determinant));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("nombres", TokenType.Sujet));
 
-            lexer.GetNextToken().ShouldBe(Token("définit", TokenType.Verbe));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("se", TokenType.Déterminant));
 
-            lexer.GetNextToken().ShouldBe(Token("comme suit", TokenType.Adverbe));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("définit", TokenType.Verbe));
 
-            lexer.GetNextToken().ShouldBe(Token(":", TokenType.Ponctuation));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("comme suit", TokenType.Adverbe));
+
+            lexer.ObtenirProchainTerme().ShouldBe(Terme(":", TokenType.Ponctuation));
         }
 
         [Fact]
@@ -59,13 +62,13 @@ namespace HLHML.Test.Goal
 
             var root = parseur.Parse();
 
-            Token(root.Value, root.Type).ShouldBe(Token("Compound", TokenType.Compound));
+            Terme(root.Value, root.Type).ShouldBe(Terme("Compound", TokenType.Compound));
 
             root.Childs.Count.ShouldBe(2);
 
-            root.Childs[0].Token.ShouldBe(Token("définit", TokenType.Verbe));
+            root.Childs[0].Token.ShouldBe(Terme("définit", TokenType.Verbe));
 
-            root.Childs[1].Token.ShouldBe(Token("Afficher", TokenType.Verbe));
+            root.Childs[1].Token.ShouldBe(Terme("Afficher", TokenType.Verbe));
         }
 
         [Fact]
@@ -83,7 +86,7 @@ namespace HLHML.Test.Goal
             root.Scope.ShouldNotBeNull();
             root.Childs[0].Childs[0].Scope.ShouldNotBeNull();
             root.Childs[0].Childs[1].Scope.ShouldNotBeNull();
-            root.Childs[0].Childs[1].Token.ShouldBe(Token("Compound", TokenType.Compound));
+            root.Childs[0].Childs[1].Token.ShouldBe(Terme("Compound", TokenType.Compound));
 
             (root.Childs[0].Childs[1].Scope != root.Scope).ShouldBeTrue();
             (root.Childs[0].Childs[0].Scope == root.Scope).ShouldBeTrue();
@@ -101,9 +104,21 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
+        public void TestInterpretationWithDefinitionAinsi()
+        {
+            var program = "Le plus grand denominateur commun se définit ainsi :" +
+                          "le plus grand denominateur commun vaut 3." +
+                          "" +
+                          "Afficher le plus grand denominateur commun.";
+
+            Interprete(program, "3");
+        }
+
+        [Fact]
+        [Trait("Future", "true")]
         public void TestDefinitionFonctionMaximum()
         {
-            var program = "Le maximum de trois nombres se définit comme suit: " + // TODO 2, de 
+            var program = "Le maximum de trois nombres se définit comme suit: " +
                           "x = premier nombre." +
                           "si le deuxième nombre est plus grand que x, alors x = deuxième nombre." +
                           "si le troisième nombre est plus grand que x, alors x = troisième nombre." +

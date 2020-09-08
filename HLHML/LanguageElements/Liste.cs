@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements
 {
     public class Liste : AST
     {
-        public Liste(AST firstChild, Token token, AST secondChild) : base(firstChild, token, secondChild)
+        public Liste(AST firstChild, Terme terme, AST secondChild) : base(firstChild, terme, secondChild)
         {
         }
     }

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements
 {
@@ -11,25 +8,25 @@ namespace HLHML.LanguageElements
     {
         private string Operator { get; }
 
-        public OperateurMathematique(Token token) : base(token)
+        public OperateurMathematique(Terme terme) : base(terme)
+        {
+            Debug.Assert(terme.Type == TokenType.OperateurMathematique);
+
+            Operator = terme.Mots.ToLower();
+        }
+
+        public OperateurMathematique(Terme token, AST firstChild) : base(token, firstChild)
+        {
+            Debug.Assert(token.Type == TokenType.OperateurMathematique && token.Mots == "-");
+
+            Operator = token.Mots.ToLower();
+        }
+
+        public OperateurMathematique(AST firstChild, Terme token, AST secondChild) : base(firstChild, token, secondChild)
         {
             Debug.Assert(token.Type == TokenType.OperateurMathematique);
 
-            Operator = token.Value.ToLower();
-        }
-
-        public OperateurMathematique(Token token, AST firstChild) : base(token, firstChild)
-        {
-            Debug.Assert(token.Type == TokenType.OperateurMathematique && token.Value == "-");
-
-            Operator = token.Value.ToLower();
-        }
-
-        public OperateurMathematique(AST firstChild, Token token, AST secondChild) : base(firstChild, token, secondChild)
-        {
-            Debug.Assert(token.Type == TokenType.OperateurMathematique);
-
-            Operator = token.Value.ToLower();
+            Operator = token.Mots.ToLower();
         }
 
         public string Eval()

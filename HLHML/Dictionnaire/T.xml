@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArrayOfTerme>
+  <Terme>
+    <Mots>tant que</Mots>
+    <Type>Conjonction</Type>
+  </Terme>
+  <Terme>
+    <Mots>trois</Mots>
+    <Type>Adjectif</Type>
+    <ValeurNumérique>3</ValeurNumérique>
+  </Terme>
+</ArrayOfTerme>

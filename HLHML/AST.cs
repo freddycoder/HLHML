@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using HLHML.Dictionnaire;
 
 namespace HLHML
 {
@@ -8,7 +8,7 @@ namespace HLHML
     {
         private AST? _parent;
         protected readonly List<AST> _childs = new List<AST>();
-        private readonly Token _token;
+        private readonly Terme _terme;
         private Scope? _scope;
 
         /// <summary>
@@ -16,29 +16,29 @@ namespace HLHML
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <param name="token"></param>
-        public AST(Token token)
+        public AST(Terme token)
         {
-            _token = token ?? throw new ArgumentNullException(nameof(token));
+            _terme = token ?? throw new ArgumentNullException(nameof(token));
         }
 
         /// <exception cref="ArgumentNullException"></exception>
-        public AST(Token token, AST firstChild)
+        public AST(Terme token, AST firstChild)
         {
-            _token = token ?? throw new ArgumentNullException(nameof(token));
+            _terme = token ?? throw new ArgumentNullException(nameof(token));
             AddChild(firstChild);
         }
 
         /// <exception cref="ArgumentNullException"></exception>
-        public AST(AST firstChild, Token token, AST secondChild)
+        public AST(AST firstChild, Terme token, AST secondChild)
         {
-            _token = token ?? throw new ArgumentNullException(nameof(token));
+            _terme = token ?? throw new ArgumentNullException(nameof(token));
             AddChild(firstChild);
             AddChild(secondChild);
         }
 
-        public AST(Token token, Scope scope)
+        public AST(Terme token, Scope scope)
         {
-            _token = token;
+            _terme = token;
             _scope = scope;
         }
 
@@ -93,11 +93,11 @@ namespace HLHML
             return this;
         }
 
-        public string Value => _token.Value;
+        public string Value => _terme.Mots;
 
-        public TokenType Type => _token.Type;
+        public TokenType Type => _terme.Type;
 
-        public Token Token => _token;
+        public Terme Token => _terme;
 
         public IReadOnlyList<AST> Childs => _childs;
 
@@ -124,7 +124,7 @@ namespace HLHML
 
         public override string ToString()
         {
-            return $"{_token} Childs Count: {Childs.Count}";
+            return $"{_terme} Childs Count: {Childs.Count}";
         }
     }
 }

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArrayOfTerme>
+  <Terme>
+    <Mots>La</Mots>
+    <Type>Déterminant</Type>
+  </Terme>
+  <Terme>
+    <Mots>Le</Mots>
+    <Type>Déterminant</Type>
+  </Terme>
+  <Terme>
+    <Mots>Lire</Mots>
+    <Type>Verbe</Type>
+  </Terme>
+</ArrayOfTerme>

@@ -1,7 +1,6 @@
-﻿using HLHML.LanguageElements;
+﻿using HLHML.Dictionnaire;
+using HLHML.LanguageElements;
 using Shouldly;
-using System;
-using System.IO;
 using System.Linq;
 using Xunit;
 using static HLHML.Test.Outils.OutilsInterpreteur;
@@ -29,19 +28,19 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("tant que b n'est pas égal à 0");
 
-            lexer.GetNextToken().ShouldBe(new Token("tant que", TokenType.Conjonction));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("tant que", TokenType.Conjonction));
 
-            lexer.GetNextToken().ShouldBe(new Token("b", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("b", TokenType.Sujet));
 
-            lexer.GetNextToken().ShouldBe(new Token("n'", TokenType.Negation));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("n'", TokenType.Negation));
 
-            lexer.GetNextToken().ShouldBe(new Token("est", TokenType.Verbe));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("est", TokenType.Verbe));
 
-            lexer.GetNextToken().ShouldBe(new Token("pas", TokenType.Negation));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("pas", TokenType.Negation));
 
-            lexer.GetNextToken().ShouldBe(new Token("égal à", TokenType.Adjectif));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("égal à", TokenType.Adjectif));
 
-            lexer.GetNextToken().ShouldBe(new Token("0", TokenType.Nombre));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("0", TokenType.Nombre));
         }
 
         [Fact]
@@ -49,15 +48,15 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("b = a modulo b.");
 
-            lexer.GetNextToken().ShouldBe(new Token("b", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("b", TokenType.Sujet));
 
-            lexer.GetNextToken().ShouldBe(new Token("vaut", TokenType.Verbe));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("vaut", TokenType.Verbe));
 
-            lexer.GetNextToken().ShouldBe(new Token("a", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("a", TokenType.Sujet));
 
-            lexer.GetNextToken().ShouldBe(new Token("modulo", TokenType.OperateurMathematique));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("modulo", TokenType.OperateurMathematique));
 
-            lexer.GetNextToken().ShouldBe(new Token("b", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("b", TokenType.Sujet));
         }
 
         [Fact]

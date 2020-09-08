@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArrayOfTerme>
+  <Terme>
+    <Mots>que</Mots>
+    <Type>Complement</Type>
+  </Terme>
+  <Terme>
+    <Mots>quatre</Mots>
+    <Type>Adjectif</Type>
+    <ValeurNumérique>4</ValeurNumérique>
+  </Terme>
+</ArrayOfTerme>
