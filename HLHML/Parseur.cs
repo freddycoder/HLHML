@@ -38,7 +38,7 @@ namespace HLHML
             _newLine = newLineWhenAfficher;
         }
 
-        private void UpdateScopeReference(Scope scope)
+        private void UpdateScopeReference(Scope? scope)
         {
             if (scope == null && _actuelScope == null)
             {
@@ -456,7 +456,16 @@ namespace HLHML
             {
                 ObtenirProchainTerme();
 
-                node.AddChild(Level_1());
+                if (node != null)
+                {
+                    node.AddChild(Level_1());
+                }
+                else
+                {
+                    // Ça ou throw new Exception() ...
+                    // avant, il n'y avait pas le if et node.AddChild était directement appeller alors que node pouvait être null.
+                    node = Level_1();
+                }
             }
 
             return node;

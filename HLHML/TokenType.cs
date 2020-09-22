@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace HLHML
+﻿namespace HLHML
 {
     public enum TokenType
     {

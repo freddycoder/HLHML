@@ -44,11 +44,7 @@ namespace HLHML
         private readonly Terme _terme;
         private Scope? _scope;
 
-        /// <summary>
-        /// 
-        /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
-        /// <param name="token"></param>
         public AST(Terme token)
         {
             _terme = token ?? throw new ArgumentNullException(nameof(token));
@@ -69,7 +65,7 @@ namespace HLHML
             AddChild(secondChild);
         }
 
-        public AST(Terme token, Scope scope)
+        public AST(Terme token, Scope? scope)
         {
             _terme = token;
             _scope = scope;
@@ -84,8 +80,11 @@ namespace HLHML
             return _parent;
         }
 
-        public AST AddChildsAsFirstChild(AST ast)
+        /// <exception cref="ArgumentNullException"></exception>
+        public AST AddChildsAsFirstChild(AST? ast)
         {
+            if (ast == null) throw new ArgumentNullException(nameof(ast));
+
             ast._parent = this;
             ast._scope = this._scope;
 
@@ -101,7 +100,7 @@ namespace HLHML
         /// <exception cref="ArgumentNullException">Si le paramètres est nul</exception>
         /// <param name="ast">Le noeud enfant à ajouter.</param>
         /// <returns>Le noeud courrant</returns>
-        public AST AddChild(AST ast)
+        public AST AddChild(AST? ast)
         {
             if (ast == default) throw new ArgumentNullException(nameof(ast), $"ast value is : {Value}");
 
