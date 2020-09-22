@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements.Adjectifs
 {
     public class PlusPetit : AST, Adjectif
     {
-        public PlusPetit(Token token) : base(token)
+        public PlusPetit(Terme terme) : base(terme)
         {
         }
 

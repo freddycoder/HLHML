@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HLHML
+namespace HLHML.Console
 {
     public class FileEncoding
     {
@@ -43,12 +43,11 @@ namespace HLHML
         /// <param name="inputFilename">The input filename.</param>
         /// <param name="defaultIfNotDetected">The default encoding if none was detected.</param>
         /// <returns></returns>
-        public static Encoding DetectFileEncoding(string inputFilename, Encoding defaultIfNotDetected = null)
+        public static Encoding? DetectFileEncoding(string inputFilename, Encoding? defaultIfNotDetected = null)
         {
-            using (var stream = new System.IO.FileStream(inputFilename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite | System.IO.FileShare.Delete, DEFAULT_BUFFER_SIZE))
-            {
-                return DetectFileEncoding(stream) ?? defaultIfNotDetected;
-            }
+            using var stream = new System.IO.FileStream(inputFilename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite | System.IO.FileShare.Delete, DEFAULT_BUFFER_SIZE);
+
+            return DetectFileEncoding(stream) ?? defaultIfNotDetected;
         }
 
         /// <summary>
@@ -57,7 +56,7 @@ namespace HLHML
         /// <param name="inputStream">The input stream.</param>
         /// <param name="defaultIfNotDetected">The default encoding if none was detected.</param>
         /// <returns></returns>
-        public static Encoding DetectFileEncoding(Stream inputStream, Encoding defaultIfNotDetected = null)
+        public static Encoding? DetectFileEncoding(Stream inputStream, Encoding? defaultIfNotDetected = null)
         {
             var det = new FileEncoding();
             det.Detect(inputStream);
@@ -72,7 +71,7 @@ namespace HLHML
         /// <param name="count">The count.</param>
         /// <param name="defaultIfNotDetected">The default encoding if none was detected.</param>
         /// <returns></returns>
-        public static Encoding DetectFileEncoding(byte[] inputData, int start, int count, Encoding defaultIfNotDetected = null)
+        public static Encoding? DetectFileEncoding(byte[] inputData, int start, int count, Encoding? defaultIfNotDetected = null)
         {
             var det = new FileEncoding();
             det.Detect(inputData, start, count);
@@ -197,7 +196,7 @@ namespace HLHML
         /// <summary>
         /// Detected encoding name.
         /// </summary>
-        public string EncodingName { get; set; }
+        public string? EncodingName { get; set; }
 
         /// <summary>
         /// If the data contains textual data.
@@ -229,7 +228,7 @@ namespace HLHML
         /// </summary>
         /// <param name="inputData">The input data.</param>
         /// <returns>Detected encoding name</returns>
-        public string Detect(Stream inputData)
+        public string? Detect(Stream inputData)
         {
             const int bufferSize = 16 * 1024;
             const int maxIterations = (20 * 1024 * 1024) / bufferSize;
@@ -257,7 +256,7 @@ namespace HLHML
         /// <param name="start">The start.</param>
         /// <param name="count">The count.</param>
         /// <returns>Detected encoding name</returns>
-        public string Detect(byte[] inputData, int start, int count)
+        public string? Detect(byte[] inputData, int start, int count)
         {
             if (Done)
                 return EncodingName;
@@ -310,7 +309,7 @@ namespace HLHML
         /// Finalize detection phase and gets detected encoding name.
         /// </summary>
         /// <returns></returns>
-        public Encoding Complete()
+        public Encoding? Complete()
         {
             Done = true;
             ude.DataEnd();

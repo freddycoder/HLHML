@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArrayOfTerme>
+  <Terme>
+    <Mots>Se</Mots>
+    <Type>Déterminant</Type>
+  </Terme>
+  <Terme>
+    <Mots>Si</Mots>
+    <Type>Conjonction</Type>
+  </Terme>
+  <Terme>
+    <Mots>Sinon</Mots>
+    <Type>Conjonction</Type>
+  </Terme>
+</ArrayOfTerme>

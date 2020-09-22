@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArrayOfTerme>
+  <Terme>
+    <Mots>pas</Mots>
+    <Type>Negation</Type>
+  </Terme>
+  <Terme>
+    <Mots>plus petit que</Mots>
+    <Type>Adjectif</Type>
+  </Terme>
+  <Terme>
+    <Mots>plus grand que</Mots>
+    <Type>Adjectif</Type>
+  </Terme>
+  <Terme>
+    <Mots>pour</Mots>
+    <Type>Conjonction</Type>
+  </Terme>
+  <Terme>
+    <Mots>premier</Mots>
+    <Type>Adjectif</Type>
+  </Terme>
+</ArrayOfTerme>

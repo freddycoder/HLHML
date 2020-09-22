@@ -1,9 +1,7 @@
 ﻿using HLHML.Exceptions;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
+using static HLHML.Dictionnaire.TermeBuilder;
 
 namespace HLHML.Test
 {
@@ -16,14 +14,12 @@ namespace HLHML.Test
 
             var lexer = new Lexer(text);
 
-            lexer.GetNextToken().ShouldBe(Token("Afficher", TokenType.Verbe));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("Afficher", TokenType.Verbe));
 
-            var exception = Should.Throw<NonClosingQuoteException>(() => lexer.GetNextToken());
+            var exception = Should.Throw<NonClosingQuoteException>(() => lexer.ObtenirProchainTerme());
 
             exception.BeginAt.ShouldBe(text.Length - 1);
             exception.Text.ShouldBe(text);
         }
-
-        private Token Token(string v, TokenType tokenType) => new Token(v, tokenType);
     }
 }

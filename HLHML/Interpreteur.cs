@@ -24,6 +24,11 @@ namespace HLHML
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("fr-FR");
         }
 
+        /// <summary>
+        /// Interprete la chaine passé en paramètre. Si la méthode est appelé à répétition,
+        /// les variables créer lors des executions précédentes seront toujours là.
+        /// </summary>
+        /// <param name="input">Le script à executer</param>
         public void Interprete(string? input)
         {
             var parseur = new Parseur(new Lexer(input ?? ""));

@@ -1,8 +1,10 @@
-﻿namespace HLHML.LanguageElements.Adjectifs
+﻿using HLHML.Dictionnaire;
+
+namespace HLHML.LanguageElements.Adjectifs
 {
     public class Egal : AST, Adjectif
     {
-        public Egal(Token token) : base(token)
+        public Egal(Terme terme) : base(terme)
         {
         }
 

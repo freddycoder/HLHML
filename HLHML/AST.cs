@@ -1,14 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using HLHML.Dictionnaire;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace HLHML
 {
+    public class ASTOp //: IOperation
+    {
+        public IOperation Parent => throw new NotImplementedException();
+
+        public OperationKind Kind => throw new NotImplementedException();
+
+        public SyntaxNode Syntax => throw new NotImplementedException();
+
+        public ITypeSymbol Type => throw new NotImplementedException();
+
+        public Optional<object> ConstantValue => throw new NotImplementedException();
+
+        public IEnumerable<IOperation> Children => throw new NotImplementedException();
+
+        public string Language => throw new NotImplementedException();
+
+        public bool IsImplicit => throw new NotImplementedException();
+
+        public SemanticModel SemanticModel => throw new NotImplementedException();
+
+        public void Accept(OperationVisitor visitor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TResult Accept<TArgument, TResult>(OperationVisitor<TArgument, TResult> visitor, TArgument argument)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class AST
     {
         private AST? _parent;
         protected readonly List<AST> _childs = new List<AST>();
-        private readonly Token _token;
+        private readonly Terme _terme;
         private Scope? _scope;
 
         /// <summary>
@@ -16,29 +49,29 @@ namespace HLHML
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <param name="token"></param>
-        public AST(Token token)
+        public AST(Terme token)
         {
-            _token = token ?? throw new ArgumentNullException(nameof(token));
+            _terme = token ?? throw new ArgumentNullException(nameof(token));
         }
 
         /// <exception cref="ArgumentNullException"></exception>
-        public AST(Token token, AST firstChild)
+        public AST(Terme token, AST firstChild)
         {
-            _token = token ?? throw new ArgumentNullException(nameof(token));
+            _terme = token ?? throw new ArgumentNullException(nameof(token));
             AddChild(firstChild);
         }
 
         /// <exception cref="ArgumentNullException"></exception>
-        public AST(AST firstChild, Token token, AST secondChild)
+        public AST(AST firstChild, Terme token, AST secondChild)
         {
-            _token = token ?? throw new ArgumentNullException(nameof(token));
+            _terme = token ?? throw new ArgumentNullException(nameof(token));
             AddChild(firstChild);
             AddChild(secondChild);
         }
 
-        public AST(Token token, Scope scope)
+        public AST(Terme token, Scope scope)
         {
-            _token = token;
+            _terme = token;
             _scope = scope;
         }
 
@@ -62,11 +95,12 @@ namespace HLHML
         }
 
         /// <summary>
-        /// 
+        /// Ajout le noeud à la liste des noeuds enfants. La scope de ce noeud enfant sera initialiser
+        /// à la référence du scope du noeud parent, saut si celle-ci à déjà été initialisé.
         /// </summary>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <param name="ast"></param>
-        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Si le paramètres est nul</exception>
+        /// <param name="ast">Le noeud enfant à ajouter.</param>
+        /// <returns>Le noeud courrant</returns>
         public AST AddChild(AST ast)
         {
             if (ast == default) throw new ArgumentNullException(nameof(ast), $"ast value is : {Value}");
@@ -93,11 +127,11 @@ namespace HLHML
             return this;
         }
 
-        public string Value => _token.Value;
+        public string Value => _terme.Mots;
 
-        public TokenType Type => _token.Type;
+        public TokenType Type => _terme.Type;
 
-        public Token Token => _token;
+        public Terme Token => _terme;
 
         public IReadOnlyList<AST> Childs => _childs;
 
@@ -124,7 +158,7 @@ namespace HLHML
 
         public override string ToString()
         {
-            return $"{_token} Childs Count: {Childs.Count}";
+            return $"{_terme} Childs Count: {Childs.Count}";
         }
     }
 }

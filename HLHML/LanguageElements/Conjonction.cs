@@ -1,4 +1,5 @@
 ﻿using System;
+using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements
 {
@@ -6,7 +7,7 @@ namespace HLHML.LanguageElements
     {
         public bool PredicatIsNegated { get; set; }
 
-        public Conjonction(Token token) : base(token)
+        public Conjonction(Terme terme) : base(terme)
         {
             
         }

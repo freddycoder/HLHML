@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using HLHML.Dictionnaire;
 
-namespace HLHML
+namespace HLHML.Exceptions
 {
     [Serializable]
     internal class VerbeNotFoundException : Exception
     {
-        private Token? token;
+        private Terme? terme;
 
         public VerbeNotFoundException()
         {
         }
 
-        public VerbeNotFoundException(Token token)
+        public VerbeNotFoundException(Terme terme)
         {
-            this.token = token;
+            this.terme = terme;
         }
 
         public VerbeNotFoundException(string message) : base(message)

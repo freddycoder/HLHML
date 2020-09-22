@@ -1,10 +1,9 @@
-﻿using HLHML.Exceptions;
-using System;
-using System.Collections.Generic;
+﻿using HLHML.Dictionnaire;
+using HLHML.Exceptions;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using static HLHML.Dictionnaire.TermeBuilder;
+using static HLHML.Dictionnaire.DictionnaireTermeConnue;
 
 namespace HLHML
 {
@@ -12,36 +11,7 @@ namespace HLHML
     {
         private readonly string _text;
         private int _pos;
-        private static readonly IDictionary<string, TokenType> _knowedWords = new Dictionary<string, TokenType>
-        (StringComparer.OrdinalIgnoreCase)
-        {
-            { "Afficher", TokenType.Verbe },
-            { "Vaut", TokenType.Verbe },
-            { "Lire", TokenType.Verbe },
-            { "Est", TokenType.Verbe },
-            { "La", TokenType.Determinant },
-            { "Si", TokenType.Conjonction },
-            { "Sinon", TokenType.Conjonction },
-            { "égal à", TokenType.Adjectif },
-            { "à", TokenType.Preposition },
-            { "tant que", TokenType.Conjonction },
-            { "que", TokenType.Complement },
-            { "ne", TokenType.Negation },
-            { "pas", TokenType.Negation },
-            { "n'", TokenType.Negation },
-            { "modulo", TokenType.OperateurMathematique },
-            { "Ensuite", TokenType.Adverbe },
-            { "Le", TokenType.Determinant },
-            { "de", TokenType.Determinant },
-            { "se", TokenType.Determinant },
-            { "comme suit", TokenType.Adverbe },
-            { "définit", TokenType.Verbe },
-            { "plus petit que", TokenType.Adjectif },
-            { "plus grand que", TokenType.Adjectif },
-            { "pour", TokenType.Conjonction },
-            { "variant", TokenType.Verbe }
-        };
-
+        
         private char CurrentChar => _pos >= _text.Length ? '\0' : _text[_pos];
 
         private char PeekChar => _pos + 1 >= _text.Length ? '\0' : _text[_pos + 1];
@@ -52,27 +22,27 @@ namespace HLHML
             _pos = 0;
         }
 
-        public Token GetNextToken()
+        public Terme ObtenirProchainTerme()
         {
-            Advance();
+            Avancer();
 
             if (char.IsLetter(CurrentChar))
             {
                 var value = GetNextWord();
 
-                return new Token(value, GetTokenType(value));
+                return Terme(value, ObtenirTokenType(value));
             }
             else if (CurrentChar == '"')
             {
-                var value = GetString();
+                var value = ObtenirChaineDeTexte();
 
-                return new Token(value, TokenType.Text);
+                return Terme(value, TokenType.Text);
             }
             else if (char.IsDigit(CurrentChar))
             {
                 var nombre = GetNumber();
 
-                return new Token(nombre, TokenType.Nombre);
+                return Terme(nombre, TokenType.Nombre);
             }
             else if (CurrentChar == '.' || CurrentChar == ',' || CurrentChar == ':')
             {
@@ -80,11 +50,11 @@ namespace HLHML
 
                 _pos++;
 
-                return new Token(point, TokenType.Ponctuation);
+                return Terme(point, TokenType.Ponctuation);
             }
             else if (CurrentChar == '+' || CurrentChar == '-' || CurrentChar == '*' || CurrentChar == '/')
             {
-                var operateur = new Token(CurrentChar.ToString(), TokenType.OperateurMathematique);
+                var operateur = Terme(CurrentChar.ToString(), TokenType.OperateurMathematique);
 
                 _pos++;
 
@@ -92,7 +62,7 @@ namespace HLHML
             }
             else if (CurrentChar == '=')
             {
-                var vaut = new Token("vaut", TokenType.Verbe);
+                var vaut = Terme("vaut", TokenType.Verbe);
 
                 _pos++;
 
@@ -100,14 +70,14 @@ namespace HLHML
             }
             else if (CurrentChar == '%')
             {
-                var modulo = new Token("modulo", TokenType.OperateurMathematique);
+                var modulo = Terme("modulo", TokenType.OperateurMathematique);
 
                 _pos++;
 
                 return modulo;
             }
 
-            return new Token("", TokenType.None);
+            return Terme("", TokenType.None);
         }
 
         private string GetNumber()
@@ -132,7 +102,7 @@ namespace HLHML
             return sb.ToString();
         }
 
-        private string GetString()
+        private string ObtenirChaineDeTexte()
         {
             var sb = new StringBuilder();
 
@@ -156,25 +126,30 @@ namespace HLHML
             return sb.ToString();
         }
 
-        private Token PeekNextToken()
+        private Terme PeekNextToken()
         {
             var sublexer = new Lexer(_text.Substring(_pos));
 
             try
             {
-                return sublexer.GetNextToken();
+                return sublexer.ObtenirProchainTerme();
             }
             catch
             {
-                return new Token("", TokenType.None);
+                return Terme("", TokenType.None);
             }
         }
 
-        private TokenType GetTokenType(string value)
+        private TokenType ObtenirTokenType(string mots)
         {
-            if (_knowedWords.ContainsKey(value))
+            //if (mots.Length > 1 && mots.EstPluriel())
+            //{
+            //    mots = mots.AccorderSingulier();
+            //}
+
+            if (TermesConnues.ContainsKey(mots))
             {
-                return _knowedWords[value];
+                return TermesConnues[mots].Type;
             }
 
             return TokenType.Sujet;
@@ -199,12 +174,16 @@ namespace HLHML
             {
                 var nextTokenPeeked = PeekNextToken();
 
-                if (GetTokenType(sb.ToString()) == TokenType.Sujet &&
+                var actuelTokenType = ObtenirTokenType(sb.ToString());
+
+                if (actuelTokenType != TokenType.Adverbe &&
+                    actuelTokenType == TokenType.Sujet &&
                      (nextTokenPeeked.Type == TokenType.Sujet ||
                       nextTokenPeeked.Type == TokenType.Complement ||
-                      nextTokenPeeked.Type == TokenType.Preposition))
+                      nextTokenPeeked.Type == TokenType.Préposition) &&
+                      !nextTokenPeeked.Equals(Terme("de", TokenType.Préposition)))
                 {
-                    Advance();
+                    Avancer();
 
                     sb.Append($" {GetNextWord()}");
                 }
@@ -213,7 +192,10 @@ namespace HLHML
             return sb.ToString();
         }
 
-        private void Advance()
+        /// <summary>
+        /// Sauter les prochains espaces blanc pour se positionner sur le prochain caractère
+        /// </summary>
+        private void Avancer()
         {
             while (char.IsWhiteSpace(CurrentChar))
             {

@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements
 {
     public class Lire : AST, IActionnable
     {
-        public Lire(Token token) : base(token)
+        public Lire(Terme terme) : base(terme)
         {
         }
 

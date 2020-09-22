@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements
 {
     public class Vaut : AST, IActionnable
     {
-        public Vaut(Token token) : base(token)
+        public Vaut(Terme terme) : base(terme)
         {
         }
 
-        public Vaut(AST firstChild, Token token, AST secondChild) : base(firstChild, token, secondChild)
+        public Vaut(AST firstChild, Terme terme, AST secondChild) : base(firstChild, terme, secondChild)
         {
         }
 

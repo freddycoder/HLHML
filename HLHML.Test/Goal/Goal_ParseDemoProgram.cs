@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using HLHML.Dictionnaire;
 using HLHML.LanguageElements;
 using HLHML.LanguageElements.Adjectifs;
 using Shouldly;
@@ -17,20 +18,20 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("Afficher \"Bonjour le monde!\"");
 
-            var t1 = lexer.GetNextToken();
+            var t1 = lexer.ObtenirProchainTerme();
 
             t1.Type.ShouldBe(TokenType.Verbe);
-            t1.Value.ShouldBe("Afficher");
+            t1.Mots.ShouldBe("Afficher");
 
-            var t2 = lexer.GetNextToken();
+            var t2 = lexer.ObtenirProchainTerme();
 
             t2.Type.ShouldBe(TokenType.Text);
-            t2.Value.ShouldBe("Bonjour le monde!");
+            t2.Mots.ShouldBe("Bonjour le monde!");
 
-            var t3 = lexer.GetNextToken();
+            var t3 = lexer.ObtenirProchainTerme();
 
             t3.Type.ShouldBe(TokenType.None);
-            t3.Value.ShouldBe("");
+            t3.Mots.ShouldBe("");
         }
 
         [Fact]
@@ -88,58 +89,58 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("a vaut 5. Afficher a.");
 
-            var t1 = lexer.GetNextToken();
+            var t1 = lexer.ObtenirProchainTerme();
 
             t1.Type.ShouldBe(TokenType.Sujet);
-            t1.Value.ShouldBe("a");
+            t1.Mots.ShouldBe("a");
 
-            var t2 = lexer.GetNextToken();
+            var t2 = lexer.ObtenirProchainTerme();
 
             t2.Type.ShouldBe(TokenType.Verbe);
-            t2.Value.ShouldBe("vaut");
+            t2.Mots.ShouldBe("vaut");
 
-            var t3 = lexer.GetNextToken();
+            var t3 = lexer.ObtenirProchainTerme();
 
             t3.Type.ShouldBe(TokenType.Nombre);
-            t3.Value.ShouldBe("5");
+            t3.Mots.ShouldBe("5");
 
-            var t4 = lexer.GetNextToken();
+            var t4 = lexer.ObtenirProchainTerme();
 
             t4.Type.ShouldBe(TokenType.Ponctuation);
-            t4.Value.ShouldBe(".");
+            t4.Mots.ShouldBe(".");
 
-            var t5 = lexer.GetNextToken();
+            var t5 = lexer.ObtenirProchainTerme();
 
             t5.Type.ShouldBe(TokenType.Verbe);
-            t5.Value.ShouldBe("Afficher");
+            t5.Mots.ShouldBe("Afficher");
 
-            var t6 = lexer.GetNextToken();
+            var t6 = lexer.ObtenirProchainTerme();
 
             t6.Type.ShouldBe(TokenType.Sujet);
-            t6.Value.ShouldBe("a");
+            t6.Mots.ShouldBe("a");
 
-            var t7 = lexer.GetNextToken();
+            var t7 = lexer.ObtenirProchainTerme();
 
             t7.Type.ShouldBe(TokenType.Ponctuation);
-            t7.Value.ShouldBe(".");
+            t7.Mots.ShouldBe(".");
 
-            var t8 = lexer.GetNextToken();
+            var t8 = lexer.ObtenirProchainTerme();
 
             t8.Type.ShouldBe(TokenType.None);
-            t8.Value.ShouldBe("");
+            t8.Mots.ShouldBe("");
         }
 
         [Fact]
         public void ASTandScope()
         {
-            var root = new AST(new Token("Compound", TokenType.Compound), new Scope());
+            var root = new AST(new Terme("Compound", TokenType.Compound), new Scope());
 
             root.Scope.ShouldNotBeNull();
 
-            root.AddChild(new AST(new Token("a", TokenType.Sujet))
-                .AddParent(new AST(new Token("vaut", TokenType.Verbe))));
+            root.AddChild(new AST(new Terme("a", TokenType.Sujet))
+                .AddParent(new AST(new Terme("vaut", TokenType.Verbe))));
 
-            root.Childs.First().AddChild(new AST(new Token("5", TokenType.Nombre)));
+            root.Childs.First().AddChild(new AST(new Terme("5", TokenType.Nombre)));
 
             root.Childs.Count.ShouldBe(1);
 
@@ -219,9 +220,9 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("5 + 6");
 
-            lexer.GetNextToken().ShouldBe(new Token("5", TokenType.Nombre));
-            lexer.GetNextToken().ShouldBe(new Token("+", TokenType.OperateurMathematique));
-            lexer.GetNextToken().ShouldBe(new Token("6", TokenType.Nombre));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("5", TokenType.Nombre));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("+", TokenType.OperateurMathematique));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("6", TokenType.Nombre));
         }
 
         [Fact]
