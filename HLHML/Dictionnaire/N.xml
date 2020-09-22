@@ -12,4 +12,8 @@
     <Mots>nombre</Mots>
     <Type>Nom</Type>
   </Terme>
+  <Terme>
+    <Mots>nombres</Mots>
+    <Type>Nom</Type>
+  </Terme>
 </ArrayOfTerme>

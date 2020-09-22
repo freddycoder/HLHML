@@ -142,10 +142,10 @@ namespace HLHML
 
         private TokenType ObtenirTokenType(string mots)
         {
-            if (mots.Length > 1 && mots.EstPluriel())
-            {
-                mots = mots.AccorderSingulier();
-            }
+            //if (mots.Length > 1 && mots.EstPluriel())
+            //{
+            //    mots = mots.AccorderSingulier();
+            //}
 
             if (TermesConnues.ContainsKey(mots))
             {

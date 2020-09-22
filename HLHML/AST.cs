@@ -1,9 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using HLHML.Dictionnaire;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace HLHML
 {
+    public class ASTOp //: IOperation
+    {
+        public IOperation Parent => throw new NotImplementedException();
+
+        public OperationKind Kind => throw new NotImplementedException();
+
+        public SyntaxNode Syntax => throw new NotImplementedException();
+
+        public ITypeSymbol Type => throw new NotImplementedException();
+
+        public Optional<object> ConstantValue => throw new NotImplementedException();
+
+        public IEnumerable<IOperation> Children => throw new NotImplementedException();
+
+        public string Language => throw new NotImplementedException();
+
+        public bool IsImplicit => throw new NotImplementedException();
+
+        public SemanticModel SemanticModel => throw new NotImplementedException();
+
+        public void Accept(OperationVisitor visitor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TResult Accept<TArgument, TResult>(OperationVisitor<TArgument, TResult> visitor, TArgument argument)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class AST
     {
         private AST? _parent;
