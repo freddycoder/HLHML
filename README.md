@@ -65,7 +65,8 @@ Le repertoire HLHML.Syntaxe contient une extension vscode pour colorer les fichi
 ## Utiliser l'interpreteur dans une application tiers
 
 1. Installer le package nuget.
-2. ```
+2. Utiliser la classe Interpreteur pour interpreter du code.
+```fr
 using var sw = new StringWriter();
 var interpreteur = new Interpreteur(sw);
 interpreteur.Interprete("Afficher \"Bonjour le monde !\");
@@ -73,6 +74,4 @@ Console.Out.WriteLine(sw.ToString());
 // Bonjour le monde !
 ```
 
-Note: Une instance de la classe Interpreteur garde la même 'Scope' pour les variables. 
-Donc lancer deux script, ou deux commandes avec une même instance peut avoir des résultats
-différents selon le script.
+> Une instance de la classe Interpreteur garde la même 'Scope' pour les variables. Donc lancer deux script, ou deux commandes avec une même instance peut avoir des résultats différents selon le script.
