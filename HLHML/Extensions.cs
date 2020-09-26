@@ -7,7 +7,7 @@ namespace HLHML
     {
         public static bool EstPluriel(this Terme terme)
         {
-            if (terme.Type == TokenType.Nom && terme.Mots.EstPluriel()) 
+            if (terme.Type == TypeTerme.Nom && terme.Mots.EstPluriel()) 
             {
                 return true;
             }

@@ -12,14 +12,14 @@ namespace HLHML.Dictionnaire
             Mots = string.Empty; 
         }
 
-        public Terme(string mots, TokenType type)
+        public Terme(string mots, TypeTerme type)
         {
             Mots = mots;
             Type = type;
         }
 
         public string Mots { get; set; }
-        public TokenType Type { get; set; }
+        public TypeTerme Type { get; set; }
         public int? ValeurNumérique { get; set; }
 
         public int CompareTo(Terme terme)
@@ -50,7 +50,7 @@ namespace HLHML.Dictionnaire
 
     public static class TermeBuilder
     {
-        public static Terme Terme(string mots, TokenType type)
+        public static Terme Terme(string mots, TypeTerme type)
         {
             return new Terme(mots, type);
         }

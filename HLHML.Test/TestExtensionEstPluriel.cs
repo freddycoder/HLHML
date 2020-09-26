@@ -9,15 +9,15 @@ namespace HLHML.Test
         [Fact]
         public void RègleGénérale()
         {
-            Terme("boîte", TokenType.Nom).EstPluriel().ShouldBeFalse();
-            Terme("boîtes", TokenType.Nom).EstPluriel().ShouldBeTrue();
+            Terme("boîte", TypeTerme.Nom).EstPluriel().ShouldBeFalse();
+            Terme("boîtes", TypeTerme.Nom).EstPluriel().ShouldBeTrue();
         }
 
         [Fact]
         public void LesNomsEn_ail()
         {
-            Terme("détail", TokenType.Nom).EstPluriel().ShouldBeFalse();
-            Terme("détails", TokenType.Nom).EstPluriel().ShouldBeTrue();
+            Terme("détail", TypeTerme.Nom).EstPluriel().ShouldBeFalse();
+            Terme("détails", TypeTerme.Nom).EstPluriel().ShouldBeTrue();
         }
 
         [Theory]
@@ -30,15 +30,15 @@ namespace HLHML.Test
         [InlineData("vitrail", "vitraux")]
         public void LesNomsEn_ail_Exceptions(string singulier, string pluriel)
         {
-            Terme(singulier, TokenType.Nom).EstPluriel().ShouldBeFalse();
-            Terme(pluriel, TokenType.Nom).EstPluriel().ShouldBeTrue();
+            Terme(singulier, TypeTerme.Nom).EstPluriel().ShouldBeFalse();
+            Terme(pluriel, TypeTerme.Nom).EstPluriel().ShouldBeTrue();
         }
 
         [Fact]
         public void LesNomsEn_ou()
         {
-            Terme("trou", TokenType.Nom).EstPluriel().ShouldBeFalse();
-            Terme("trous", TokenType.Nom).EstPluriel().ShouldBeTrue();
+            Terme("trou", TypeTerme.Nom).EstPluriel().ShouldBeFalse();
+            Terme("trous", TypeTerme.Nom).EstPluriel().ShouldBeTrue();
         }
 
         [Theory]
@@ -51,15 +51,15 @@ namespace HLHML.Test
         [InlineData("pou", "poux")]
         public void LesNomsEn_ou_Exceptions(string singulier, string pluriel)
         {
-            Terme(singulier, TokenType.Nom).EstPluriel().ShouldBeFalse();
-            Terme(pluriel, TokenType.Nom).EstPluriel().ShouldBeTrue();
+            Terme(singulier, TypeTerme.Nom).EstPluriel().ShouldBeFalse();
+            Terme(pluriel, TypeTerme.Nom).EstPluriel().ShouldBeTrue();
         }
 
         [Fact]
         public void LesNomsEn_al()
         {
-            Terme("journal", TokenType.Nom).EstPluriel().ShouldBeFalse();
-            Terme("journaux", TokenType.Nom).EstPluriel().ShouldBeTrue();
+            Terme("journal", TypeTerme.Nom).EstPluriel().ShouldBeFalse();
+            Terme("journaux", TypeTerme.Nom).EstPluriel().ShouldBeTrue();
         }
 
         [Theory]
@@ -75,8 +75,8 @@ namespace HLHML.Test
         [InlineData("récital", "récitals")]
         public void LesNomsEn_al_Exceptions(string singulier, string pluriel)
         {
-            Terme(singulier, TokenType.Nom).EstPluriel().ShouldBeFalse();
-            Terme(pluriel, TokenType.Nom).EstPluriel().ShouldBeTrue();
+            Terme(singulier, TypeTerme.Nom).EstPluriel().ShouldBeFalse();
+            Terme(pluriel, TypeTerme.Nom).EstPluriel().ShouldBeTrue();
         }
 
         [Theory]
@@ -93,8 +93,8 @@ namespace HLHML.Test
         [InlineData("lieu", "lieus")]
         public void LesNoms_au_eau_eu(string singulier, string pluriel)
         {
-            Terme(singulier, TokenType.Nom).EstPluriel().ShouldBeFalse();
-            Terme(pluriel, TokenType.Nom).EstPluriel().ShouldBeTrue();
+            Terme(singulier, TypeTerme.Nom).EstPluriel().ShouldBeFalse();
+            Terme(pluriel, TypeTerme.Nom).EstPluriel().ShouldBeTrue();
         }
     }
 }

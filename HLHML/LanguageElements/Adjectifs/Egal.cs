@@ -8,6 +8,10 @@ namespace HLHML.LanguageElements.Adjectifs
         {
         }
 
+        public Egal(AST rightNode, Terme terme, AST leftNode) : base(rightNode, terme, leftNode)
+        {
+        }
+
         public bool Valider()
         {
             if (Childs.Count != 2)

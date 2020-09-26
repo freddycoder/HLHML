@@ -1,4 +1,5 @@
 ﻿using HLHML.LanguageElements;
+using HLHML.LanguageElements.Syntaxe;
 
 namespace HLHML
 {
@@ -22,11 +23,11 @@ namespace HLHML
 
         public static dynamic? Eval(AST ast)
         {
-            if (ast.Type == TokenType.Sujet)
+            if (ast.Type == TypeTerme.Sujet)
             {
                 return ast.Scope[ast.Value];
             }
-            else if (ast.Type == TokenType.Compound)
+            else if (ast.Type == TypeTerme.Corps)
             {
                 Visit(ast);
 
@@ -35,6 +36,14 @@ namespace HLHML
             else if (ast is OperateurMathematique op)
             {
                 return op.Eval();
+            }
+            else if (ast is Parenthese)
+            {
+                return NodeVisitor.Eval(ast.Childs[0]);
+            }
+            else if (ast is Adjectif adjectf)
+            {
+                return adjectf.Valider();
             }
 
             return ast.Value;

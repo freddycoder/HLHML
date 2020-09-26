@@ -66,10 +66,10 @@ Le repertoire HLHML.Syntaxe contient une extension vscode pour colorer les fichi
 
 1. Installer le package nuget.
 2. Utiliser la classe Interpreteur pour interpreter du code.
-```fr
+```c#
 using var sw = new StringWriter();
 var interpreteur = new Interpreteur(sw);
-interpreteur.Interprete("Afficher \"Bonjour le monde !\");
+interpreteur.Interprete("Afficher \"Bonjour le monde !\"");
 Console.Out.WriteLine(sw.ToString());
 // Bonjour le monde !
 ```

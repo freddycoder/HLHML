@@ -10,21 +10,27 @@ namespace HLHML.LanguageElements
 
         public OperateurMathematique(Terme terme) : base(terme)
         {
-            Debug.Assert(terme.Type == TokenType.OperateurMathematique);
+            Debug.Assert(terme.Type == TypeTerme.OperateurMathematique);
 
             Operator = terme.Mots.ToLower();
         }
 
-        public OperateurMathematique(Terme token, AST firstChild) : base(token, firstChild)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="firstChild"></param>
+        /// <exception cref="ArgumentNullException">Si first child est null</exception>
+        public OperateurMathematique(Terme token, AST? firstChild) : base(token, firstChild)
         {
-            Debug.Assert(token.Type == TokenType.OperateurMathematique && token.Mots == "-");
+            Debug.Assert(token.Type == TypeTerme.OperateurMathematique && token.Mots == "-");
 
             Operator = token.Mots.ToLower();
         }
 
         public OperateurMathematique(AST firstChild, Terme token, AST secondChild) : base(firstChild, token, secondChild)
         {
-            Debug.Assert(token.Type == TokenType.OperateurMathematique);
+            Debug.Assert(token.Type == TypeTerme.OperateurMathematique);
 
             Operator = token.Mots.ToLower();
         }

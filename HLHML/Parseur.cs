@@ -2,6 +2,7 @@
 using HLHML.Exceptions;
 using HLHML.LanguageElements;
 using HLHML.LanguageElements.Adjectifs;
+using HLHML.LanguageElements.Syntaxe;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -70,7 +71,7 @@ namespace HLHML
         /// <returns>L'arbre de syntaxe abstrait représentant le programme</returns>
         public AST Parse(Scope? scope = null)
         {
-            return GeneriqueCompound(scope, () => TermeActuel.Type != TokenType.None && TermeActuel.Type != TokenType.Adverbe);
+            return GeneriqueCorps(scope, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe);
         }
 
         private AST InitialiserConjonction()
@@ -83,34 +84,34 @@ namespace HLHML
 
             ObtenirProchainTerme();
 
-            if (TermeActuel.Type == TokenType.Déterminant)
+            if (TermeActuel.Type == TypeTerme.Déterminant)
             {
                 ObtenirProchainTerme();
             }
 
             var first = Expression();
 
-            while (TermeActuel.Type != TokenType.None &&
-                   (TermeActuel.Type == TokenType.Ponctuation ||
-                   TermeActuel.Type != TokenType.Adverbe) &&
+            while (TermeActuel.Type != TypeTerme.None &&
+                   (TermeActuel.Type == TypeTerme.Ponctuation ||
+                   TermeActuel.Type != TypeTerme.Adverbe) &&
                    TermeActuel.Mots != "." &&
                    conjonction.Childs.Count < 3)
             {
-                if (TermeActuel.Type == TokenType.Ponctuation)
+                if (TermeActuel.Type == TypeTerme.Ponctuation)
                 {
                     ObtenirProchainTerme();
 
-                    if (TermeActuel.Equals(Terme("alors", TokenType.Adverbe)))
+                    if (TermeActuel.Equals(Terme("alors", TypeTerme.Adverbe)))
                     {
                         ObtenirProchainTerme();
                     }
                 }
-                if (TermeActuel.Equals(new Terme("sinon", TokenType.Conjonction)))
+                if (TermeActuel.Equals(new Terme("sinon", TypeTerme.Conjonction)))
                 {
                     ObtenirProchainTerme();
                 }
 
-                if (TermeActuel.Type == TokenType.Negation)
+                if (TermeActuel.Type == TypeTerme.Negation)
                 {
                     predicatIsNegated = true;
                 }
@@ -121,26 +122,26 @@ namespace HLHML
 
                     break;
                 }
-                else if (TermeActuel.Type == TokenType.Verbe)
+                else if (TermeActuel.Type == TypeTerme.Verbe)
                 {
                     conjonction.AddChild(InitialiserVerbe(first.Value));
                 }
-                else if (TermeActuel.Type == TokenType.Conjonction)
+                else if (TermeActuel.Type == TypeTerme.Conjonction)
                 {
                     conjonction.AddChild(InitialiserConjonction());
                 }
-                else if (TermeActuel.Type == TokenType.Sujet)
+                else if (TermeActuel.Type == TypeTerme.Sujet)
                 {
                     conjonction.AddChild(Expression());
                 }
 
-                if (isFirst && TermeActuel.Type != TokenType.Negation)
+                if (isFirst && TermeActuel.Type != TypeTerme.Negation)
                 {
                     conjonction.Childs[0].AddChildsAsFirstChild(first);
 
                     isFirst = false;
                 }
-                else if (TermeActuel.Type == TokenType.Negation)
+                else if (TermeActuel.Type == TypeTerme.Negation)
                 {
                     ObtenirProchainTerme();
                 }
@@ -226,11 +227,11 @@ namespace HLHML
 
             var skipDoWhile = false;
 
-            if (TermeActuel.Type == TokenType.Adverbe)
+            if (TermeActuel.Type == TypeTerme.Adverbe)
             {
                 ObtenirProchainTerme();
 
-                if (TermeActuel.Type == TokenType.Ponctuation)
+                if (TermeActuel.Type == TypeTerme.Ponctuation)
                 {
                     asts.Add(BuildDefinition(subject));
 
@@ -242,19 +243,21 @@ namespace HLHML
             {
                 do
                 {
-                    if (TermeActuel.Type == TokenType.Nombre || 
-                        TermeActuel.Type == TokenType.Sujet || 
-                        TermeActuel.Type == TokenType.OperateurMathematique)
+                    if (TermeActuel.Type == TypeTerme.Nombre || 
+                        TermeActuel.Type == TypeTerme.Sujet || 
+                        TermeActuel.Type == TypeTerme.OperateurMathematique ||
+                        TermeActuel.Type == TypeTerme.OuvertureParenthèse ||
+                        TermeActuel.Type == TypeTerme.Negation)
                     {
                         asts.Add(Expression());
                     }
-                    else if (TermeActuel.Type == TokenType.Text)
+                    else if (TermeActuel.Type == TypeTerme.Text)
                     {
                         asts.Add(new AST(TermeActuel));
 
                         ObtenirProchainTerme();
                     }
-                    else if (TermeActuel.Type == TokenType.Conjonction)
+                    else if (TermeActuel.Type == TypeTerme.Conjonction)
                     {
                         asts.Add(Parse(new Scope(_actuelScope)));
                     }
@@ -263,9 +266,9 @@ namespace HLHML
                         ObtenirProchainTerme();
                     }
 
-                } while (TermeActuel.Type == TokenType.Nombre || TermeActuel.Type == TokenType.Sujet ||
-                        TermeActuel.Type == TokenType.Text || TermeActuel.Type == TokenType.Déterminant ||
-                        TermeActuel.Type == TokenType.OperateurMathematique);
+                } while (TermeActuel.Type == TypeTerme.Nombre || TermeActuel.Type == TypeTerme.Sujet ||
+                        TermeActuel.Type == TypeTerme.Text || TermeActuel.Type == TypeTerme.Déterminant ||
+                        TermeActuel.Type == TypeTerme.OperateurMathematique);
             }
 
             return asts;
@@ -277,7 +280,7 @@ namespace HLHML
 
             bool sujet_pas_traité_ou_definition_pas_terminer()
             {
-                var @return = TermeActuel.Type != TokenType.None && TermeActuel.Type != TokenType.Adverbe;
+                var @return = TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe;
 
                 if (traiteLeSujet)
                 {
@@ -291,21 +294,21 @@ namespace HLHML
 
             _actuelScope = new Scope(_actuelScope);
 
-            var root = new AST(new Terme("Compound", TokenType.Compound), _actuelScope);
+            var root = new AST(new Terme("Corps", TypeTerme.Corps), _actuelScope);
 
             ObtenirProchainTerme();
 
             while (sujet_pas_traité_ou_definition_pas_terminer())
             {
-                if (TermeActuel.Type == TokenType.Sujet || TermeActuel.Type == TokenType.Nombre)
+                if (TermeActuel.Type == TypeTerme.Sujet || TermeActuel.Type == TypeTerme.Nombre)
                 {
                     root.AddChild(Expression());
                 }
-                else if (TermeActuel.Type == TokenType.Verbe)
+                else if (TermeActuel.Type == TypeTerme.Verbe)
                 {
                     root.AddChild(InitialiserVerbe(subject));
                 }
-                else if (TermeActuel.Type == TokenType.Conjonction)
+                else if (TermeActuel.Type == TypeTerme.Conjonction)
                 {
                     root.AddChild(InitialiserConjonction());
                 }
@@ -321,34 +324,37 @@ namespace HLHML
             return root;
         }
 
-        private AST GeneriqueCompound(Scope? scope, Func<bool> predicat)
+        private AST GeneriqueCorps(Scope? scope, Func<bool> predicat)
         {
             UpdateScopeReference(scope);
 
-            var root = new AST(new Terme("Compound", TokenType.Compound), _actuelScope);
+            var root = new AST(new Terme("Corps", TypeTerme.Corps), _actuelScope);
 
             while (predicat.Invoke())
             {
-                if (TermeActuel.Type == TokenType.Sujet || TermeActuel.Type == TokenType.Nombre)
+                if (TermeActuel.Type == TypeTerme.Sujet || 
+                    TermeActuel.Type == TypeTerme.Nombre || 
+                    TermeActuel.Type == TypeTerme.OuvertureParenthèse || 
+                    TermeActuel.Type == TypeTerme.Negation)
                 {
                     root.AddChild(Expression());
                 }
-                else if (TermeActuel.Type == TokenType.Verbe)
+                else if (TermeActuel.Type == TypeTerme.Verbe)
                 {
                     root.AddChild(InitialiserVerbe(""));
                 }
-                else if (TermeActuel.Type == TokenType.Conjonction)
+                else if (TermeActuel.Type == TypeTerme.Conjonction)
                 {
                     root.AddChild(InitialiserConjonction());
                 }
 
-                if (TermeActuel.Type != TokenType.Adverbe)
+                if (TermeActuel.Type != TypeTerme.Adverbe)
                 {
                     ObtenirProchainTerme();
                 }
             }
 
-            if (TermeActuel.Type == TokenType.Adverbe)
+            if (TermeActuel.Type == TypeTerme.Adverbe)
             {
                 ObtenirProchainTerme();
             }
@@ -367,9 +373,9 @@ namespace HLHML
 
         private AST? Level_16()
         {
-            var node = Level_9();
+            var node = Level_14();
 
-            if (TermeActuel.Type == TokenType.Déterminant)
+            if (TermeActuel.Type == TypeTerme.Déterminant)
             {
                 ObtenirProchainTerme();
             }
@@ -390,9 +396,79 @@ namespace HLHML
             return node;
         }
 
+        private AST? Level_14()
+        {
+            var node = Level_13();
+
+            if (node != null && TermeActuel.Mots.Equals("ou", StringComparison.OrdinalIgnoreCase))
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                node = new Ou(node, t, Level_14());
+            }
+
+            return node;
+        }
+
+        private AST? Level_13()
+        {
+            var node = Level_9();
+
+            if (node != null && TermeActuel.Mots.Equals("et", StringComparison.OrdinalIgnoreCase))
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                node = new Et(node, t, Level_13());
+            }
+
+            return node;
+        }
+
         private AST? Level_9()
         {
+            var node = Level_8();
+
+            if (node != null && TermeActuel.Type == TypeTerme.EgalÀ)
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                node = new Egal(node, t, Level_9());
+            }
+
+            return node;
+        }
+
+        private AST? Level_8()
+        {
             var node = Level_7();
+
+            if (node != null)
+            {
+                if (TermeActuel.Type == TypeTerme.PlusPetitQue)
+                {
+                    var t = TermeActuel;
+                    ObtenirProchainTerme();
+                    node = new PlusPetit(node, t, Level_8());
+                }
+                else if (TermeActuel.Type == TypeTerme.PlusGrandQue)
+                {
+                    var t = TermeActuel;
+                    ObtenirProchainTerme();
+                    node = new PlusGrand(node, t, Level_8());
+                }
+                if (TermeActuel.Type == TypeTerme.PlusPetitOuEgalÀ)
+                {
+                    var t = TermeActuel;
+                    ObtenirProchainTerme();
+                    node = new PlusPetitOuEgal(node, t, Level_8());
+                }
+                else if (TermeActuel.Type == TypeTerme.PlusGrandOuEgalÀ)
+                {
+                    var t = TermeActuel;
+                    ObtenirProchainTerme();
+                    node = new PlusGrandOuEgal(node, t, Level_8());
+                }
+            }
 
             return node;
         }
@@ -421,7 +497,7 @@ namespace HLHML
         {
             var node = Level_3();
 
-            while (TermeActuel.Type == TokenType.OperateurMathematique && 
+            while (TermeActuel.Type == TypeTerme.OperateurMathematique && 
                   (TermeActuel.Mots == "+" || TermeActuel.Mots == "-"))
             {
                 var t = TermeActuel;
@@ -436,13 +512,19 @@ namespace HLHML
         {
             var node = Level_2();
 
-            while (TermeActuel.Type == TokenType.OperateurMathematique &&
+            if (TermeActuel.Type == TypeTerme.OperateurMathematique &&
                   (TermeActuel.Mots == "/" || TermeActuel.Mots == "modulo" || 
                    TermeActuel.Mots == "%") || TermeActuel.Mots == "*")
             {
                 var t = TermeActuel;
                 ObtenirProchainTerme();
-                node = new OperateurMathematique(node, t, Level_2());
+                node = new OperateurMathematique(node, t, Level_3());
+            }
+            else if (TermeActuel.Mots.Equals("non", StringComparison.OrdinalIgnoreCase))
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                node = new Non(t, Level_3());
             }
 
             return node;
@@ -452,7 +534,7 @@ namespace HLHML
         {
             var node = Level_1();
 
-            if (TermeActuel.Equals(Terme("de", TokenType.Préposition)))
+            if (TermeActuel.Equals(Terme("de", TypeTerme.Préposition)))
             {
                 ObtenirProchainTerme();
 
@@ -475,7 +557,7 @@ namespace HLHML
         {
             var node = Level_0();
 
-            while (node == null && TermeActuel.Type == TokenType.OperateurMathematique && TermeActuel.Mots == "-")
+            while (node == null && TermeActuel.Type == TypeTerme.OperateurMathematique && TermeActuel.Mots == "-")
             {
                 var t = TermeActuel;
                 ObtenirProchainTerme();
@@ -489,20 +571,35 @@ namespace HLHML
         {
             AST? node = default;
 
-            if (TermeActuel.Type == TokenType.Sujet)
+            if (TermeActuel.Type == TypeTerme.Sujet)
             {
                 node = new AST(TermeActuel);
                 ObtenirProchainTerme();
             }
-            else if (TermeActuel.Type == TokenType.Nombre)
+            else if (TermeActuel.Type == TypeTerme.Nombre)
             {
                 node = new AST(TermeActuel);
                 ObtenirProchainTerme();
             }
-            else if (TermeActuel.Type == TokenType.Text)
+            else if (TermeActuel.Type == TypeTerme.Text)
             {
                 node = new AST(TermeActuel);
                 ObtenirProchainTerme();
+            }
+            else if (TermeActuel.Type == TypeTerme.OuvertureParenthèse)
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                node = new Parenthese(t, Expression());
+
+                if (TermeActuel.Type == TypeTerme.FermetureParenthèse)
+                {
+                    ObtenirProchainTerme();
+                }
+                else
+                {
+                    throw new NonClosingParenthesisException();
+                }
             }
 
             return node;

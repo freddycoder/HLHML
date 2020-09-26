@@ -28,19 +28,19 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("tant que b n'est pas égal à 0");
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("tant que", TokenType.Conjonction));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("tant que", TypeTerme.Conjonction));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("b", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("b", TypeTerme.Sujet));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("n'", TokenType.Negation));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("n'", TypeTerme.Negation));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("est", TokenType.Verbe));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("est", TypeTerme.Verbe));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("pas", TokenType.Negation));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("pas", TypeTerme.Negation));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("égal à", TokenType.Adjectif));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("égal à", TypeTerme.Adjectif));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("0", TokenType.Nombre));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("0", TypeTerme.Nombre));
         }
 
         [Fact]
@@ -48,15 +48,15 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("b = a modulo b.");
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("b", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("b", TypeTerme.Sujet));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("vaut", TokenType.Verbe));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("vaut", TypeTerme.Verbe));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("a", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("a", TypeTerme.Sujet));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("modulo", TokenType.OperateurMathematique));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("modulo", TypeTerme.OperateurMathematique));
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("b", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("b", TypeTerme.Sujet));
         }
 
         [Fact]
@@ -83,10 +83,10 @@ namespace HLHML.Test.Goal
 
             tantque.Childs.Count.ShouldBe(2);
 
-            var compound = tantque.Childs.Last();
+            var corps = tantque.Childs.Last();
 
-            compound.Value.ShouldBe("Compound");
-            compound.Type.ShouldBe(TokenType.Compound);
+            corps.Value.ShouldBe("Corps");
+            corps.Type.ShouldBe(TypeTerme.Corps);
         }
 
         [Fact]
@@ -131,15 +131,15 @@ namespace HLHML.Test.Goal
 
             var tantque = root.Childs[1];
 
-            tantque.Type.ShouldBe(TokenType.Conjonction);
+            tantque.Type.ShouldBe(TypeTerme.Conjonction);
             tantque.Childs.Count.ShouldBe(2);
 
-            var compound = tantque.Childs[1];
+            var corps = tantque.Childs[1];
 
-            compound.Type.ShouldBe(TokenType.Compound);
-            compound.Childs.Count.ShouldBe(1);
+            corps.Type.ShouldBe(TypeTerme.Corps);
+            corps.Childs.Count.ShouldBe(1);
 
-            var operateurEgal = compound.Childs[0];
+            var operateurEgal = corps.Childs[0];
 
             operateurEgal.Childs.Count.ShouldBe(2);
             operateurEgal.Childs[0].Value.ShouldBe("a");

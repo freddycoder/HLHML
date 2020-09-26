@@ -34,13 +34,13 @@ namespace HLHML.LanguageElements
 
         private void ConjonctionPour()
         {
-            while (PredicatCompound())
+            while (PredicatCorps())
             {
                 NodeVisitor.Visit(Childs[1]);
             }
         }
 
-        private bool PredicatCompound()
+        private bool PredicatCorps()
         {
             throw new NotImplementedException();
         }

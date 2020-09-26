@@ -2,13 +2,9 @@
 
 namespace HLHML.LanguageElements.Adjectifs
 {
-    public class PlusGrand : AST, Adjectif
+    public class PlusGrandOuEgal : AST, Adjectif
     {
-        public PlusGrand(Terme terme) : base(terme)
-        {
-        }
-
-        public PlusGrand(AST rightChild, Terme terme, AST leftChild) : base(rightChild, terme, leftChild)
+        public PlusGrandOuEgal(AST rightChild, Terme terme, AST leftChild) : base(rightChild, terme, leftChild)
         {
         }
 
@@ -19,7 +15,7 @@ namespace HLHML.LanguageElements.Adjectifs
                 throw new InvalidNodeNumberException($"L'adjectif plus 'plus grand que' doit avoir deux noeuds enfants. Celui-ci en à {Childs.Count}.");
             }
 
-            return NodeVisitor.EvalDouble(Childs[0]) > NodeVisitor.EvalDouble(Childs[1]);
+            return NodeVisitor.EvalDouble(Childs[0]) >= NodeVisitor.EvalDouble(Childs[1]);
         }
     }
 }

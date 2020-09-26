@@ -16,4 +16,8 @@
     <Mots>nombres</Mots>
     <Type>Nom</Type>
   </Terme>
+  <Terme>
+    <Mots>Non</Mots>
+    <Type>Negation</Type>
+  </Terme>
 </ArrayOfTerme>

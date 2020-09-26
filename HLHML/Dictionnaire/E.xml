@@ -12,4 +12,8 @@
     <Mots>égal à</Mots>
     <Type>Adjectif</Type>
   </Terme>
+  <Terme>
+    <Mots>Et</Mots>
+    <Type>Conjonction</Type>
+  </Terme>
 </ArrayOfTerme>
