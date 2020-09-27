@@ -78,7 +78,9 @@ namespace HLHML
         {
             var conjonction = new Conjonction(TermeActuel);
 
-            var isFirst = true;
+            //var isFirst = true;
+
+            // TODO : Une expression doit pouvoir contenir un n' ou un pas et même les deux
 
             var predicatIsNegated = false;
 
@@ -90,6 +92,8 @@ namespace HLHML
             }
 
             var first = Expression();
+
+            conjonction.AddChild(first);
 
             while (TermeActuel.Type != TypeTerme.None &&
                    (TermeActuel.Type == TypeTerme.Ponctuation ||
@@ -106,6 +110,7 @@ namespace HLHML
                         ObtenirProchainTerme();
                     }
                 }
+
                 if (TermeActuel.Equals(new Terme("sinon", TypeTerme.Conjonction)))
                 {
                     ObtenirProchainTerme();
@@ -135,13 +140,14 @@ namespace HLHML
                     conjonction.AddChild(Expression());
                 }
 
-                if (isFirst && TermeActuel.Type != TypeTerme.Negation)
-                {
-                    conjonction.Childs[0].AddChildsAsFirstChild(first);
+                //if (isFirst && TermeActuel.Type != TypeTerme.Negation)
+                //{
+                //    conjonction.Childs[0].AddChildsAsFirstChild(first);
 
-                    isFirst = false;
-                }
-                else if (TermeActuel.Type == TypeTerme.Negation)
+                //    isFirst = false;
+                //}
+                //else 
+                if (TermeActuel.Type == TypeTerme.Negation)
                 {
                     ObtenirProchainTerme();
                 }
@@ -243,8 +249,8 @@ namespace HLHML
             {
                 do
                 {
-                    if (TermeActuel.Type == TypeTerme.Nombre || 
-                        TermeActuel.Type == TypeTerme.Sujet || 
+                    if (TermeActuel.Type == TypeTerme.Nombre ||
+                        TermeActuel.Type == TypeTerme.Sujet ||
                         TermeActuel.Type == TypeTerme.OperateurMathematique ||
                         TermeActuel.Type == TypeTerme.OuvertureParenthèse ||
                         TermeActuel.Type == TypeTerme.Negation)
@@ -332,9 +338,9 @@ namespace HLHML
 
             while (predicat.Invoke())
             {
-                if (TermeActuel.Type == TypeTerme.Sujet || 
-                    TermeActuel.Type == TypeTerme.Nombre || 
-                    TermeActuel.Type == TypeTerme.OuvertureParenthèse || 
+                if (TermeActuel.Type == TypeTerme.Sujet ||
+                    TermeActuel.Type == TypeTerme.Nombre ||
+                    TermeActuel.Type == TypeTerme.OuvertureParenthèse ||
                     TermeActuel.Type == TypeTerme.Negation)
                 {
                     root.AddChild(Expression());
@@ -364,9 +370,18 @@ namespace HLHML
             return root;
         }
 
-        private AST? Expression()
+        private bool _expressionEstInversser;
+        private Terme _termeInverssion;
+        public AST? Expression()
         {
             var node = Level_16();
+
+            if (_expressionEstInversser)
+            {
+                node = new Non(_termeInverssion, node);
+                _expressionEstInversser = false;
+                _termeInverssion = null;
+            }
 
             return node;
         }
@@ -400,7 +415,7 @@ namespace HLHML
         {
             var node = Level_13();
 
-            if (node != null && TermeActuel.Mots.Equals("ou", StringComparison.OrdinalIgnoreCase))
+            if (TermeActuel.Mots.Equals("ou", StringComparison.OrdinalIgnoreCase))
             {
                 var t = TermeActuel;
                 ObtenirProchainTerme();
@@ -412,9 +427,9 @@ namespace HLHML
 
         private AST? Level_13()
         {
-            var node = Level_9();
+            var node = Level_10();
 
-            if (node != null && TermeActuel.Mots.Equals("et", StringComparison.OrdinalIgnoreCase))
+            if (TermeActuel.Mots.Equals("et", StringComparison.OrdinalIgnoreCase))
             {
                 var t = TermeActuel;
                 ObtenirProchainTerme();
@@ -424,11 +439,18 @@ namespace HLHML
             return node;
         }
 
+        private AST? Level_10()
+        {
+            var node = Level_9();
+
+            return node;
+        }
+
         private AST? Level_9()
         {
             var node = Level_8();
 
-            if (node != null && TermeActuel.Type == TypeTerme.EgalÀ)
+            if (TermeActuel.Type == TypeTerme.EgalÀ)
             {
                 var t = TermeActuel;
                 ObtenirProchainTerme();
@@ -442,32 +464,29 @@ namespace HLHML
         {
             var node = Level_7();
 
-            if (node != null)
+            if (TermeActuel.Type == TypeTerme.PlusPetitQue)
             {
-                if (TermeActuel.Type == TypeTerme.PlusPetitQue)
-                {
-                    var t = TermeActuel;
-                    ObtenirProchainTerme();
-                    node = new PlusPetit(node, t, Level_8());
-                }
-                else if (TermeActuel.Type == TypeTerme.PlusGrandQue)
-                {
-                    var t = TermeActuel;
-                    ObtenirProchainTerme();
-                    node = new PlusGrand(node, t, Level_8());
-                }
-                if (TermeActuel.Type == TypeTerme.PlusPetitOuEgalÀ)
-                {
-                    var t = TermeActuel;
-                    ObtenirProchainTerme();
-                    node = new PlusPetitOuEgal(node, t, Level_8());
-                }
-                else if (TermeActuel.Type == TypeTerme.PlusGrandOuEgalÀ)
-                {
-                    var t = TermeActuel;
-                    ObtenirProchainTerme();
-                    node = new PlusGrandOuEgal(node, t, Level_8());
-                }
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                node = new PlusPetit(node, t, Level_8());
+            }
+            else if (TermeActuel.Type == TypeTerme.PlusGrandQue)
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                node = new PlusGrand(node, t, Level_8());
+            }
+            if (TermeActuel.Type == TypeTerme.PlusPetitOuEgalÀ)
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                node = new PlusPetitOuEgal(node, t, Level_8());
+            }
+            else if (TermeActuel.Type == TypeTerme.PlusGrandOuEgalÀ)
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                node = new PlusGrandOuEgal(node, t, Level_8());
             }
 
             return node;
@@ -475,20 +494,32 @@ namespace HLHML
 
         private AST? Level_7()
         {
-            AST? node = Level_6();
-
-            return node;
-        }
-
-        private AST? Level_6()
-        {
-            var node = Level_5();
-
-            return node;
-        }
-        private AST? Level_5()
-        {
             var node = Level_4();
+
+            if (TermeActuel.Mots.Equals("n'", StringComparison.OrdinalIgnoreCase))
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                _expressionEstInversser = true;
+                _termeInverssion = t;
+            }
+
+            if (TermeActuel.Mots.Equals("est"))
+            {
+                ObtenirProchainTerme();
+
+                if (TermeActuel.Mots.Equals("pas", StringComparison.OrdinalIgnoreCase))
+                {
+                    var t = TermeActuel;
+                    ObtenirProchainTerme();
+
+                    if (_expressionEstInversser == false)
+                    {
+                        _expressionEstInversser = true;
+                        _termeInverssion = t;
+                    }
+                }
+            }
 
             return node;
         }
@@ -497,7 +528,7 @@ namespace HLHML
         {
             var node = Level_3();
 
-            while (TermeActuel.Type == TypeTerme.OperateurMathematique && 
+            while (TermeActuel.Type == TypeTerme.OperateurMathematique &&
                   (TermeActuel.Mots == "+" || TermeActuel.Mots == "-"))
             {
                 var t = TermeActuel;
@@ -513,7 +544,7 @@ namespace HLHML
             var node = Level_2();
 
             if (TermeActuel.Type == TypeTerme.OperateurMathematique &&
-                  (TermeActuel.Mots == "/" || TermeActuel.Mots == "modulo" || 
+                  (TermeActuel.Mots == "/" || TermeActuel.Mots == "modulo" ||
                    TermeActuel.Mots == "%") || TermeActuel.Mots == "*")
             {
                 var t = TermeActuel;

@@ -117,13 +117,13 @@ namespace HLHML.Test.Goal
         [Fact]
         public void NombreNegatif6()
         {
-            Interprete("Tant que -5--5 n'est pas égal à 0, afficher \"bouble infinit\"", "");
+            Interprete("Tant que -5--5 n'est pas égal à 0, afficher \"boucle infinit\"", "");
         }
 
         [Fact]
         public void NombreNegatif6_1()
         {
-            Interprete("Tant que 0 n'est pas égal à -5--5, afficher \"bouble infinit\"", "");
+            Interprete("Tant que 0 n'est pas égal à -5--5, afficher \"boucle infinit\"", "");
         }
 
         [Fact]

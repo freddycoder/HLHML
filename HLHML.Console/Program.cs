@@ -12,6 +12,11 @@ namespace HLHML.Console
     {
         public static IConfigurationRoot? Configuration;
 
+        /// <summary>
+        /// Point d'entrée lors du démarrage de l'executable. Execution des configurations de l'injection des dépendances.
+        /// </summary>
+        /// <param name="args">Les arguments, rien pour entrer en mode console, le nom du fichier pour executer le script et etc.</param>
+        /// <remarks>Cette méthode n'est pas testé par les essais unitaire</remarks>
         public static void Main(string[] args)
         {
             ServiceCollection serviceCollection = new ServiceCollection();
@@ -22,10 +27,17 @@ namespace HLHML.Console
 
             var newLineWhenAfficher = Configuration?.GetBool("newLineWhenAfficher") ?? false;
 
-            MainProgram(args, System.Console.Out, newLineWhenAfficher);
+            MainProgram(args, System.Console.Out, System.Console.In, newLineWhenAfficher);
         }
 
-        public static void MainProgram(string[] args, TextWriter sdtOut, bool newLineWhenAfficher = false)
+        /// <summary>
+        /// Logique du programme HLHML.Console. 
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="sdtOut"></param>
+        /// <param name="newLineWhenAfficher"></param>
+        /// <remarks>Cette méthode est testé par les essais unitaire</remarks>
+        public static void MainProgram(string[] args, TextWriter sdtOut, TextReader sdtIn, bool newLineWhenAfficher = false)
         {
             var interpreteur = new Interpreteur(sdtOut, newLineWhenAfficher);
 

@@ -303,7 +303,7 @@ namespace HLHML.Test.Goal
 
             var predicat = conjonction.Childs.First();
 
-            predicat.Type.ShouldBe(TypeTerme.Adjectif);
+            predicat.Type.ShouldBe(TypeTerme.EgalÀ);
             predicat.Value.ShouldBe("égal à");
             predicat.ShouldBeOfType<Egal>();
 
@@ -326,7 +326,7 @@ namespace HLHML.Test.Goal
 
             var égal = conjonction.Childs.First();
 
-            égal.Type.ShouldBe(TypeTerme.Adjectif);
+            égal.Type.ShouldBe(TypeTerme.EgalÀ);
             égal.Value.ShouldBe("égal à");
             égal.ShouldBeOfType<Egal>();
 

@@ -31,6 +31,9 @@
     <None Update="Euclideutf-8.fr">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TP-Algo\TP-01-calculateurDePrix.fr">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -9,14 +9,6 @@
     <Type>Negation</Type>
   </Terme>
   <Terme>
-    <Mots>nombre</Mots>
-    <Type>Nom</Type>
-  </Terme>
-  <Terme>
-    <Mots>nombres</Mots>
-    <Type>Nom</Type>
-  </Terme>
-  <Terme>
     <Mots>Non</Mots>
     <Type>Negation</Type>
   </Terme>

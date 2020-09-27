@@ -6,11 +6,11 @@
   </Terme>
   <Terme>
     <Mots>plus petit que</Mots>
-    <Type>Adjectif</Type>
+    <Type>PlusPetitQue</Type>
   </Terme>
   <Terme>
     <Mots>plus grand que</Mots>
-    <Type>Adjectif</Type>
+    <Type>PlusGrandQue</Type>
   </Terme>
   <Terme>
     <Mots>pour</Mots>

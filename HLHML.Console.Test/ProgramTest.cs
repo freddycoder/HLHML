@@ -14,7 +14,7 @@ namespace HLHML.Console.Test
 
             System.Console.SetIn(sr);
 
-            Program.MainProgram(new string[] { "DemoProgram.fr" }, sw);
+            Program.MainProgram(new string[] { "DemoProgram.fr" }, sw, sr);
 
             sw.ToString().ShouldBe("5 + 7 = ? Bonne réponse!");
         }
@@ -27,7 +27,7 @@ namespace HLHML.Console.Test
 
             System.Console.SetIn(sr);
 
-            Program.MainProgram(new string[] { "AINSI_Encoding.fr" }, sw);
+            Program.MainProgram(new string[] { "AINSI_Encoding.fr" }, sw, sr);
 
             sw.ToString().ShouldBe("5 + 7 = ? Bonne réponse!");
         }
@@ -37,7 +37,7 @@ namespace HLHML.Console.Test
         {
             using var sw = new StringWriter();
 
-            Program.MainProgram(new string[] { "Euclide.fr" }, sw);
+            Program.MainProgram(new string[] { "Euclide.fr" }, sw, System.Console.In);
 
             sw.ToString().ShouldBe("3");
         }
@@ -47,7 +47,7 @@ namespace HLHML.Console.Test
         {
             using var sw = new StringWriter();
 
-            Program.MainProgram(new string[] { "Euclideutf-8.fr" }, sw);
+            Program.MainProgram(new string[] { "Euclideutf-8.fr" }, sw, System.Console.In);
 
             sw.ToString().ShouldBe("3");
         }
