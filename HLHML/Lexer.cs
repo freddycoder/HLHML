@@ -236,7 +236,7 @@ namespace HLHML
         {
             var sb = new StringBuilder();
 
-            while (char.IsLetter(CurrentChar))
+            while (char.IsLetterOrDigit(CurrentChar))
             {
                 sb.Append(CurrentChar);
                 _pos++;

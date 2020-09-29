@@ -353,7 +353,7 @@ namespace HLHML
         }
 
         private bool _expressionEstInversser;
-        private Terme _termeInverssion;
+        private Terme? _termeInverssion;
 
         public AST? Expression()
         {

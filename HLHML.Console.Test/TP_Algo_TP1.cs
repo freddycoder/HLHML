@@ -36,7 +36,7 @@ namespace HLHML.Console.Test
             using var sw = new StringWriter();
             using var sr = new StringReader("5\n6\noui\n");
 
-            var interpreteur = new Interpreteur(sw, newLineWhenAfficher: true);
+            var interpreteur = new Interpreteur(sw, sr, newLineWhenAfficher: true);
 
             interpreteur.Interprete(File.ReadAllText(path));
 

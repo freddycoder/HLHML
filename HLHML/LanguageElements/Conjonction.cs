@@ -5,8 +5,6 @@ namespace HLHML.LanguageElements
 {
     public class Conjonction : AST, IActionnable
     {
-        //public bool PredicatIsNegated { get; set; }
-
         public Conjonction(Terme terme) : base(terme)
         {
             

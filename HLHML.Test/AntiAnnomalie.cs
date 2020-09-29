@@ -10,24 +10,18 @@ namespace HLHML.Test
         [Fact]
         public void DivisionParZero()
         {
-            // Devrait lever exception ?
-
             Interprete("r = 10. a = 0, b = 0, r = a / b. afficher r.", "NaN");
         }
 
         [Fact]
         public void PeuCreerVariableNb1Nb2Etc()
         {
-            // nb1 n'est pas un mot français
-
             Interprete("nb1 = 1, nb2 = 2, afficher nb1 + nb2.", "3");
         }
 
         [Fact]
         public void ModuloFonctionneBien()
         {
-            // nombre1 n'est pas un mot français
-
             Interprete("nombre1 = 5, nombre2 = 3, resultat = nombre1 % nombre2. afficher resultat.", "2");
         }
 
