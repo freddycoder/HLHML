@@ -19,10 +19,13 @@ namespace HLHML
         private TextWriter _textWriter;
         private bool _newLine;
 
+        private TextReader _textReader;
+
         public Parseur(Lexer lexer)
         {
             _lexer = lexer;
             _textWriter = Console.Out;
+            _textReader = Console.In;
 
             TermeActuel = ObtenirProchainTerme();
         }
@@ -37,6 +40,11 @@ namespace HLHML
         {
             _textWriter = textWriter;
             _newLine = newLineWhenAfficher;
+        }
+
+        internal void SetTextReader(TextReader textReader)
+        {
+            _textReader = textReader;
         }
 
         private void UpdateScopeReference(Scope? scope)
@@ -78,12 +86,6 @@ namespace HLHML
         {
             var conjonction = new Conjonction(TermeActuel);
 
-            //var isFirst = true;
-
-            // TODO : Une expression doit pouvoir contenir un n' ou un pas et même les deux
-
-            var predicatIsNegated = false;
-
             ObtenirProchainTerme();
 
             if (TermeActuel.Type == TypeTerme.Déterminant)
@@ -91,9 +93,7 @@ namespace HLHML
                 ObtenirProchainTerme();
             }
 
-            var first = Expression();
-
-            conjonction.AddChild(first);
+            conjonction.AddChild(Expression());
 
             while (TermeActuel.Type != TypeTerme.None &&
                    (TermeActuel.Type == TypeTerme.Ponctuation ||
@@ -116,11 +116,7 @@ namespace HLHML
                     ObtenirProchainTerme();
                 }
 
-                if (TermeActuel.Type == TypeTerme.Negation)
-                {
-                    predicatIsNegated = true;
-                }
-                else if (conjonction.Value.Equals("tant que", StringComparison.OrdinalIgnoreCase) &&
+                if (conjonction.Value.Equals("tant que", StringComparison.OrdinalIgnoreCase) &&
                          conjonction.Childs.Count == 1)
                 {
                     conjonction.AddChild(Parse(new Scope(_actuelScope)));
@@ -129,7 +125,7 @@ namespace HLHML
                 }
                 else if (TermeActuel.Type == TypeTerme.Verbe)
                 {
-                    conjonction.AddChild(InitialiserVerbe(first.Value));
+                    conjonction.AddChild(InitialiserVerbe(conjonction.Childs[0].Value));
                 }
                 else if (TermeActuel.Type == TypeTerme.Conjonction)
                 {
@@ -139,21 +135,7 @@ namespace HLHML
                 {
                     conjonction.AddChild(Expression());
                 }
-
-                //if (isFirst && TermeActuel.Type != TypeTerme.Negation)
-                //{
-                //    conjonction.Childs[0].AddChildsAsFirstChild(first);
-
-                //    isFirst = false;
-                //}
-                //else 
-                if (TermeActuel.Type == TypeTerme.Negation)
-                {
-                    ObtenirProchainTerme();
-                }
             }
-
-            conjonction.PredicatIsNegated = predicatIsNegated;
 
             return conjonction;
         }
@@ -170,7 +152,7 @@ namespace HLHML
             }
             else if (TermeActuel.Mots.Equals("Lire", StringComparison.OrdinalIgnoreCase))
             {
-                return new Lire(TermeActuel).AddChilds(AfterVerbeAndAdjectifs(subject));
+                return new Lire(TermeActuel, _textReader).AddChilds(AfterVerbeAndAdjectifs(subject));
             }
             else if (TermeActuel.Mots.Equals("est", StringComparison.OrdinalIgnoreCase))
             {
@@ -372,6 +354,7 @@ namespace HLHML
 
         private bool _expressionEstInversser;
         private Terme _termeInverssion;
+
         public AST? Expression()
         {
             var node = Level_16();

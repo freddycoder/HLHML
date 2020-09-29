@@ -5,7 +5,7 @@ namespace HLHML.LanguageElements
 {
     public class Conjonction : AST, IActionnable
     {
-        public bool PredicatIsNegated { get; set; }
+        //public bool PredicatIsNegated { get; set; }
 
         public Conjonction(Terme terme) : base(terme)
         {
@@ -69,10 +69,10 @@ namespace HLHML.LanguageElements
         {
             if (Childs[0] is Adjectif adj)
             {
-                return adj.Valider() != PredicatIsNegated;
+                return adj.Valider();
             }
 
-            throw new InvalidPredicatException($"{Childs[0]} is not a valid predicat.");
+            throw new InvalidPredicatException($"{Childs[0]} n'est pas un prédicat valide.");
         }
     }
 }

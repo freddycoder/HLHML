@@ -18,13 +18,29 @@ namespace HLHML.Test
         [Fact]
         public void PeuCreerVariableNb1Nb2Etc()
         {
+            // nb1 n'est pas un mot français
+
             Interprete("nb1 = 1, nb2 = 2, afficher nb1 + nb2.", "3");
         }
 
         [Fact]
         public void ModuloFonctionneBien()
         {
-            Interprete("nombre1 = 5, nombre2 = 3, resultat = nombre1 % nombre2. afficher resultat.", "1");
+            // nombre1 n'est pas un mot français
+
+            Interprete("nombre1 = 5, nombre2 = 3, resultat = nombre1 % nombre2. afficher resultat.", "2");
+        }
+
+        [Fact]
+        public void PeuCreerVariableNb1Nb2Etc2()
+        {
+            Interprete("x = 1, y = 2, afficher x + y.", "3");
+        }
+
+        [Fact]
+        public void ModuloFonctionneBien2()
+        {
+            Interprete("x = 5, y = 3, z = x % y. afficher z.", "2");
         }
 
         [Fact]

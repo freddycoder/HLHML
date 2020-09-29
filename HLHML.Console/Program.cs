@@ -37,9 +37,9 @@ namespace HLHML.Console
         /// <param name="sdtOut"></param>
         /// <param name="newLineWhenAfficher"></param>
         /// <remarks>Cette méthode est testé par les essais unitaire</remarks>
-        public static void MainProgram(string[] args, TextWriter sdtOut, TextReader sdtIn, bool newLineWhenAfficher = false)
+        public static void MainProgram(string[] args, TextWriter sdtOut, TextReader stdIn, bool newLineWhenAfficher = false)
         {
-            var interpreteur = new Interpreteur(sdtOut, newLineWhenAfficher);
+            var interpreteur = new Interpreteur(sdtOut, stdIn, newLineWhenAfficher);
 
             if (args.Length == 0)
             {

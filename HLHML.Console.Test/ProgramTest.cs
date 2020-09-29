@@ -12,8 +12,6 @@ namespace HLHML.Console.Test
             using var sr = new StringReader("12");
             using var sw = new StringWriter();
 
-            System.Console.SetIn(sr);
-
             Program.MainProgram(new string[] { "DemoProgram.fr" }, sw, sr);
 
             sw.ToString().ShouldBe("5 + 7 = ? Bonne réponse!");
@@ -24,8 +22,6 @@ namespace HLHML.Console.Test
         {
             using var sr = new StringReader("12");
             using var sw = new StringWriter();
-
-            System.Console.SetIn(sr);
 
             Program.MainProgram(new string[] { "AINSI_Encoding.fr" }, sw, sr);
 
