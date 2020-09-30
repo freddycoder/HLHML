@@ -111,7 +111,7 @@ namespace HLHML
             {
                 ObtenirProchainTerme();
 
-                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe));
+                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
             }
 
             return conjonction;
