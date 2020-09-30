@@ -53,13 +53,15 @@ namespace HLHML.LanguageElements
 
         private void ConjonctionSi()
         {
-            if (EvalPredicat())
+            var resultatPredicat = EvalPredicat();
+
+            if (resultatPredicat) // Childs[0]
             {
-                NodeVisitor.VisitNode(Childs[1]);
+                NodeVisitor.Visit(Childs[1]);
             }
-            else if (Childs.Count == 3) // Sinon
+            else if (resultatPredicat == false && Childs.Count == 3) // Sinon
             {
-                NodeVisitor.VisitNode(Childs[2]);
+                NodeVisitor.Visit(Childs[2]);
             }
         }
 

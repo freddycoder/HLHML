@@ -95,46 +95,23 @@ namespace HLHML
 
             conjonction.AddChild(Expression());
 
-            while (TermeActuel.Type != TypeTerme.None &&
-                   (TermeActuel.Type == TypeTerme.Ponctuation ||
-                   TermeActuel.Type != TypeTerme.Adverbe) &&
-                   TermeActuel.Mots != "." &&
-                   conjonction.Childs.Count < 3)
+            if (TermeActuel.Mots.Equals(","))
             {
-                if (TermeActuel.Type == TypeTerme.Ponctuation)
-                {
-                    ObtenirProchainTerme();
+                ObtenirProchainTerme();
 
-                    if (TermeActuel.Equals(Terme("alors", TypeTerme.Adverbe)))
-                    {
-                        ObtenirProchainTerme();
-                    }
-                }
-
-                if (TermeActuel.Equals(new Terme("sinon", TypeTerme.Conjonction)))
+                if (TermeActuel.Equals(Terme("Alors", TypeTerme.Adverbe)))
                 {
                     ObtenirProchainTerme();
                 }
+            }
 
-                if (conjonction.Value.Equals("tant que", StringComparison.OrdinalIgnoreCase) &&
-                         conjonction.Childs.Count == 1)
-                {
-                    conjonction.AddChild(Parse(new Scope(_actuelScope)));
+            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
 
-                    break;
-                }
-                else if (TermeActuel.Type == TypeTerme.Verbe)
-                {
-                    conjonction.AddChild(InitialiserVerbe(conjonction.Childs[0].Value));
-                }
-                else if (TermeActuel.Type == TypeTerme.Conjonction)
-                {
-                    conjonction.AddChild(InitialiserConjonction());
-                }
-                else if (TermeActuel.Type == TypeTerme.Sujet)
-                {
-                    conjonction.AddChild(Expression());
-                }
+            if (TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
+            {
+                ObtenirProchainTerme();
+
+                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe));
             }
 
             return conjonction;
@@ -192,15 +169,6 @@ namespace HLHML
             {
                 adj = new Egal(TermeActuel);
             }
-            //else if (CurrentToken.Value.Equals("égal à", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    adj = new Egal(CurrentToken);
-            //}
-
-            //if (adj == null)
-            //{
-            //    throw new InvalidSentenceException($"There is no adjectif know as {CurrentToken}.");
-            //}
 
             adj.AddChilds(AfterVerbeAndAdjectifs(subject));
 
@@ -336,7 +304,7 @@ namespace HLHML
                     root.AddChild(InitialiserConjonction());
                 }
 
-                if (TermeActuel.Type != TypeTerme.Adverbe)
+                if (TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon"))
                 {
                     ObtenirProchainTerme();
                 }

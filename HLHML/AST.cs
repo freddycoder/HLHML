@@ -61,7 +61,8 @@ namespace HLHML
 
         /// <summary>
         /// Ajout le noeud à la liste des noeuds enfants. La scope de ce noeud enfant sera initialiser
-        /// à la référence du scope du noeud parent, saut si celle-ci à déjà été initialisé.
+        /// à la référence du scope du noeud parent, saut si celle-ci à déjà été initialisé. Termine en
+        /// retournant le noeud courrant.
         /// </summary>
         /// <exception cref="ArgumentNullException">Si le paramètres est nul</exception>
         /// <param name="ast">Le noeud enfant à ajouter.</param>

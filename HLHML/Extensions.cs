@@ -1,10 +1,16 @@
 ﻿using HLHML.Dictionnaire;
 using static HLHML.Dictionnaire.DictionnaireTermeConnue;
+using System;
 
 namespace HLHML
 {
     public static class Extensions
     {
+        public static bool IsNot(this string terme, string comparaison)
+        {
+            return !terme.Equals(comparaison, StringComparison.OrdinalIgnoreCase);
+        }
+
         public static bool EstPluriel(this Terme terme)
         {
             if (terme.Type == TypeTerme.Nom && terme.Mots.EstPluriel()) 

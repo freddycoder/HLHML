@@ -309,8 +309,8 @@ namespace HLHML.Test.Goal
 
             var action = conjonction.Childs.Last();
 
-            action.Value.ShouldBe("afficher");
-            action.Type.ShouldBe(TypeTerme.Verbe);
+            action.ShouldBeOfType<AST>();
+            action.Type.ShouldBe(TypeTerme.Corps);
         }
 
         [Fact]
