@@ -79,7 +79,7 @@ namespace HLHML
         /// <returns>L'arbre de syntaxe abstrait représentant le programme</returns>
         public AST Parse(Scope? scope = null)
         {
-            return GeneriqueCorps(scope, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe);
+            return GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe);
         }
 
         private AST InitialiserConjonction()
@@ -105,13 +105,14 @@ namespace HLHML
                 }
             }
 
-            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
+            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), false, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
 
-            if (TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
+            if (conjonction.Terme.Mots.Equals("si") && 
+                TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
             {
                 ObtenirProchainTerme();
 
-                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
+                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), false, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
             }
 
             return conjonction;
@@ -280,7 +281,7 @@ namespace HLHML
             return root;
         }
 
-        private AST GeneriqueCorps(Scope? scope, Func<bool> predicat)
+        private AST GeneriqueCorps(Scope? scope, bool skipLastAdverb, Func<bool> predicat)
         {
             UpdateScopeReference(scope);
 
@@ -310,7 +311,7 @@ namespace HLHML
                 }
             }
 
-            if (TermeActuel.Type == TypeTerme.Adverbe)
+            if (skipLastAdverb && TermeActuel.Type == TypeTerme.Adverbe)
             {
                 ObtenirProchainTerme();
             }
