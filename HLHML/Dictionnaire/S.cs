@@ -14,7 +14,7 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "Si",
-                Type = TokenType.Déterminant,
+                Type = TokenType.Conjonction,
                 ValeurNumérique = 4
             });
             Add(new Terme
