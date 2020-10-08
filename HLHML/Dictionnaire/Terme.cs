@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Xml.Serialization;
 
 namespace HLHML.Dictionnaire
@@ -68,19 +70,17 @@ namespace HLHML.Dictionnaire
         {
             var words = new Dictionary<string, Terme>(StringComparer.OrdinalIgnoreCase);
 
-            var serialiser = new XmlSerializer(typeof(Terme[]));
+            var assembly = Assembly.GetAssembly(typeof(A));
 
             for (char i = 'A'; i <= 'Z'; i++)
             {
-                var file = Path.Combine(AppContext.BaseDirectory, "Dictionnaire", $"{i}.xml");
+                var t = assembly.GetTypes().FirstOrDefault(t => t.Name == i.ToString());
 
-                if (File.Exists(file))
+                if (t != default)
                 {
-                    using var stream = new StreamReader(file);
+                    var termes = Activator.CreateInstance(t) as List<Terme> ?? throw new ApplicationException("Instance of t should be castable to List<Terme>");
 
-                    var termes = serialiser.Deserialize(stream) as Terme[];
-
-                    foreach (Terme terme in termes ?? new Terme[0])
+                    foreach (var terme in termes)
                     {
                         words.Add(terme.Mots, terme);
                     }
