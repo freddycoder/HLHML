@@ -1,12 +1,11 @@
-﻿using HLHML.Dictionnaire;
-using HLHML.Exceptions;
+﻿using HLHML.Exceptions;
 using HLHML.LanguageElements;
 using HLHML.LanguageElements.Adjectifs;
 using HLHML.LanguageElements.Syntaxe;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static HLHML.Dictionnaire.TermeBuilder;
+using static HLHML.TermeBuilder;
 
 namespace HLHML
 {

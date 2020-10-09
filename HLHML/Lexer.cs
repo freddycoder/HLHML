@@ -1,9 +1,8 @@
-﻿using HLHML.Dictionnaire;
-using HLHML.Exceptions;
+﻿using HLHML.Exceptions;
 using System.Globalization;
 using System.Text;
-using static HLHML.Dictionnaire.TermeBuilder;
-using static HLHML.Dictionnaire.DictionnaireTermeConnue;
+using static HLHML.TermeBuilder;
+using static HLHML.DictionnaireTermeConnue;
 
 namespace HLHML
 {

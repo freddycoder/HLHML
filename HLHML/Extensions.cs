@@ -1,5 +1,5 @@
 ﻿using HLHML.Dictionnaire;
-using static HLHML.Dictionnaire.DictionnaireTermeConnue;
+using static HLHML.DictionnaireTermeConnue;
 using System;
 
 namespace HLHML

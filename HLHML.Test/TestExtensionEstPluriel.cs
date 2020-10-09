@@ -1,6 +1,6 @@
 ﻿using Shouldly;
 using Xunit;
-using static HLHML.Dictionnaire.TermeBuilder;
+using static HLHML.TermeBuilder;
 
 namespace HLHML.Test
 {
