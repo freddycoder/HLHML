@@ -19,7 +19,7 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "égal à",
-                Type = TypeTerme.Adjectif
+                Type = TypeTerme.EgalÀ
             });
             Add(new Terme
             {

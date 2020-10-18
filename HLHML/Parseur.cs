@@ -78,7 +78,11 @@ namespace HLHML
         /// <returns>L'arbre de syntaxe abstrait représentant le programme</returns>
         public AST Parse(Scope? scope = null)
         {
-            return GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe);
+            AST ast = GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None && 
+                                                        TermeActuel.Type != TypeTerme.Adverbe && 
+                                                        TermeActuel.Mots.IsNot("Ensuite"));
+
+            return ast;
         }
 
         private AST InitialiserConjonction()
@@ -104,14 +108,13 @@ namespace HLHML
                 }
             }
 
-            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), false, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
+            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), true, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
 
-            if (conjonction.Terme.Mots.Equals("si") && 
-                TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
+            if (TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
             {
                 ObtenirProchainTerme();
 
-                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), false, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
+                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), true, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
             }
 
             return conjonction;
