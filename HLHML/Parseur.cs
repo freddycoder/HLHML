@@ -108,16 +108,41 @@ namespace HLHML
                 }
             }
 
-            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), true, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
+            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), 
+                                                true, 
+                                                GetPredicatFunction(conjonction.Terme)));
+            // TODO : Ici la fonction predicat retourné par GetPredicatFunction doit être en mesure 
+            // de savoir si un noeud parent est un noeud tant que
+            // ceci fera passer le test ScopeIteration qui est en échec.
 
             if (TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
             {
                 ObtenirProchainTerme();
 
-                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), true, () => TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon")));
+                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), 
+                                                    true, 
+                                                    () => TermeActuel.Type != TypeTerme.None && 
+                                                          TermeActuel.Type != TypeTerme.Adverbe && 
+                                                          TermeActuel.Mots.IsNot("sinon")));
             }
 
             return conjonction;
+        }
+
+        private Func<bool> GetPredicatFunction(Terme terme)
+        {
+            switch (terme.Mots.ToLower())
+            {
+                case "tant que":
+                    return () => TermeActuel.Type != TypeTerme.None &&
+                                 TermeActuel.Type != TypeTerme.Adverbe &&
+                                 TermeActuel.Mots.IsNot("sinon") &&
+                                 TermeActuel.Mots.IsNot("ensuite");
+                default:
+                    return () => TermeActuel.Type != TypeTerme.None &&
+                                 TermeActuel.Type != TypeTerme.Adverbe &&
+                                 TermeActuel.Mots.IsNot("sinon");
+            }
         }
 
         private AST InitialiserVerbe(string subject)
