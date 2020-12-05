@@ -6,6 +6,11 @@ namespace HLHML
 {
     public static class Extensions
     {
+        public static bool Est(this string terme, string comparaison)
+        {
+            return terme.Equals(comparaison, StringComparison.OrdinalIgnoreCase);
+        }
+
         public static bool IsNot(this string terme, string comparaison)
         {
             return !terme.Equals(comparaison, StringComparison.OrdinalIgnoreCase);

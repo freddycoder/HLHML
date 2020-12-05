@@ -28,13 +28,15 @@ namespace HLHML.Console.Test
             lines[5].ShouldBe("Merci d'avoir utiliser le calculateur de prix !");
         }
 
-        [Fact]
-        public void TP1_Interpreteur()
+        [Theory]
+        [InlineData("1\n1\nnon\n", "2,75")]
+        [InlineData("5\n6\noui\n", "18,425")]
+        public void TP1_Interpreteur(string input, string total)
         {
             var path = Path.Combine("TP-Algo", "TP-01-calculateurDePrix.fr");
 
             using var sw = new StringWriter();
-            using var sr = new StringReader("5\n6\noui\n");
+            using var sr = new StringReader(input);
 
             var interpreteur = new Interpreteur(sw, sr, newLineWhenAfficher: true);
 
@@ -47,7 +49,7 @@ namespace HLHML.Console.Test
             lines[1].ShouldBe("Combient d'étiquette blanche ? ");
             lines[2].ShouldBe("Combient d'étiquette grise ? ");
             lines[3].ShouldBe("Est-ce que vous voulez la livraison ? ");
-            lines[4].ShouldBe("18,425");
+            lines[4].ShouldBe(total);
             lines[5].ShouldBe("Merci d'avoir utiliser le calculateur de prix !");
         }
 

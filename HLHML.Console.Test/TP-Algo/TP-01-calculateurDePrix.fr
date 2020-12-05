@@ -1,8 +1,8 @@
 Afficher "Bienvenu dans le calculateur de prix!".
 
-prix etiquette blanche = 1.25.
-prix etiquette grise   = 1.50.
-prix de livraison      = 0.05.
+prix etiquette blanche = 1,25.
+prix etiquette grise   = 1,50.
+prix livraison         = 0,05.
 
 livraison = "".
 
@@ -10,17 +10,22 @@ nombre etiquette grise = 0.
 nombre etiquette blanche = 0.
 
 Afficher "Combient d'étiquette blanche ? ".
-Lire prix etiquette blanche.
+Lire nombre etiquette blanche.
 Afficher "Combient d'étiquette grise ? ".
-Lire prix etiquette grise.
+Lire nombre etiquette grise.
 
 Si prix etiquette blanche est plus grand que 0 et prix etiquette grise est plus grand que 0,
 
     Afficher "Est-ce que vous voulez la livraison ? ".
     Lire livraison.
 
-    si livraison est égal à "oui", afficher prix etiquette blanche * nombre etiquette blanche + prix etiquette grise * nombre etiquette grise + prix de livraison.
-    sinon afficher prix etiquette blanche * nombre etiquette blanche + prix etiquette grise * nombre etiquette grise.
+    si livraison est égal à "oui", 
+    
+        afficher prix etiquette blanche * nombre etiquette blanche + prix etiquette grise * nombre etiquette grise + prix livraison.
+
+    sinon 
+        
+        afficher prix etiquette blanche * nombre etiquette blanche + prix etiquette grise * nombre etiquette grise.
 
 sinon afficher "Erreur, le programme va maintenant quitter.".
 

@@ -79,14 +79,16 @@ namespace HLHML
         public AST Parse(Scope? scope = null)
         {
             AST ast = GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None && 
-                                                        TermeActuel.Type != TypeTerme.Adverbe && 
-                                                        TermeActuel.Mots.IsNot("Ensuite"));
+                                                        TermeActuel.Type != TypeTerme.Adverbe);
 
             return ast;
         }
 
+        private int insideTantQue = 0;
         private AST InitialiserConjonction()
         {
+            if (TermeActuel.Mots.Est("Tant que")) insideTantQue++;
+
             var conjonction = new Conjonction(TermeActuel);
 
             ObtenirProchainTerme();
@@ -109,11 +111,8 @@ namespace HLHML
             }
 
             conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), 
-                                                true, 
-                                                GetPredicatFunction(conjonction.Terme)));
-            // TODO : Ici la fonction predicat retourné par GetPredicatFunction doit être en mesure 
-            // de savoir si un noeud parent est un noeud tant que
-            // ceci fera passer le test ScopeIteration qui est en échec.
+                                                insideTantQue == 0 || conjonction.Terme.Mots.Est("Tant que"), 
+                                                GetPredicatFunction()));
 
             if (TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
             {
@@ -126,20 +125,23 @@ namespace HLHML
                                                           TermeActuel.Mots.IsNot("sinon")));
             }
 
+            if (conjonction.Terme.Mots.Est("Tant que")) insideTantQue--;
+
             return conjonction;
         }
 
-        private Func<bool> GetPredicatFunction(Terme terme)
+        private Func<bool> GetPredicatFunction()
         {
-            switch (terme.Mots.ToLower())
+            if (insideTantQue > 0)
             {
-                case "tant que":
-                    return () => TermeActuel.Type != TypeTerme.None &&
+                return () => TermeActuel.Type != TypeTerme.None &&
                                  TermeActuel.Type != TypeTerme.Adverbe &&
                                  TermeActuel.Mots.IsNot("sinon") &&
                                  TermeActuel.Mots.IsNot("ensuite");
-                default:
-                    return () => TermeActuel.Type != TypeTerme.None &&
+            }
+            else
+            {
+                return () => TermeActuel.Type != TypeTerme.None &&
                                  TermeActuel.Type != TypeTerme.Adverbe &&
                                  TermeActuel.Mots.IsNot("sinon");
             }
