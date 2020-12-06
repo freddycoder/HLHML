@@ -9,22 +9,22 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "à",
-                Type = TokenType.Préposition
+                Type = TypeTerme.Préposition
             });
             Add(new Terme
             {
                 Mots = "Afficher",
-                Type = TokenType.Verbe
+                Type = TypeTerme.Verbe
             });
             Add(new Terme
             {
                 Mots = "Alors",
-                Type = TokenType.Adverbe
+                Type = TypeTerme.Adverbe
             });
             Add(new Terme
             {
                 Mots = "Ainsi",
-                Type = TokenType.Adverbe
+                Type = TypeTerme.Adverbe
             });
         }
     }

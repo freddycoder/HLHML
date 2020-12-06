@@ -9,17 +9,17 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "La",
-                Type = TokenType.Déterminant
+                Type = TypeTerme.Déterminant
             });
             Add(new Terme
             {
                 Mots = "Le",
-                Type = TokenType.Déterminant
+                Type = TypeTerme.Déterminant
             });
             Add(new Terme
             {
                 Mots = "Lire",
-                Type = TokenType.Verbe
+                Type = TypeTerme.Verbe
             });
         }
     }

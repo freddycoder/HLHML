@@ -17,6 +17,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+
     - name: Install tests dependencies
       run: dotnet restore HLHML.Test/HLHML.Test.csproj
 
@@ -26,8 +27,17 @@ jobs:
     - name: Test
       run: dotnet test HLHML.Test/HLHML.Test.csproj --no-restore --verbosity normal --filter Future!=true
 
+    #- name: Install console tests dependencies
+    #  run: dotnet restore HLHML.Console.Test/HLHML.Console.Test.csproj
+
+    #- name: Build console test
+    #  run: dotnet build HLHML.Console.Test/HLHML.Console.Test.csproj --configuration Release --no-restore
+
+    #- name: Test console
+    #  run: dotnet test HLHML.Console.Test/HLHML.Console.Test.csproj --no-restore --verbosity normal --filter Future!=true
+
     - name: Install HLHML dependencies
-      run: dotnet restore HLHML.Test/HLHML.Test.csproj
+      run: dotnet restore HLHML/HLHML.csproj
 
     - name: Build HLHML
       run: dotnet build HLHML/HLHML.csproj --configuration Release --no-restore

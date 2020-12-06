@@ -9,22 +9,17 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "ne",
-                Type = TokenType.Negation
+                Type = TypeTerme.Negation
             });
             Add(new Terme
             {
                 Mots = "n'",
-                Type = TokenType.Negation
+                Type = TypeTerme.Negation
             });
             Add(new Terme
             {
-                Mots = "nombre",
-                Type = TokenType.Nom
-            });
-            Add(new Terme
-            {
-                Mots = "nombres",
-                Type = TokenType.Nom
+                Mots = "Non",
+                Type = TypeTerme.Negation
             });
         }
     }

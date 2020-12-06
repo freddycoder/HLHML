@@ -1,13 +1,24 @@
 ﻿using HLHML.Dictionnaire;
-using static HLHML.Dictionnaire.DictionnaireTermeConnue;
+using static HLHML.DictionnaireTermeConnue;
+using System;
 
 namespace HLHML
 {
     public static class Extensions
     {
+        public static bool Est(this string terme, string comparaison)
+        {
+            return terme.Equals(comparaison, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool IsNot(this string terme, string comparaison)
+        {
+            return !terme.Equals(comparaison, StringComparison.OrdinalIgnoreCase);
+        }
+
         public static bool EstPluriel(this Terme terme)
         {
-            if (terme.Type == TokenType.Nom && terme.Mots.EstPluriel()) 
+            if (terme.Type == TypeTerme.Nom && terme.Mots.EstPluriel()) 
             {
                 return true;
             }

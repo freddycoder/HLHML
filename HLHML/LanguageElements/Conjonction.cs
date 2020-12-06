@@ -5,8 +5,6 @@ namespace HLHML.LanguageElements
 {
     public class Conjonction : AST, IActionnable
     {
-        public bool PredicatIsNegated { get; set; }
-
         public Conjonction(Terme terme) : base(terme)
         {
             
@@ -34,13 +32,13 @@ namespace HLHML.LanguageElements
 
         private void ConjonctionPour()
         {
-            while (PredicatCompound())
+            while (PredicatCorps())
             {
                 NodeVisitor.Visit(Childs[1]);
             }
         }
 
-        private bool PredicatCompound()
+        private bool PredicatCorps()
         {
             throw new NotImplementedException();
         }
@@ -55,13 +53,15 @@ namespace HLHML.LanguageElements
 
         private void ConjonctionSi()
         {
-            if (EvalPredicat())
+            var resultatPredicat = EvalPredicat();
+
+            if (resultatPredicat) // Childs[0]
             {
-                NodeVisitor.VisitNode(Childs[1]);
+                NodeVisitor.Visit(Childs[1]);
             }
-            else if (Childs.Count == 3) // Sinon
+            else if (resultatPredicat == false && Childs.Count == 3) // Sinon
             {
-                NodeVisitor.VisitNode(Childs[2]);
+                NodeVisitor.Visit(Childs[2]);
             }
         }
 
@@ -69,10 +69,10 @@ namespace HLHML.LanguageElements
         {
             if (Childs[0] is Adjectif adj)
             {
-                return adj.Valider() != PredicatIsNegated;
+                return adj.Valider();
             }
 
-            throw new InvalidPredicatException($"{Childs[0]} is not a valid predicat.");
+            throw new InvalidPredicatException($"{Childs[0]} n'est pas un prédicat valide.");
         }
     }
 }

@@ -1,26 +1,31 @@
-﻿using System;
-
-namespace HLHML
+﻿namespace HLHML
 {
-    public enum TokenType
+    public enum TypeTerme
     {
         None,
 
         Adjectif, 
         Adverbe,
         Complement,
-        Compound, 
+        Corps, 
         Conjonction, 
         Déterminant, 
         Negation,
         Nom,
         Nombre,
         OperateurMathematique,
-        OuvertureParentèse,
+        OuvertureParenthèse,
         Ponctuation,
         Préposition,
         Sujet, 
         Text, 
-        Verbe
+        Verbe,
+        FermetureParenthèse,
+        PlusGrandQue,
+        PlusPetitQue,
+        PlusGrandOuEgalÀ,
+        PlusPetitOuEgalÀ,
+        EgalÀ,
+        DifferentDe
     }
 }

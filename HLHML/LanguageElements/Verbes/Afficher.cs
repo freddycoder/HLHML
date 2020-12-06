@@ -24,17 +24,30 @@ namespace HLHML.LanguageElements
         {
             foreach (var child in Childs)
             {
-                if (child.Type == TokenType.Text || child.Type == TokenType.Nombre)
+                if (child.Type == TypeTerme.Text || child.Type == TypeTerme.Nombre)
                 {
                     _textWriter.Write(child.Value);
                 }
-                else if (child.Type == TokenType.Sujet)
+                else if (child.Type == TypeTerme.Sujet)
                 {
                     _textWriter.Write(Scope[child.Value] ?? "");
                 }
                 else if (child is OperateurMathematique op)
                 {
                     _textWriter.Write(op.Eval());
+                }
+                else if (child.Type == TypeTerme.Conjonction || child.Type == TypeTerme.Negation)
+                {
+                    var result = NodeVisitor.Eval(child);
+
+                    if (result == true)
+                    {
+                        _textWriter.Write("vrai");
+                    }
+                    else if (result == false)
+                    {
+                        _textWriter.Write("faux");
+                    }
                 }
             }
 

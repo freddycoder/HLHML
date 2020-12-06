@@ -2,14 +2,14 @@
 
 namespace HLHML.Dictionnaire
 {
-    public class M : List<Terme>
+    public class O : List<Terme>
     {
-        public M() : base()
+        public O() : base()
         {
             Add(new Terme
             {
-                Mots = "modulo",
-                Type = TypeTerme.OperateurMathematique
+                Mots = "Ou",
+                Type = TypeTerme.Conjonction
             });
         }
     }

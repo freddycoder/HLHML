@@ -9,18 +9,18 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "Se",
-                Type = TokenType.Déterminant
+                Type = TypeTerme.Déterminant
             });
             Add(new Terme
             {
                 Mots = "Si",
-                Type = TokenType.Conjonction,
+                Type = TypeTerme.Conjonction,
                 ValeurNumérique = 4
             });
             Add(new Terme
             {
                 Mots = "Sinon",
-                Type = TokenType.Conjonction
+                Type = TypeTerme.Conjonction
             });
         }
     }

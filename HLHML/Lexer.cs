@@ -1,9 +1,8 @@
-﻿using HLHML.Dictionnaire;
-using HLHML.Exceptions;
+﻿using HLHML.Exceptions;
 using System.Globalization;
 using System.Text;
-using static HLHML.Dictionnaire.TermeBuilder;
-using static HLHML.Dictionnaire.DictionnaireTermeConnue;
+using static HLHML.TermeBuilder;
+using static HLHML.DictionnaireTermeConnue;
 
 namespace HLHML
 {
@@ -30,19 +29,19 @@ namespace HLHML
             {
                 var value = GetNextWord();
 
-                return Terme(value, ObtenirTokenType(value));
+                return Terme(value, ObtenirTypeTerme(value));
             }
             else if (CurrentChar == '"')
             {
                 var value = ObtenirChaineDeTexte();
 
-                return Terme(value, TokenType.Text);
+                return Terme(value, TypeTerme.Text);
             }
             else if (char.IsDigit(CurrentChar))
             {
                 var nombre = GetNumber();
 
-                return Terme(nombre, TokenType.Nombre);
+                return Terme(nombre, TypeTerme.Nombre);
             }
             else if (CurrentChar == '.' || CurrentChar == ',' || CurrentChar == ':')
             {
@@ -50,11 +49,11 @@ namespace HLHML
 
                 _pos++;
 
-                return Terme(point, TokenType.Ponctuation);
+                return Terme(point, TypeTerme.Ponctuation);
             }
             else if (CurrentChar == '+' || CurrentChar == '-' || CurrentChar == '*' || CurrentChar == '/')
             {
-                var operateur = Terme(CurrentChar.ToString(), TokenType.OperateurMathematique);
+                var operateur = Terme(CurrentChar.ToString(), TypeTerme.OperateurMathematique);
 
                 _pos++;
 
@@ -62,22 +61,99 @@ namespace HLHML
             }
             else if (CurrentChar == '=')
             {
-                var vaut = Terme("vaut", TokenType.Verbe);
+                if (PeekChar == '=')
+                {
+                    var egalÀ = Terme("==", TypeTerme.EgalÀ);
 
-                _pos++;
+                    _pos++;
+                    _pos++;
 
-                return vaut;
+                    return egalÀ;
+                }
+                else
+                {
+                    var vaut = Terme("vaut", TypeTerme.Verbe);
+
+                    _pos++;
+
+                    return vaut;
+                }
             }
             else if (CurrentChar == '%')
             {
-                var modulo = Terme("modulo", TokenType.OperateurMathematique);
+                var modulo = Terme("modulo", TypeTerme.OperateurMathematique);
 
                 _pos++;
 
                 return modulo;
             }
+            else if (CurrentChar == '(')
+            {
+                var terme = Terme(CurrentChar.ToString(), TypeTerme.OuvertureParenthèse);
 
-            return Terme("", TokenType.None);
+                _pos++;
+
+                return terme;
+            }
+            else if (CurrentChar == ')')
+            {
+                var terme = Terme(CurrentChar.ToString(), TypeTerme.FermetureParenthèse);
+
+                _pos++;
+
+                return terme;
+            }
+            else if (CurrentChar == '>')
+            {
+                if (PeekChar == '=')
+                {
+                    var terme = Terme(">=", TypeTerme.PlusGrandOuEgalÀ);
+
+                    _pos++;
+                    _pos++;
+
+                    return terme;
+                }
+                else
+                {
+                    var terme = Terme(CurrentChar.ToString(), TypeTerme.PlusGrandQue);
+
+                    _pos++;
+
+                    return terme;
+                }
+            }
+            else if (CurrentChar == '<')
+            {
+                if (PeekChar == '=')
+                {
+                    var terme = Terme("<=", TypeTerme.PlusPetitOuEgalÀ);
+
+                    _pos++;
+                    _pos++;
+
+                    return terme;
+                }
+                else
+                {
+                    var terme = Terme(CurrentChar.ToString(), TypeTerme.PlusPetitQue);
+
+                    _pos++;
+
+                    return terme;
+                }
+            }
+            else if (CurrentChar == '!' && PeekChar == '=')
+            {
+                var terme = Terme("!=", TypeTerme.DifferentDe);
+
+                _pos++;
+                _pos++;
+
+                return terme;
+            }
+
+            return Terme("", TypeTerme.None);
         }
 
         private string GetNumber()
@@ -136,11 +212,11 @@ namespace HLHML
             }
             catch
             {
-                return Terme("", TokenType.None);
+                return Terme("", TypeTerme.None);
             }
         }
 
-        private TokenType ObtenirTokenType(string mots)
+        private TypeTerme ObtenirTypeTerme(string mots)
         {
             //if (mots.Length > 1 && mots.EstPluriel())
             //{
@@ -152,14 +228,14 @@ namespace HLHML
                 return TermesConnues[mots].Type;
             }
 
-            return TokenType.Sujet;
+            return TypeTerme.Sujet;
         }
 
         private string GetNextWord()
         {
             var sb = new StringBuilder();
 
-            while (char.IsLetter(CurrentChar))
+            while (char.IsLetterOrDigit(CurrentChar))
             {
                 sb.Append(CurrentChar);
                 _pos++;
@@ -174,14 +250,14 @@ namespace HLHML
             {
                 var nextTokenPeeked = PeekNextToken();
 
-                var actuelTokenType = ObtenirTokenType(sb.ToString());
+                var actuelTypeTerme = ObtenirTypeTerme(sb.ToString());
 
-                if (actuelTokenType != TokenType.Adverbe &&
-                    actuelTokenType == TokenType.Sujet &&
-                     (nextTokenPeeked.Type == TokenType.Sujet ||
-                      nextTokenPeeked.Type == TokenType.Complement ||
-                      nextTokenPeeked.Type == TokenType.Préposition) &&
-                      !nextTokenPeeked.Equals(Terme("de", TokenType.Préposition)))
+                if (actuelTypeTerme != TypeTerme.Adverbe &&
+                    actuelTypeTerme == TypeTerme.Sujet &&
+                     (nextTokenPeeked.Type == TypeTerme.Sujet ||
+                      nextTokenPeeked.Type == TypeTerme.Complement ||
+                      nextTokenPeeked.Type == TypeTerme.Préposition) &&
+                      !nextTokenPeeked.Equals(Terme("de", TypeTerme.Préposition)))
                 {
                     Avancer();
 

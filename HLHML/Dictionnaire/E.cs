@@ -9,17 +9,22 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "Ensuite",
-                Type = TokenType.Adverbe
+                Type = TypeTerme.Adverbe
             });
             Add(new Terme
             {
                 Mots = "Est",
-                Type = TokenType.Verbe
+                Type = TypeTerme.Verbe
             });
             Add(new Terme
             {
                 Mots = "égal à",
-                Type = TokenType.Adjectif
+                Type = TypeTerme.EgalÀ
+            });
+            Add(new Terme
+            {
+                Mots = "Et",
+                Type = TypeTerme.Conjonction
             });
         }
     }

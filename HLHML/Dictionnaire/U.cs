@@ -9,7 +9,7 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "Un",
-                Type = TokenType.Adjectif,
+                Type = TypeTerme.Adjectif,
                 ValeurNumérique = 1
             });
         }

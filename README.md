@@ -46,11 +46,32 @@ HLHML.exe monScript.fr -t imageDestination.bmp
 Le programme va produire l'image suvante
 ![impossible de trouver l'image...](https://raw.githubusercontent.com/freddycoder/HLHML/master/exempleAST.bmp)
 </br>
-Executer le même script en ligne de commande
+Executer le même script en ligne de commande (projet HLHML.Console)
 ```
-HLHML.exe monScript.fr
+HLHML.Console.exe monScript.fr
 ```
 La sortie sera
 ```
 3 3
 ```
+## HLHML.Editor
+
+Le projet HLHML.Editor est une application WinForm qui permet de visualiser l'arbre syntaxique en même temps que d'écrire son script.
+
+## HLHML.Syntaxe
+
+Le repertoire HLHML.Syntaxe contient une extension vscode pour colorer les fichiers avec l'extension .fr
+
+## Utiliser l'interpreteur dans une application tiers
+
+1. Installer le package nuget.
+2. Utiliser la classe Interpreteur pour interpreter du code.
+```c#
+using var sw = new StringWriter();
+var interpreteur = new Interpreteur(sw);
+interpreteur.Interprete("Afficher \"Bonjour le monde !\"");
+Console.Out.WriteLine(sw.ToString());
+// Bonjour le monde !
+```
+
+> Une instance de la classe Interpreteur garde la même 'Scope' pour les variables. Donc lancer deux script, ou deux commandes avec une même instance peut avoir des résultats différents selon le script.

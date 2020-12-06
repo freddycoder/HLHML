@@ -9,13 +9,13 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "cinq",
-                Type = TokenType.Adjectif,
+                Type = TypeTerme.Adjectif,
                 ValeurNumérique = 5
             });
             Add(new Terme
             {
                 Mots = "comme suit",
-                Type = TokenType.Adverbe
+                Type = TypeTerme.Adverbe
             });
         }
     }

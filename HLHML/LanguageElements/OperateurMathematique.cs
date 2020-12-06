@@ -8,23 +8,30 @@ namespace HLHML.LanguageElements
     {
         private string Operator { get; }
 
+        /// <param name="terme">Le terme représentant l'opérateur mathématique</param>
         public OperateurMathematique(Terme terme) : base(terme)
         {
-            Debug.Assert(terme.Type == TokenType.OperateurMathematique);
+            Debug.Assert(terme.Type == TypeTerme.OperateurMathematique);
 
             Operator = terme.Mots.ToLower();
         }
 
-        public OperateurMathematique(Terme token, AST firstChild) : base(token, firstChild)
+        /// <summary>
+        /// Constructeur pour les opérateurs mathématique unaire
+        /// </summary>
+        /// <param name="terme">Le terme représentant l'opérateur unaire</param>
+        /// <param name="premierNoeudEnfant"></param>
+        /// <exception cref="ArgumentNullException">Si first child est null</exception>
+        public OperateurMathematique(Terme terme, AST? premierNoeudEnfant) : base(terme, premierNoeudEnfant)
         {
-            Debug.Assert(token.Type == TokenType.OperateurMathematique && token.Mots == "-");
+            Debug.Assert(terme.Type == TypeTerme.OperateurMathematique && terme.Mots == "-");
 
-            Operator = token.Mots.ToLower();
+            Operator = terme.Mots.ToLower();
         }
 
         public OperateurMathematique(AST firstChild, Terme token, AST secondChild) : base(firstChild, token, secondChild)
         {
-            Debug.Assert(token.Type == TokenType.OperateurMathematique);
+            Debug.Assert(token.Type == TypeTerme.OperateurMathematique);
 
             Operator = token.Mots.ToLower();
         }

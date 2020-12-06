@@ -9,27 +9,27 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "pas",
-                Type = TokenType.Negation
+                Type = TypeTerme.Negation
             });
             Add(new Terme
             {
                 Mots = "plus petit que",
-                Type = TokenType.Adjectif
+                Type = TypeTerme.PlusPetitQue
             });
             Add(new Terme
             {
                 Mots = "plus grand que",
-                Type = TokenType.Adjectif
+                Type = TypeTerme.PlusGrandQue
             });
             Add(new Terme
             {
                 Mots = "pour",
-                Type = TokenType.Conjonction
+                Type = TypeTerme.Conjonction
             });
             Add(new Terme
             {
                 Mots = "premier",
-                Type = TokenType.Adjectif
+                Type = TypeTerme.Adjectif
             });
         }
     }

@@ -9,12 +9,12 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "Vaut",
-                Type = TokenType.Verbe
+                Type = TypeTerme.Verbe
             });
             Add(new Terme
             {
                 Mots = "variant",
-                Type = TokenType.Verbe
+                Type = TypeTerme.Verbe
             });
         }
     }

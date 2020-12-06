@@ -20,17 +20,17 @@ namespace HLHML.Test.Goal
 
             var t1 = lexer.ObtenirProchainTerme();
 
-            t1.Type.ShouldBe(TokenType.Verbe);
+            t1.Type.ShouldBe(TypeTerme.Verbe);
             t1.Mots.ShouldBe("Afficher");
 
             var t2 = lexer.ObtenirProchainTerme();
 
-            t2.Type.ShouldBe(TokenType.Text);
+            t2.Type.ShouldBe(TypeTerme.Text);
             t2.Mots.ShouldBe("Bonjour le monde!");
 
             var t3 = lexer.ObtenirProchainTerme();
 
-            t3.Type.ShouldBe(TokenType.None);
+            t3.Type.ShouldBe(TypeTerme.None);
             t3.Mots.ShouldBe("");
         }
 
@@ -43,14 +43,14 @@ namespace HLHML.Test.Goal
 
             var ast = parser.Parse();
 
-            ast.Type.ShouldBe(TokenType.Compound);
-            ast.Value.ShouldBe("Compound");
+            ast.Type.ShouldBe(TypeTerme.Corps);
+            ast.Value.ShouldBe("Corps");
 
             ast.Childs.Count.ShouldBe(1);
 
             ast = ast.Childs.First();
 
-            ast.Type.ShouldBe(TokenType.Verbe);
+            ast.Type.ShouldBe(TypeTerme.Verbe);
             ast.Value.ShouldBe("Afficher");
             ast.ShouldBeOfType<Afficher>();
 
@@ -77,9 +77,9 @@ namespace HLHML.Test.Goal
         [Fact]
         public void TestDictionnaryEqualityComparer()
         {
-            var dict = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase);
+            var dict = new Dictionary<string, TypeTerme>(StringComparer.OrdinalIgnoreCase);
 
-            dict.Add("Vaut", TokenType.Verbe);
+            dict.Add("Vaut", TypeTerme.Verbe);
 
             dict.ContainsKey("vaut").ShouldBeTrue();
         }
@@ -91,56 +91,56 @@ namespace HLHML.Test.Goal
 
             var t1 = lexer.ObtenirProchainTerme();
 
-            t1.Type.ShouldBe(TokenType.Sujet);
+            t1.Type.ShouldBe(TypeTerme.Sujet);
             t1.Mots.ShouldBe("a");
 
             var t2 = lexer.ObtenirProchainTerme();
 
-            t2.Type.ShouldBe(TokenType.Verbe);
+            t2.Type.ShouldBe(TypeTerme.Verbe);
             t2.Mots.ShouldBe("vaut");
 
             var t3 = lexer.ObtenirProchainTerme();
 
-            t3.Type.ShouldBe(TokenType.Nombre);
+            t3.Type.ShouldBe(TypeTerme.Nombre);
             t3.Mots.ShouldBe("5");
 
             var t4 = lexer.ObtenirProchainTerme();
 
-            t4.Type.ShouldBe(TokenType.Ponctuation);
+            t4.Type.ShouldBe(TypeTerme.Ponctuation);
             t4.Mots.ShouldBe(".");
 
             var t5 = lexer.ObtenirProchainTerme();
 
-            t5.Type.ShouldBe(TokenType.Verbe);
+            t5.Type.ShouldBe(TypeTerme.Verbe);
             t5.Mots.ShouldBe("Afficher");
 
             var t6 = lexer.ObtenirProchainTerme();
 
-            t6.Type.ShouldBe(TokenType.Sujet);
+            t6.Type.ShouldBe(TypeTerme.Sujet);
             t6.Mots.ShouldBe("a");
 
             var t7 = lexer.ObtenirProchainTerme();
 
-            t7.Type.ShouldBe(TokenType.Ponctuation);
+            t7.Type.ShouldBe(TypeTerme.Ponctuation);
             t7.Mots.ShouldBe(".");
 
             var t8 = lexer.ObtenirProchainTerme();
 
-            t8.Type.ShouldBe(TokenType.None);
+            t8.Type.ShouldBe(TypeTerme.None);
             t8.Mots.ShouldBe("");
         }
 
         [Fact]
         public void ASTandScope()
         {
-            var root = new AST(new Terme("Compound", TokenType.Compound), new Scope());
+            var root = new AST(new Terme("Corps", TypeTerme.Corps), new Scope());
 
             root.Scope.ShouldNotBeNull();
 
-            root.AddChild(new AST(new Terme("a", TokenType.Sujet))
-                .AddParent(new AST(new Terme("vaut", TokenType.Verbe))));
+            root.AddChild(new AST(new Terme("a", TypeTerme.Sujet))
+                .AddParent(new AST(new Terme("vaut", TypeTerme.Verbe))));
 
-            root.Childs.First().AddChild(new AST(new Terme("5", TokenType.Nombre)));
+            root.Childs.First().AddChild(new AST(new Terme("5", TypeTerme.Nombre)));
 
             root.Childs.Count.ShouldBe(1);
 
@@ -157,13 +157,13 @@ namespace HLHML.Test.Goal
 
             var ast = parseur.Parse();
 
-            ast.Type.ShouldBe(TokenType.Compound);
+            ast.Type.ShouldBe(TypeTerme.Corps);
 
             ast.Childs.Count.ShouldBe(2);
 
             var vaut = ast.Childs.First();
 
-            vaut.Type.ShouldBe(TokenType.Verbe);
+            vaut.Type.ShouldBe(TypeTerme.Verbe);
             ("vaut".Equals(vaut.Value, StringComparison.OrdinalIgnoreCase)).ShouldBeTrue();
 
             vaut.Childs.First().Value.ShouldBe("a");
@@ -171,11 +171,11 @@ namespace HLHML.Test.Goal
 
             var afficher = ast.Childs.Last();
 
-            afficher.Type.ShouldBe(TokenType.Verbe);
+            afficher.Type.ShouldBe(TypeTerme.Verbe);
             "Afficher".Equals(afficher.Value).ShouldBeTrue();
 
             afficher.Childs.First().Value.ShouldBe("a");
-            afficher.Childs.First().Type.ShouldBe(TokenType.Sujet);
+            afficher.Childs.First().Type.ShouldBe(TypeTerme.Sujet);
         }
 
         [Fact]
@@ -220,9 +220,9 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("5 + 6");
 
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("5", TokenType.Nombre));
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("+", TokenType.OperateurMathematique));
-            lexer.ObtenirProchainTerme().ShouldBe(new Terme("6", TokenType.Nombre));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("5", TypeTerme.Nombre));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("+", TypeTerme.OperateurMathematique));
+            lexer.ObtenirProchainTerme().ShouldBe(new Terme("6", TypeTerme.Nombre));
         }
 
         [Fact]
@@ -234,7 +234,7 @@ namespace HLHML.Test.Goal
 
             var plusOperator = ast.Childs.First();
 
-            plusOperator.Type.ShouldBe(TokenType.OperateurMathematique);
+            plusOperator.Type.ShouldBe(TypeTerme.OperateurMathematique);
             plusOperator.Value.ShouldBe("+");
             ((OperateurMathematique)plusOperator).Eval().ShouldBe("122");
 
@@ -251,15 +251,15 @@ namespace HLHML.Test.Goal
 
             var root = parseur.Parse();
 
-            root.Type.ShouldBe(TokenType.Compound);
+            root.Type.ShouldBe(TypeTerme.Corps);
 
             var affichier = root.Childs.First();
 
-            affichier.Type.ShouldBe(TokenType.Verbe);
+            affichier.Type.ShouldBe(TypeTerme.Verbe);
 
             var plus = affichier.Childs.First();
 
-            plus.Type.ShouldBe(TokenType.OperateurMathematique);
+            plus.Type.ShouldBe(TypeTerme.OperateurMathematique);
 
             plus.Childs[0].Value.ShouldBe("2");
             plus.Childs[1].Value.ShouldBe("1");
@@ -284,7 +284,7 @@ namespace HLHML.Test.Goal
 
             var conjonction = parseur.Parse().Childs.Single();
 
-            conjonction.Type.ShouldBe(TokenType.Conjonction);
+            conjonction.Type.ShouldBe(TypeTerme.Conjonction);
             conjonction.Value.ShouldBe("Si");
             conjonction.ShouldBeOfType<Conjonction>();
         }
@@ -297,20 +297,20 @@ namespace HLHML.Test.Goal
             var conjonction = parseur.Parse().Childs.Single();
 
             conjonction.Childs.Count.ShouldBe(2);
-            conjonction.Type.ShouldBe(TokenType.Conjonction);
+            conjonction.Type.ShouldBe(TypeTerme.Conjonction);
             conjonction.Value.ShouldBe("Si");
             conjonction.ShouldBeOfType<Conjonction>();
 
             var predicat = conjonction.Childs.First();
 
-            predicat.Type.ShouldBe(TokenType.Adjectif);
+            predicat.Type.ShouldBe(TypeTerme.EgalÀ);
             predicat.Value.ShouldBe("égal à");
             predicat.ShouldBeOfType<Egal>();
 
             var action = conjonction.Childs.Last();
 
-            action.Value.ShouldBe("afficher");
-            action.Type.ShouldBe(TokenType.Verbe);
+            action.ShouldBeOfType<AST>();
+            action.Type.ShouldBe(TypeTerme.Corps);
         }
 
         [Fact]
@@ -320,13 +320,13 @@ namespace HLHML.Test.Goal
 
             var conjonction = parseur.Parse().Childs.Single();
 
-            conjonction.Type.ShouldBe(TokenType.Conjonction);
+            conjonction.Type.ShouldBe(TypeTerme.Conjonction);
             conjonction.Value.ShouldBe("Si");
             conjonction.ShouldBeOfType<Conjonction>();
 
             var égal = conjonction.Childs.First();
 
-            égal.Type.ShouldBe(TokenType.Adjectif);
+            égal.Type.ShouldBe(TypeTerme.EgalÀ);
             égal.Value.ShouldBe("égal à");
             égal.ShouldBeOfType<Egal>();
 

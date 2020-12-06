@@ -9,12 +9,12 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "que",
-                Type = TokenType.Complement
+                Type = TypeTerme.Complement
             });
             Add(new Terme
             {
                 Mots = "quatre",
-                Type = TokenType.Adjectif,
+                Type = TypeTerme.Adjectif,
                 ValeurNumérique = 4
             });
         }

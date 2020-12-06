@@ -9,23 +9,23 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "de",
-                Type = TokenType.Préposition
+                Type = TypeTerme.Préposition
             });
             Add(new Terme
             {
                 Mots = "définit",
-                Type = TokenType.Verbe
+                Type = TypeTerme.Verbe
             });
             Add(new Terme
             {
                 Mots = "deux",
-                Type = TokenType.Adjectif,
+                Type = TypeTerme.Adjectif,
                 ValeurNumérique = 2
             });
             Add(new Terme
             {
                 Mots = "deuxième",
-                Type = TokenType.Adjectif
+                Type = TypeTerme.Adjectif
             });
         }
     }

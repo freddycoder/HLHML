@@ -1,6 +1,6 @@
 ﻿using Xunit;
 using Shouldly;
-using static HLHML.Dictionnaire.TermeBuilder;
+using static HLHML.TermeBuilder;
 using static HLHML.Test.Outils.OutilsInterpreteur;
 
 namespace HLHML.Test.Goal
@@ -31,23 +31,23 @@ namespace HLHML.Test.Goal
         {
             var lexer = new Lexer("Le plus grand denominateur commun de deux nombres se définit comme suit :");
 
-            lexer.ObtenirProchainTerme().ShouldBe(Terme("Le", TokenType.Déterminant));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("Le", TypeTerme.Déterminant));
 
-            lexer.ObtenirProchainTerme().ShouldBe(Terme("plus grand denominateur commun", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("plus grand denominateur commun", TypeTerme.Sujet));
 
-            lexer.ObtenirProchainTerme().ShouldBe(Terme("de", TokenType.Préposition));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("de", TypeTerme.Préposition));
 
-            lexer.ObtenirProchainTerme().ShouldBe(Terme("deux", TokenType.Adjectif));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("deux", TypeTerme.Adjectif));
 
-            lexer.ObtenirProchainTerme().ShouldBe(Terme("nombres", TokenType.Sujet));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("nombres", TypeTerme.Sujet));
 
-            lexer.ObtenirProchainTerme().ShouldBe(Terme("se", TokenType.Déterminant));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("se", TypeTerme.Déterminant));
 
-            lexer.ObtenirProchainTerme().ShouldBe(Terme("définit", TokenType.Verbe));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("définit", TypeTerme.Verbe));
 
-            lexer.ObtenirProchainTerme().ShouldBe(Terme("comme suit", TokenType.Adverbe));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme("comme suit", TypeTerme.Adverbe));
 
-            lexer.ObtenirProchainTerme().ShouldBe(Terme(":", TokenType.Ponctuation));
+            lexer.ObtenirProchainTerme().ShouldBe(Terme(":", TypeTerme.Ponctuation));
         }
 
         [Fact]
@@ -62,13 +62,13 @@ namespace HLHML.Test.Goal
 
             var root = parseur.Parse();
 
-            Terme(root.Value, root.Type).ShouldBe(Terme("Compound", TokenType.Compound));
+            Terme(root.Value, root.Type).ShouldBe(Terme("Corps", TypeTerme.Corps));
 
             root.Childs.Count.ShouldBe(2);
 
-            root.Childs[0].Token.ShouldBe(Terme("définit", TokenType.Verbe));
+            root.Childs[0].Terme.ShouldBe(Terme("définit", TypeTerme.Verbe));
 
-            root.Childs[1].Token.ShouldBe(Terme("Afficher", TokenType.Verbe));
+            root.Childs[1].Terme.ShouldBe(Terme("Afficher", TypeTerme.Verbe));
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace HLHML.Test.Goal
             root.Scope.ShouldNotBeNull();
             root.Childs[0].Childs[0].Scope.ShouldNotBeNull();
             root.Childs[0].Childs[1].Scope.ShouldNotBeNull();
-            root.Childs[0].Childs[1].Token.ShouldBe(Terme("Compound", TokenType.Compound));
+            root.Childs[0].Childs[1].Terme.ShouldBe(Terme("Corps", TypeTerme.Corps));
 
             (root.Childs[0].Childs[1].Scope != root.Scope).ShouldBeTrue();
             (root.Childs[0].Childs[0].Scope == root.Scope).ShouldBeTrue();

@@ -20,7 +20,7 @@ namespace HLHML
             _variables = new Dictionary<string, dynamic?>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public Scope(Scope parent)
+        public Scope(Scope? parent)
         {
             Parent = parent;
             _variables = new Dictionary<string, dynamic?>(StringComparer.OrdinalIgnoreCase);

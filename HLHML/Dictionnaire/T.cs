@@ -9,18 +9,18 @@ namespace HLHML.Dictionnaire
             Add(new Terme
             {
                 Mots = "tant que",
-                Type = TokenType.Conjonction
+                Type = TypeTerme.Conjonction
             });
             Add(new Terme
             {
                 Mots = "trois",
-                Type = TokenType.Adjectif,
+                Type = TypeTerme.Adjectif,
                 ValeurNumérique = 3
             });
             Add(new Terme
             {
                 Mots = "troisième",
-                Type = TokenType.Adjectif
+                Type = TypeTerme.Adjectif
             });
         }
     }

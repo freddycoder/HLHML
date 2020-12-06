@@ -117,22 +117,23 @@ namespace HLHML.Test.Goal
         [Fact]
         public void NombreNegatif6()
         {
-            Interprete("Tant que -5--5 n'est pas égal à 0, afficher \"bouble infinit\"", "");
+            Interprete("Tant que -5--5 n'est pas égal à 0, afficher \"boucle infinit\"", "");
         }
 
         [Fact]
         public void NombreNegatif6_1()
         {
-            Interprete("Tant que 0 n'est pas égal à -5--5, afficher \"bouble infinit\"", "");
+            Interprete("Tant que 0 n'est pas égal à -5--5, afficher \"boucle infinit\"", "");
         }
 
-        [Fact]
-        public void NombreNegatif7()
+        [Theory]
+        [InlineData("Si -5--5 n'est pas égal à 0, afficher \"bouble infinit\"", "")]
+        [InlineData("Si 0 n'est pas égal à -5--5, afficher \"bouble infinit\"", "")]
+        [InlineData("Si -5--5 n'est pas égal à 0, afficher \"bouble infinit\" sinon afficher \"youpi1\"", "youpi1")]
+        [InlineData("Si 0 n'est pas égal à -5--5, afficher \"bouble infinit\" sinon afficher \"youpi2\"", "youpi2")]
+        public void NombreNegatif7(string programme, string resultatAttendue)
         {
-            Interprete("Si -5--5 n'est pas égal à 0, afficher \"bouble infinit\"", "");
-            Interprete("Si 0 n'est pas égal à -5--5, afficher \"bouble infinit\"", "");
-            Interprete("Si -5--5 n'est pas égal à 0, afficher \"bouble infinit\" sinon afficher \"youpi\"", "youpi");
-            Interprete("Si 0 n'est pas égal à -5--5, afficher \"bouble infinit\" sinon afficher \"youpi\"", "youpi");
+            Interprete(programme, resultatAttendue);
         }
 
         [Fact]

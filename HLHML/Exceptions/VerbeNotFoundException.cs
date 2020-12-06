@@ -13,7 +13,7 @@ namespace HLHML.Exceptions
         {
         }
 
-        public VerbeNotFoundException(Terme terme)
+        public VerbeNotFoundException(Terme terme) : base($"Terme: {terme}")
         {
             this.terme = terme;
         }
