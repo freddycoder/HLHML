@@ -122,7 +122,7 @@ namespace HLHML
                                                     true, 
                                                     () => TermeActuel.Type != TypeTerme.None && 
                                                           TermeActuel.Type != TypeTerme.Adverbe && 
-                                                          TermeActuel.Mots.IsNot("sinon")));
+                                                          TermeActuel.Mots.EstPas("sinon")));
             }
 
             if (conjonction.Terme.Mots.Est("Tant que")) insideTantQue--;
@@ -136,14 +136,14 @@ namespace HLHML
             {
                 return () => TermeActuel.Type != TypeTerme.None &&
                                  TermeActuel.Type != TypeTerme.Adverbe &&
-                                 TermeActuel.Mots.IsNot("sinon") &&
-                                 TermeActuel.Mots.IsNot("ensuite");
+                                 TermeActuel.Mots.EstPas("sinon") &&
+                                 TermeActuel.Mots.EstPas("ensuite");
             }
             else
             {
                 return () => TermeActuel.Type != TypeTerme.None &&
                                  TermeActuel.Type != TypeTerme.Adverbe &&
-                                 TermeActuel.Mots.IsNot("sinon");
+                                 TermeActuel.Mots.EstPas("sinon");
             }
         }
 
@@ -334,7 +334,7 @@ namespace HLHML
                     root.AddChild(InitialiserConjonction());
                 }
 
-                if (TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon"))
+                if (TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.EstPas("sinon"))
                 {
                     ObtenirProchainTerme();
                 }

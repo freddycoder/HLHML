@@ -1,6 +1,7 @@
 ﻿using HLHML;
 using Serilog;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HMHML.Editor
@@ -18,7 +19,7 @@ namespace HMHML.Editor
         }
 
         private bool done = true;
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        private void NeedToReDrawPicture(object sender, EventArgs e)
         {
             if (done)
             {
@@ -28,12 +29,16 @@ namespace HMHML.Editor
                 {
                     var lexer = new Lexer(richTextBox1.Text.Trim());
                     var parser = new Parseur(lexer);
-                    var drawer = new ASTDrawer(parser.Parse());
+                    var drawer = new ASTDrawer(parser.Parse(), 
+                                               new Font(fontNameComboBox.Text, float.Parse(fontSizeInput.Text), FontStyle.Bold, GraphicsUnit.Pixel),
+                                               Color.White,
+                                               Color.Black,
+                                               Brushes.Black);
                     pictureBox1.Image = drawer.GetBitmap();
                 }
                 catch (Exception exception)
                 {
-                    Log.Logger.Error(exception, nameof(richTextBox1_TextChanged));
+                    Log.Logger.Error(exception, nameof(NeedToReDrawPicture));
                 }
                 finally
                 {

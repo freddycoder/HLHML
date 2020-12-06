@@ -21,10 +21,11 @@ namespace HLHML.Console.Test
 
             var lines = sw.ToString().Split(Environment.NewLine);
 
-            lines.Length.ShouldBe(3);
+            lines.Length.ShouldBe(4);
             lines[0].ShouldBe("***");
             lines[1].ShouldBe("***");
             lines[2].ShouldBe("***");
+            lines[3].ShouldBe(string.Empty);
         }
     }
 }

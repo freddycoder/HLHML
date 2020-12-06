@@ -13,15 +13,28 @@ namespace HLHML
         private readonly Graphics _graphics;
         private readonly SortedDictionary<float, SortedDictionary<float, BitmapEnhance>> _bitMaps;
 
-        public ASTDrawer(AST ast)
+        private readonly Font _font;
+        private readonly Color _backgroundColor;
+        private readonly Color _drawingColor;
+        private readonly Brush _brush;
+
+        public ASTDrawer(AST ast) : this(ast, new Font("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel), Color.White, Color.Black, Brushes.Black)
+        {
+        }
+
+        public ASTDrawer(AST ast, Font font, Color backgroundColor, Color drawingColor, Brush brush)
         {
             _ast = ast;
             _bitMaps = new SortedDictionary<float, SortedDictionary<float, BitmapEnhance>>();
+            _font = font;
+            _backgroundColor = backgroundColor;
+            _drawingColor = drawingColor;
+            _brush = brush;
             InitNodeDictionary(_ast);
 
             _bitmap = new Bitmap(CalculateWidth(), CalulateHeight());
             _graphics = Graphics.FromImage(_bitmap);
-            _graphics.Clear(Color.White);
+            _graphics.Clear(_backgroundColor);
         }
 
         public Bitmap GetBitmap()
@@ -80,7 +93,7 @@ namespace HLHML
 
                         for  (int i = 0; i < nbChild; i++)
                         {
-                            _graphics.DrawLine(new Pen(Brushes.Black), bitmap.BottomCenter, _bitMaps[level.Key + 1].ElementAt(i + nbChildProcess).Value.TopCenter);
+                            _graphics.DrawLine(new Pen(_brush), bitmap.BottomCenter, _bitMaps[level.Key + 1].ElementAt(i + nbChildProcess).Value.TopCenter);
                         }
 
                         nbChildProcess += nbChild;
@@ -150,16 +163,15 @@ namespace HLHML
         {
             var data = $"{ast.Type}:{ast.Value}";
 
-            Font font = new Font("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-            var stringSize = MesureString(data, font);
+            var stringSize = MesureString(data, _font);
 
             var bitmap = new Bitmap((int)Math.Floor(stringSize.Width * 1.33), (int)Math.Floor(stringSize.Height * 2 + 4));
 
             using (var graphics = Graphics.FromImage(bitmap))
             {
-                graphics.Clear(Color.White);
-                graphics.DrawEllipse(new Pen(Brushes.Black), 0, 0, bitmap.Width - 1, bitmap.Height - 1);
-                graphics.DrawString(data, font, new SolidBrush(Color.Black), bitmap.Width / 2 - stringSize.Width / 2, bitmap.Height / 2 - stringSize.Height / 2);
+                graphics.Clear(_backgroundColor);
+                graphics.DrawEllipse(new Pen(_brush), 0, 0, bitmap.Width - 1, bitmap.Height - 1);
+                graphics.DrawString(data, _font, new SolidBrush(_drawingColor), bitmap.Width / 2 - stringSize.Width / 2, bitmap.Height / 2 - stringSize.Height / 2);
                 graphics.Flush();
             }
 

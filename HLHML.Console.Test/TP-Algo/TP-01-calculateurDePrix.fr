@@ -29,4 +29,4 @@ Si prix etiquette blanche est plus grand que 0 et prix etiquette grise est plus 
 
 sinon afficher "Erreur, le programme va maintenant quitter.".
 
-Afficher "Merci d'avoir utiliser le calculateur de prix !".
+Ensuite, afficher "Merci d'avoir utiliser le calculateur de prix !".
