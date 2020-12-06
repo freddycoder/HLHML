@@ -8,6 +8,7 @@ namespace HLHML.Console.Test
     public class TP_Algo_TP1
     {
         [Fact]
+        [Trait("Future", "true")]
         public void TP1_CalculateurDePrix_ScenarioNominal()
         {
             var path = Path.Combine("TP-Algo", "TP-01-calculateurDePrix.fr");
@@ -31,6 +32,7 @@ namespace HLHML.Console.Test
         [Theory]
         [InlineData("1\n1\nnon\n", "2,75")]
         [InlineData("5\n6\noui\n", "18,425")]
+        [Trait("Future", "true")]
         public void TP1_Interpreteur(string input, string total)
         {
             var path = Path.Combine("TP-Algo", "TP-01-calculateurDePrix.fr");
