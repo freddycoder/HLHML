@@ -27,5 +27,17 @@ namespace HLHML.Console.Test
             lines[2].ShouldBe("***");
             lines[3].ShouldBe(string.Empty);
         }
+
+        [Fact]
+        public void TestEvalIntStringMultiplication()
+        {
+            var parseur = new Parseur(new Lexer("3 * \"*\""));
+
+            AST tree = parseur.Parse();
+
+            string output = NodeVisitor.Eval(tree);
+
+            output.ShouldBe("***");
+        }
     }
 }

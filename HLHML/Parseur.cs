@@ -78,10 +78,21 @@ namespace HLHML
         /// <returns>L'arbre de syntaxe abstrait représentant le programme</returns>
         public AST Parse(Scope? scope = null)
         {
-            AST ast = GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None && 
-                                                        TermeActuel.Type != TypeTerme.Adverbe);
+            try
+            {
+                AST ast = GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None &&
+                                                            TermeActuel.Type != TypeTerme.Adverbe);
 
-            return ast;
+                return ast;
+            }
+            catch (Exception e)
+            {
+                var parserException = new ParseurException($"Une exception est survenu au alentour du caractère à la position {_lexer.Position}.", e);
+
+                parserException.Data.Add("Lexer", _lexer);
+
+                throw parserException;
+            }
         }
 
         private int insideTantQue = 0;

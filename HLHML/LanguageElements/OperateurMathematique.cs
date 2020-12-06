@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements
@@ -93,9 +94,22 @@ namespace HLHML.LanguageElements
             if (Childs.Count == 2)
             {
                 var x = double.Parse(NodeVisitor.Eval(Childs[0]));
-                var y = double.Parse(NodeVisitor.Eval(Childs[1]));
+                if (double.TryParse(NodeVisitor.Eval(Childs[1]), out double y))
+                {
+                    return (x * y).ToString();
+                }
+                else
+                {
+                    var sb = new StringBuilder();
 
-                return (x * y).ToString();
+                    for (int i = 0; i < x; i++)
+                    {
+                        sb.Append(NodeVisitor.Eval(Childs[1]));
+                    }
+
+                    return sb.ToString();
+                }
+                
             }
             else if (Childs.Count > 2)
             {

@@ -9,17 +9,18 @@ namespace HLHML
     public class Lexer
     {
         private readonly string _text;
-        private int _pos;
-        
-        private char CurrentChar => _pos >= _text.Length ? '\0' : _text[_pos];
 
-        private char PeekChar => _pos + 1 >= _text.Length ? '\0' : _text[_pos + 1];
+        private char CurrentChar => Position >= _text.Length ? '\0' : _text[Position];
+
+        private char PeekChar => Position + 1 >= _text.Length ? '\0' : _text[Position + 1];
 
         public Lexer(string text)
         {
             _text = text;
-            _pos = 0;
+            Position = 0;
         }
+
+        public int Position { get; private set; }
 
         public Terme ObtenirProchainTerme()
         {
@@ -47,7 +48,7 @@ namespace HLHML
             {
                 var point = CurrentChar.ToString();
 
-                _pos++;
+                Position++;
 
                 return Terme(point, TypeTerme.Ponctuation);
             }
@@ -55,7 +56,7 @@ namespace HLHML
             {
                 var operateur = Terme(CurrentChar.ToString(), TypeTerme.OperateurMathematique);
 
-                _pos++;
+                Position++;
 
                 return operateur;
             }
@@ -65,8 +66,8 @@ namespace HLHML
                 {
                     var egalÀ = Terme("==", TypeTerme.EgalÀ);
 
-                    _pos++;
-                    _pos++;
+                    Position++;
+                    Position++;
 
                     return egalÀ;
                 }
@@ -74,7 +75,7 @@ namespace HLHML
                 {
                     var vaut = Terme("vaut", TypeTerme.Verbe);
 
-                    _pos++;
+                    Position++;
 
                     return vaut;
                 }
@@ -83,7 +84,7 @@ namespace HLHML
             {
                 var modulo = Terme("modulo", TypeTerme.OperateurMathematique);
 
-                _pos++;
+                Position++;
 
                 return modulo;
             }
@@ -91,7 +92,7 @@ namespace HLHML
             {
                 var terme = Terme(CurrentChar.ToString(), TypeTerme.OuvertureParenthèse);
 
-                _pos++;
+                Position++;
 
                 return terme;
             }
@@ -99,7 +100,7 @@ namespace HLHML
             {
                 var terme = Terme(CurrentChar.ToString(), TypeTerme.FermetureParenthèse);
 
-                _pos++;
+                Position++;
 
                 return terme;
             }
@@ -109,8 +110,8 @@ namespace HLHML
                 {
                     var terme = Terme(">=", TypeTerme.PlusGrandOuEgalÀ);
 
-                    _pos++;
-                    _pos++;
+                    Position++;
+                    Position++;
 
                     return terme;
                 }
@@ -118,7 +119,7 @@ namespace HLHML
                 {
                     var terme = Terme(CurrentChar.ToString(), TypeTerme.PlusGrandQue);
 
-                    _pos++;
+                    Position++;
 
                     return terme;
                 }
@@ -129,8 +130,8 @@ namespace HLHML
                 {
                     var terme = Terme("<=", TypeTerme.PlusPetitOuEgalÀ);
 
-                    _pos++;
-                    _pos++;
+                    Position++;
+                    Position++;
 
                     return terme;
                 }
@@ -138,7 +139,7 @@ namespace HLHML
                 {
                     var terme = Terme(CurrentChar.ToString(), TypeTerme.PlusPetitQue);
 
-                    _pos++;
+                    Position++;
 
                     return terme;
                 }
@@ -147,8 +148,8 @@ namespace HLHML
             {
                 var terme = Terme("!=", TypeTerme.DifferentDe);
 
-                _pos++;
-                _pos++;
+                Position++;
+                Position++;
 
                 return terme;
             }
@@ -165,12 +166,12 @@ namespace HLHML
             while (char.IsDigit(CurrentChar))
             {
                 sb.Append(CurrentChar);
-                _pos++;
+                Position++;
 
                 if (!partieDecimaleCommencé && (CurrentChar == CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]) && char.IsDigit(PeekChar))
                 {
                     sb.Append(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-                    _pos++;
+                    Position++;
                     partieDecimaleCommencé = true;
                 }
             }
@@ -182,29 +183,29 @@ namespace HLHML
         {
             var sb = new StringBuilder();
 
-            var firstQuoteIndice = _pos;
+            var firstQuoteIndice = Position;
 
-            _pos++;
+            Position++;
 
-            while (CurrentChar != '"' && _pos < _text.Length)
+            while (CurrentChar != '"' && Position < _text.Length)
             {
                 sb.Append(CurrentChar);
-                _pos++;
+                Position++;
             }
 
-            if (_text.Length == _pos)
+            if (_text.Length == Position)
             {
                 throw new NonClosingQuoteException("No closing quote matching", firstQuoteIndice, _text);
             }
 
-            _pos++;
+            Position++;
 
             return sb.ToString();
         }
 
         private Terme PeekNextToken()
         {
-            var sublexer = new Lexer(_text.Substring(_pos));
+            var sublexer = new Lexer(_text.Substring(Position));
 
             try
             {
@@ -238,13 +239,13 @@ namespace HLHML
             while (char.IsLetterOrDigit(CurrentChar))
             {
                 sb.Append(CurrentChar);
-                _pos++;
+                Position++;
             }
 
             if (CurrentChar == '\'')
             {
                 sb.Append(CurrentChar);
-                _pos++;
+                Position++;
             }
             else
             {
@@ -275,7 +276,7 @@ namespace HLHML
         {
             while (char.IsWhiteSpace(CurrentChar))
             {
-                _pos++;
+                Position++;
             }
         }
     }
