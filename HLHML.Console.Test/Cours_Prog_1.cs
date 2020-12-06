@@ -8,7 +8,6 @@ namespace HLHML.Console.Test
     public class Cours_Prog_1
     {
         [Fact]
-        [Trait("Future", "true")]
         public void AfficherCarre()
         {
             var path = Path.Combine("Cours_Prog_1", "ExerciceProg1.fr");
