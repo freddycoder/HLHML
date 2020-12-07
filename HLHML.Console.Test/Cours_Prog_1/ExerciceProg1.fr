@@ -2,8 +2,8 @@ Afficher "Entrer la taille du carré : ".
 
 Lire la taille du carré.
 
-n = la taille du carré.
+n = taille du carré.
 
-Tant que m est plus petit que la taille du carré, 
+Tant que m est plus petit que taille du carré, 
 	afficher n * "*".
 	m = m + 1.

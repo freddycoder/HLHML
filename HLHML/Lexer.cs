@@ -18,31 +18,42 @@ namespace HLHML
         {
             _text = text;
             Position = 0;
+            DernierTerme = new DernierTerme();
         }
 
         public int Position { get; private set; }
+
+        public DernierTerme DernierTerme { get; private set; }
 
         public Terme ObtenirProchainTerme()
         {
             Avancer();
 
+            DernierTerme.Position = Position;
+
             if (char.IsLetter(CurrentChar))
             {
                 var value = GetNextWord();
 
-                return Terme(value, ObtenirTypeTerme(value));
+                DernierTerme.Terme = Terme(value, ObtenirTypeTerme(value));
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '"')
             {
                 var value = ObtenirChaineDeTexte();
 
-                return Terme(value, TypeTerme.Text);
+                DernierTerme.Terme = Terme(value, TypeTerme.Text);
+
+                return DernierTerme.Terme;
             }
             else if (char.IsDigit(CurrentChar))
             {
                 var nombre = GetNumber();
 
-                return Terme(nombre, TypeTerme.Nombre);
+                DernierTerme.Terme = Terme(nombre, TypeTerme.Nombre);
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '.' || CurrentChar == ',' || CurrentChar == ':')
             {
@@ -50,7 +61,9 @@ namespace HLHML
 
                 Position++;
 
-                return Terme(point, TypeTerme.Ponctuation);
+                DernierTerme.Terme = Terme(point, TypeTerme.Ponctuation);
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '+' || CurrentChar == '-' || CurrentChar == '*' || CurrentChar == '/')
             {
@@ -58,7 +71,9 @@ namespace HLHML
 
                 Position++;
 
-                return operateur;
+                DernierTerme.Terme = operateur;
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '=')
             {
@@ -69,7 +84,9 @@ namespace HLHML
                     Position++;
                     Position++;
 
-                    return egalÀ;
+                    DernierTerme.Terme = egalÀ;
+
+                    return DernierTerme.Terme;
                 }
                 else
                 {
@@ -77,7 +94,9 @@ namespace HLHML
 
                     Position++;
 
-                    return vaut;
+                    DernierTerme.Terme = vaut;
+
+                    return DernierTerme.Terme;
                 }
             }
             else if (CurrentChar == '%')
@@ -86,7 +105,9 @@ namespace HLHML
 
                 Position++;
 
-                return modulo;
+                DernierTerme.Terme = modulo;
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '(')
             {
@@ -94,7 +115,9 @@ namespace HLHML
 
                 Position++;
 
-                return terme;
+                DernierTerme.Terme = terme;
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == ')')
             {
@@ -102,7 +125,9 @@ namespace HLHML
 
                 Position++;
 
-                return terme;
+                DernierTerme.Terme = terme;
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '>')
             {
@@ -113,7 +138,9 @@ namespace HLHML
                     Position++;
                     Position++;
 
-                    return terme;
+                    DernierTerme.Terme = terme;
+
+                    return DernierTerme.Terme;
                 }
                 else
                 {
@@ -121,7 +148,9 @@ namespace HLHML
 
                     Position++;
 
-                    return terme;
+                    DernierTerme.Terme = terme;
+
+                    return DernierTerme.Terme;
                 }
             }
             else if (CurrentChar == '<')
@@ -133,7 +162,9 @@ namespace HLHML
                     Position++;
                     Position++;
 
-                    return terme;
+                    DernierTerme.Terme = terme;
+
+                    return DernierTerme.Terme;
                 }
                 else
                 {
@@ -141,7 +172,9 @@ namespace HLHML
 
                     Position++;
 
-                    return terme;
+                    DernierTerme.Terme = terme;
+
+                    return DernierTerme.Terme;
                 }
             }
             else if (CurrentChar == '!' && PeekChar == '=')
@@ -151,10 +184,14 @@ namespace HLHML
                 Position++;
                 Position++;
 
-                return terme;
+                DernierTerme.Terme = terme;
+
+                return DernierTerme.Terme;
             }
 
-            return Terme("", TypeTerme.None);
+            DernierTerme.Terme = Terme("", TypeTerme.None);
+
+            return DernierTerme.Terme;
         }
 
         private string GetNumber()
