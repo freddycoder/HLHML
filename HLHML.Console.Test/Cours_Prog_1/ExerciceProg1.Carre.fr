@@ -3,6 +3,7 @@ Afficher "Entrer la taille du carré : ".
 Lire la taille du carré.
 
 n = taille du carré.
+m = 0.
 
 Tant que m est plus petit que taille du carré, 
 	afficher n * "*".

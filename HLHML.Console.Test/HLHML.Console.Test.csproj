@@ -22,7 +22,10 @@
     <None Update="AINSI_Encoding.fr">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Cours_Prog_1\ExerciceProg1.fr">
+    <None Update="Cours_Prog_1\ExerciceProg1.Triangle.fr">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Cours_Prog_1\ExerciceProg1.Carre.fr">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DemoProgram.fr">
@@ -37,10 +40,6 @@
     <None Update="TP-Algo\TP-01-calculateurDePrix.fr">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Cours_Prog_1\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,10 @@
+Afficher "Entrer la taille du triangle : ".
+
+Lire la taille du triangle.
+
+n = taille du triangle.
+m = 0.
+
+Tant que m est plus petit que taille du triangle, 
+	afficher (1 + m) * "*".
+	m = m + 1.
