@@ -624,7 +624,7 @@ namespace HLHML
             }
             else if (TermeActuel.Type == TypeTerme.Adjectif)
             {
-
+                // TODO : Continuer ici
             }
 
             return node;

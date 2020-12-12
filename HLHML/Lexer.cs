@@ -256,11 +256,6 @@ namespace HLHML
 
         private TypeTerme ObtenirTypeTerme(string mots)
         {
-            //if (mots.Length > 1 && mots.EstPluriel())
-            //{
-            //    mots = mots.AccorderSingulier();
-            //}
-
             if (TermesConnues.ContainsKey(mots))
             {
                 return TermesConnues[mots].Type;
