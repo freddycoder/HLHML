@@ -104,5 +104,25 @@ namespace HLHML.Console.Test
             lines[1].ShouldBe("*");
             lines[2].ShouldBe(string.Empty);
         }
+
+        [Fact]
+        public void AfficherRectangle()
+        {
+            var path = Path.Combine("Cours_Prog_1", "ExerciceProg1.Rectangle.fr");
+
+            using var sw = new StringWriter();
+
+            var interpreteur = new Interpreteur(sw, newLineWhenAfficher: true);
+
+            interpreteur.Interprete(File.ReadAllText(path));
+
+            var lines = sw.ToString().Split(Environment.NewLine);
+
+            lines.Length.ShouldBe(4);
+            lines[0].ShouldBe("*******");
+            lines[1].ShouldBe("*     *");
+            lines[2].ShouldBe("*******");
+            lines[3].ShouldBe(string.Empty);
+        }
     }
 }

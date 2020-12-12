@@ -22,6 +22,9 @@
     <None Update="AINSI_Encoding.fr">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Cours_Prog_1\ExerciceProg1.Rectangle.fr">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Cours_Prog_1\ExerciceProg1.Triangle.fr">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

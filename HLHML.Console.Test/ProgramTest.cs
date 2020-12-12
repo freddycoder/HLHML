@@ -7,6 +7,7 @@ namespace HLHML.Console.Test
     public class ProgramTest
     {
         [Fact]
+        [Trait("Future", "true")]
         public void TestScriptUTF8BOM()
         {
             using var sr = new StringReader("12");
@@ -18,6 +19,7 @@ namespace HLHML.Console.Test
         }
 
         [Fact]
+        [Trait("Future", "true")]
         public void TestScriptAINSI()
         {
             using var sr = new StringReader("12");

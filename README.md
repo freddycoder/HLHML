@@ -41,7 +41,7 @@ Ensuite, afficher i
 ```
 En appelant l'executable en ligne de commande :
 ```
-HLHML.exe monScript.fr -t imageDestination.bmp
+HLHML.Console.exe monScript.fr -t imageDestination.bmp
 ```
 Le programme va produire l'image suvante
 ![impossible de trouver l'image...](https://raw.githubusercontent.com/freddycoder/HLHML/master/exempleAST.bmp)

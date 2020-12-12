@@ -41,7 +41,7 @@ namespace HLHML.LanguageElements
         {
             return Operator switch
             {
-                "+" => EvalPlus(),
+                "+" => EvalAddition(),
                 "modulo" => EvalModulo(),
                 "*" => EvalMultiplication(),
                 "-" => EvalSoustraction(),
@@ -119,7 +119,7 @@ namespace HLHML.LanguageElements
             return "";
         }
 
-        private string EvalPlus()
+        private string EvalAddition()
         {
             if (Childs.Count == 1)
             {
@@ -127,10 +127,18 @@ namespace HLHML.LanguageElements
             }
             else if (Childs.Count == 2)
             {
-                var x = double.Parse(NodeVisitor.Eval(Childs[0]));
-                var y = double.Parse(NodeVisitor.Eval(Childs[1]));
+                var branche1Evaluation = NodeVisitor.Eval(Childs[0]);
+                var branche2Evaluation = NodeVisitor.Eval(Childs[1]);
 
-                return (x + y).ToString();
+                if (double.TryParse(branche1Evaluation, out double x))
+                {
+                    if (double.TryParse(branche2Evaluation, out double y))
+                    {
+                        return (x + y).ToString();
+                    }
+                }
+
+                return $"{branche1Evaluation}{branche2Evaluation}";
             }
             else if (Childs.Count > 2)
             {

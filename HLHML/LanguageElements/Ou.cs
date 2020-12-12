@@ -11,7 +11,10 @@ namespace HLHML.LanguageElements
 
         public bool Valider()
         {
-            return NodeVisitor.Eval(Childs[0]) || NodeVisitor.Eval(Childs[1]);
+            var branche1 = NodeVisitor.Eval(Childs[0]);
+            var branche2 = NodeVisitor.Eval(Childs[1]);
+
+            return branche1 || branche2;
         }
     }
 }

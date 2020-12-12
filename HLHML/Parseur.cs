@@ -87,7 +87,7 @@ namespace HLHML
             }
             catch (Exception e)
             {
-                var parserException = new ParseurException($"Une exception est survenu au alentour du caractère à la position {_lexer.Position}.", e);
+                var parserException = new ParseurException($"Une exception est survenu au alentour du caractère à la position {_lexer.Position}. Le dernier terme était '{_lexer.DernierTerme}.'", e);
 
                 parserException.Data.Add("Lexer", _lexer);
 
@@ -244,15 +244,10 @@ namespace HLHML
                         TermeActuel.Type == TypeTerme.Sujet ||
                         TermeActuel.Type == TypeTerme.OperateurMathematique ||
                         TermeActuel.Type == TypeTerme.OuvertureParenthèse ||
-                        TermeActuel.Type == TypeTerme.Negation)
+                        TermeActuel.Type == TypeTerme.Negation ||
+                        TermeActuel.Type == TypeTerme.Text)
                     {
                         asts.Add(Expression());
-                    }
-                    else if (TermeActuel.Type == TypeTerme.Text)
-                    {
-                        asts.Add(new AST(TermeActuel));
-
-                        ObtenirProchainTerme();
                     }
                     else if (TermeActuel.Type == TypeTerme.Conjonction)
                     {
@@ -567,8 +562,6 @@ namespace HLHML
                 }
                 else
                 {
-                    // Ça ou throw new Exception() ...
-                    // avant, il n'y avait pas le if et node.AddChild était directement appeller alors que node pouvait être null.
                     node = Level_1();
                 }
             }
@@ -593,6 +586,11 @@ namespace HLHML
         private AST? Level_0()
         {
             AST? node = default;
+
+            if (TermeActuel.Type == TypeTerme.Déterminant)
+            {
+                ObtenirProchainTerme();
+            }
 
             if (TermeActuel.Type == TypeTerme.Sujet)
             {
@@ -623,6 +621,10 @@ namespace HLHML
                 {
                     throw new NonClosingParenthesisException();
                 }
+            }
+            else if (TermeActuel.Type == TypeTerme.Adjectif)
+            {
+
             }
 
             return node;
