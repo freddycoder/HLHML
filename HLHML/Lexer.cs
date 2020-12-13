@@ -10,7 +10,9 @@ namespace HLHML
     {
         private readonly string _text;
 
-        private char CurrentChar => Position >= _text.Length ? '\0' : _text[Position];
+        private readonly int _limit;
+
+        private char CurrentChar;
 
         private char PeekChar => Position + 1 >= _text.Length ? '\0' : _text[Position + 1];
 
@@ -18,6 +20,11 @@ namespace HLHML
         {
             _text = text;
             Position = 0;
+            if (text.Length > 0)
+            {
+                CurrentChar = _text[Position];
+            }
+            _limit = _text.Length - 1;
             DernierTerme = new DernierTerme();
         }
 
@@ -59,7 +66,7 @@ namespace HLHML
             {
                 var point = CurrentChar.ToString();
 
-                Position++;
+                Incrementer();
 
                 DernierTerme.Terme = Terme(point, TypeTerme.Ponctuation);
 
@@ -69,7 +76,7 @@ namespace HLHML
             {
                 var operateur = Terme(CurrentChar.ToString(), TypeTerme.OperateurMathematique);
 
-                Position++;
+                Incrementer();
 
                 DernierTerme.Terme = operateur;
 
@@ -81,8 +88,8 @@ namespace HLHML
                 {
                     var egalÀ = Terme("==", TypeTerme.EgalÀ);
 
-                    Position++;
-                    Position++;
+                    Incrementer();
+                    Incrementer();
 
                     DernierTerme.Terme = egalÀ;
 
@@ -92,7 +99,7 @@ namespace HLHML
                 {
                     var vaut = Terme("vaut", TypeTerme.Verbe);
 
-                    Position++;
+                    Incrementer();
 
                     DernierTerme.Terme = vaut;
 
@@ -103,7 +110,7 @@ namespace HLHML
             {
                 var modulo = Terme("modulo", TypeTerme.OperateurMathematique);
 
-                Position++;
+                Incrementer();
 
                 DernierTerme.Terme = modulo;
 
@@ -113,7 +120,7 @@ namespace HLHML
             {
                 var terme = Terme(CurrentChar.ToString(), TypeTerme.OuvertureParenthèse);
 
-                Position++;
+                Incrementer();
 
                 DernierTerme.Terme = terme;
 
@@ -123,7 +130,7 @@ namespace HLHML
             {
                 var terme = Terme(CurrentChar.ToString(), TypeTerme.FermetureParenthèse);
 
-                Position++;
+                Incrementer();
 
                 DernierTerme.Terme = terme;
 
@@ -135,8 +142,8 @@ namespace HLHML
                 {
                     var terme = Terme(">=", TypeTerme.PlusGrandOuEgalÀ);
 
-                    Position++;
-                    Position++;
+                    Incrementer();
+                    Incrementer();
 
                     DernierTerme.Terme = terme;
 
@@ -146,7 +153,7 @@ namespace HLHML
                 {
                     var terme = Terme(CurrentChar.ToString(), TypeTerme.PlusGrandQue);
 
-                    Position++;
+                    Incrementer();
 
                     DernierTerme.Terme = terme;
 
@@ -159,8 +166,8 @@ namespace HLHML
                 {
                     var terme = Terme("<=", TypeTerme.PlusPetitOuEgalÀ);
 
-                    Position++;
-                    Position++;
+                    Incrementer();
+                    Incrementer();
 
                     DernierTerme.Terme = terme;
 
@@ -170,7 +177,7 @@ namespace HLHML
                 {
                     var terme = Terme(CurrentChar.ToString(), TypeTerme.PlusPetitQue);
 
-                    Position++;
+                    Incrementer();
 
                     DernierTerme.Terme = terme;
 
@@ -181,8 +188,8 @@ namespace HLHML
             {
                 var terme = Terme("!=", TypeTerme.DifferentDe);
 
-                Position++;
-                Position++;
+                Incrementer();
+                Incrementer();
 
                 DernierTerme.Terme = terme;
 
@@ -203,12 +210,12 @@ namespace HLHML
             while (char.IsDigit(CurrentChar))
             {
                 sb.Append(CurrentChar);
-                Position++;
+                Incrementer();
 
                 if (!partieDecimaleCommencé && (CurrentChar == CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]) && char.IsDigit(PeekChar))
                 {
                     sb.Append(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-                    Position++;
+                    Incrementer();
                     partieDecimaleCommencé = true;
                 }
             }
@@ -222,12 +229,12 @@ namespace HLHML
 
             var firstQuoteIndice = Position;
 
-            Position++;
+            Incrementer();
 
             while (CurrentChar != '"' && Position < _text.Length)
             {
                 sb.Append(CurrentChar);
-                Position++;
+                Incrementer();
             }
 
             if (_text.Length == Position)
@@ -235,7 +242,7 @@ namespace HLHML
                 throw new NonClosingQuoteException("No closing quote matching", firstQuoteIndice, _text);
             }
 
-            Position++;
+            Incrementer();
 
             return sb.ToString();
         }
@@ -271,13 +278,13 @@ namespace HLHML
             while (char.IsLetterOrDigit(CurrentChar))
             {
                 sb.Append(CurrentChar);
-                Position++;
+                Incrementer();
             }
 
             if (CurrentChar == '\'')
             {
                 sb.Append(CurrentChar);
-                Position++;
+                Incrementer();
             }
             else
             {
@@ -308,7 +315,29 @@ namespace HLHML
         {
             while (char.IsWhiteSpace(CurrentChar))
             {
+                Incrementer();
+            }
+        }
+
+        /// <summary>
+        /// Sauter les prochains espaces blanc pour se positionner sur le prochain caractère
+        /// </summary>
+        private void Incrementer()
+        {
+            if (_limit > Position)
+            {
                 Position++;
+
+                CurrentChar = _text[Position];
+            }
+            else
+            {
+                CurrentChar = '\0';
+
+                if (Position < _text.Length)
+                {
+                    Position++;
+                }
             }
         }
     }

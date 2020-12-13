@@ -122,15 +122,15 @@ namespace HLHML
             }
 
             conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), 
-                                                insideTantQue == 0 || conjonction.Terme.Mots.Est("Tant que"), 
+                                                skipLastAdverb: insideTantQue == 0 || conjonction.Terme.Mots.Est("Tant que"), 
                                                 GetPredicatFunction()));
 
             if (TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
             {
                 ObtenirProchainTerme();
 
-                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), 
-                                                    true, 
+                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope),
+                                                    skipLastAdverb: true, 
                                                     () => TermeActuel.Type != TypeTerme.None && 
                                                           TermeActuel.Type != TypeTerme.Adverbe && 
                                                           TermeActuel.Mots.EstPas("sinon")));
@@ -146,15 +146,15 @@ namespace HLHML
             if (insideTantQue > 0)
             {
                 return () => TermeActuel.Type != TypeTerme.None &&
-                                 TermeActuel.Type != TypeTerme.Adverbe &&
-                                 TermeActuel.Mots.EstPas("sinon") &&
-                                 TermeActuel.Mots.EstPas("ensuite");
+                             TermeActuel.Type != TypeTerme.Adverbe &&
+                             TermeActuel.Mots.EstPas("sinon") &&
+                             TermeActuel.Mots.EstPas("ensuite");
             }
             else
             {
                 return () => TermeActuel.Type != TypeTerme.None &&
-                                 TermeActuel.Type != TypeTerme.Adverbe &&
-                                 TermeActuel.Mots.EstPas("sinon");
+                             TermeActuel.Type != TypeTerme.Adverbe &&
+                             TermeActuel.Mots.EstPas("sinon");
             }
         }
 

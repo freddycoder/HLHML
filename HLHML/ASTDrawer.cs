@@ -106,7 +106,12 @@ namespace HLHML
         {
             if (ast.Childs.Count != 0)
             {
-                var xJump = _bitMaps.ContainsKey(y + 1) ? _bitMaps[y + 1].Count : 0;
+                var xJump = 0;
+
+                if (_bitMaps.TryGetValue(y + 1, out var subDictionary))
+                {
+                    xJump = subDictionary.Count;
+                }
 
                 for (int i = 0; i < ast.Childs.Count; i++)
                 {
@@ -119,12 +124,13 @@ namespace HLHML
 
         private void AddNodeToDictionary(AST ast, float x, float y)
         {
-            if (!_bitMaps.ContainsKey(y))
+            if (!_bitMaps.TryGetValue(y, out var subDictionary))
             {
-                _bitMaps.Add(y, new SortedDictionary<float, BitmapEnhance>());
+                subDictionary = new SortedDictionary<float, BitmapEnhance>();
+                _bitMaps.Add(y, subDictionary);
             }
 
-            _bitMaps[y].Add(x, GetBitmapNode(ast));
+            subDictionary.Add(x, GetBitmapNode(ast));
         }
 
         private void AddNodeToBitmap(BitmapEnhance bitmap, float x, float y)

@@ -1,0 +1,66 @@
+Afficher "ÉtoileVersion4".
+
+un carré se définit comme suit :
+    Afficher "Choisir la longeur d'un coté".
+    Lire la longeur d'un coté.
+    Afficher "Vide ou plein ?".
+    Lire remplissage.
+    si remplissage est égal à "vide",
+        ligne = 0.
+        tant que ligne est plus petit que la longeur d'un coté,
+            si ligne est égal à 0 ou ligne est égal à la longeur d'un coté - 1,
+                 afficher la longeur d'un coté * "*".
+            sinon 
+                  afficher "*" + la longeur d'un coté - 2 * " " + "*".
+         Ensuite, fin boucle.
+    si remplissagle est égal à "plein",
+        ligne = 0.
+        tant que ligne est plus petit que la longeur d'un coté,
+                 afficher la longeur d'un coté * "*".
+        Ensuite, fin boucle.
+     un carré = "".
+
+un rectangle se définit comme suit :
+    Afficher "Choisir la longeur d'un coté".
+    Lire la longeur d'un coté.
+    Afficher "Choisir la hauteur".
+    Lire la hauteur.
+    Afficher "Vide ou plein ?".
+    Lire remplissage.
+    si remplissage est égal à "vide",
+        ligne = 0.
+        tant que ligne est plus petit que la hauteur,
+            si ligne est égal à 0 ou ligne est égal à la hauteur - 1,
+                 afficher la longeur d'un coté * "*".
+            sinon 
+                  afficher "*" + la longeur d'un coté - 2 * " " + "*".
+         Ensuite, fin boucle.
+    si remplissagle est égal à "plein",
+        ligne = 0.
+        tant que ligne est plus petit que la hauteur,
+                 afficher la longeur d'un coté * "*".
+        Ensuite, fin boucle.
+     un rectangle = "".
+
+quitter programme = "faux".
+
+tant que quitter programme est égal à "faux",
+
+    Afficher "1. Afficher un carré".
+    Afficher "2. Afficher un rectangle".
+
+    Lire choix utilisateur.
+
+    si choix utilisateur est égal à "1",
+
+         Afficher un carré.
+
+    sinon si choix utilisateur est égal à "2".
+
+         Afficher un rectangle.
+
+    sinon 
+
+        quitter programme = "faux".
+
+Ensuite, terminer.

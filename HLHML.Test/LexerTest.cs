@@ -43,5 +43,44 @@ namespace HLHML.Test
             lexer.ObtenirProchainTerme().ShouldBe(Terme("==", TypeTerme.EgalÀ));
             lexer.ObtenirProchainTerme().ShouldBe(Terme("!=", TypeTerme.DifferentDe));
         }
+
+        [Fact]
+        public void CodeCSharpNeFaitPasBouclerIndéfiniement()
+        {
+            var lexer = new Lexer("        /// <summary>\n" +
+                                  "        /// Sauter les prochains espaces blanc pour se positionner sur le prochain caractère\n" +
+                                  "        /// </summary>\n" +
+                                  "        private void Incrementer()\n" +
+                                  "        {\n" +
+                                  "            if (_limit > Position)\n" +
+                                  "            {\n" +
+                                  "                Position++;\n" +
+                                  "        \n" +
+                                  "                CurrentChar = _text[Position];\n" +
+                                  "            }\n" +
+                                  "            else\n" +
+                                  "            {\n" +
+                                  "                CurrentChar = '\0';\n" +
+                                  "        \n" +
+                                  "                if (Position < _text.Length)\n" +
+                                  "                {\n" +
+                                  "                    Position++;\n" +
+                                  "                }\n" +
+                                  "            }\n" +
+                                  "        }\n");
+
+            var termeFinal = TermeBuilder.Terme("", TypeTerme.None);
+
+            var terme = lexer.ObtenirProchainTerme();
+
+            terme.ShouldNotBe(termeFinal);
+
+            while (terme.Equals(termeFinal) == false)
+            {
+                terme = lexer.ObtenirProchainTerme();
+            }
+
+            terme.ShouldBe(termeFinal);
+        }
     }
 }

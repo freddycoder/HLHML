@@ -112,6 +112,7 @@
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             this.richTextBox1.TextChanged += new System.EventHandler(this.NeedToReDrawPicture);
+            this.richTextBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MaybeRedrawPicture);
             this.richTextBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MontrerInformationsTermes);
             // 
             // Form1

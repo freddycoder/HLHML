@@ -20,6 +20,14 @@ namespace HMHML.Editor.Evenements
             this.pictureBox1 = pictureBox;
         }
 
+        internal void MaybeRedrawPicture(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsWhiteSpace(e.KeyChar) == false)
+            {
+                NeedToReDrawPicture(sender, e);
+            }
+        }
+
         internal void NeedToReDrawPicture(object sender, EventArgs e)
         {
             if (done)
