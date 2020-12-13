@@ -6,12 +6,12 @@ using System.Windows.Forms;
 
 namespace HMHML.Editor
 {
-    public partial class Form1 : Form
+    public partial class EditeurFr : Form
     {
         private readonly RedesinerArbre redesinerArbre;
         private readonly InformationsTermes informationsTermes;
 
-        public Form1()
+        public EditeurFr()
         {
             InitializeComponent();
 

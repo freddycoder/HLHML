@@ -8,6 +8,8 @@
     <authors>Frédéric Jacques</authors>
 
     <!-- Optional elements -->
+    <icon>Properties/icon.png</icon>
+    <file src="Properties/icon.png"></file>
     <!-- ... -->
   </metadata>
   <!-- Optional 'files' node -->

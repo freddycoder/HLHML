@@ -1,6 +1,6 @@
 ﻿namespace HMHML.Editor
 {
-    partial class Form1
+    partial class EditeurFr
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditeurFr));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.fontSizeInput = new System.Windows.Forms.TextBox();
             this.fontNameComboBox = new System.Windows.Forms.ComboBox();
@@ -115,14 +116,15 @@
             this.richTextBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MaybeRedrawPicture);
             this.richTextBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MontrerInformationsTermes);
             // 
-            // Form1
+            // EditeurFr
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.splitContainer1);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "EditeurFr";
+            this.Text = "Editeur Fr";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
