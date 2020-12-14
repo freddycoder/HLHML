@@ -9,15 +9,15 @@ namespace HMHML.Editor.Evenements
 {
     internal class RedesinerArbre
     {
-        private readonly RichTextBox richTextBox1;
+        private readonly RichTextBox richTextBox;
         private readonly Func<Font> policeSelecteur;
-        private readonly PictureBox pictureBox1;
+        private readonly PictureBox pictureBox;
 
         internal RedesinerArbre(RichTextBox richTextBox, Func<Font> policeSelecteur, PictureBox pictureBox)
         {
-            this.richTextBox1 = richTextBox;
+            this.richTextBox = richTextBox;
             this.policeSelecteur = policeSelecteur;
-            this.pictureBox1 = pictureBox;
+            this.pictureBox = pictureBox;
         }
 
         internal void MaybeRedrawPicture(object sender, KeyPressEventArgs e)
@@ -37,7 +37,8 @@ namespace HMHML.Editor.Evenements
                 try
                 {
                     PaintInBlack();
-                    var lexer = new Lexer(richTextBox1.Text);
+
+                    var lexer = new Lexer(richTextBox.Text);
                     var parser = new Parseur(lexer);
                     var drawer = new ASTDrawer(parser.Parse(),
                                                policeSelecteur.Invoke(),
@@ -45,20 +46,11 @@ namespace HMHML.Editor.Evenements
                                                Color.Black,
                                                Brushes.Black);
 
-                    pictureBox1.Image = drawer.GetBitmap();
+                    pictureBox.Image = drawer.GetBitmap();
                 }
                 catch (ParseurException exception)
                 {
-                    Lexer lexer = exception.Data["Lexer"] as Lexer;
-                    int debutSelection = lexer.Position - lexer.DernierTerme.Terme.Mots.Length;
-
-                    int originalSelection = richTextBox1.SelectionStart;
-                    richTextBox1.SelectionStart = debutSelection;
-                    richTextBox1.SelectionLength = lexer.Position - debutSelection;
-                    richTextBox1.SelectionFont = new Font(richTextBox1.Font, FontStyle.Underline);
-                    richTextBox1.SelectionColor = Color.Red;
-                    richTextBox1.SelectionLength = 0;
-                    richTextBox1.SelectionStart = originalSelection;
+                    PaintMistakInRed(exception);
                 }
                 catch (Exception exception)
                 {
@@ -71,17 +63,39 @@ namespace HMHML.Editor.Evenements
             }
         }
 
+        private void PaintMistakInRed(ParseurException exception)
+        {
+            Lexer lexer = exception.Data["Lexer"] as Lexer;
+            int debutSelection = lexer.Position - lexer.DernierTerme.Terme.Mots.Length;
+
+            int originalSelection = richTextBox.SelectionStart;
+            richTextBox.SelectionStart = debutSelection;
+            richTextBox.SelectionLength = lexer.Position - debutSelection;
+            richTextBox.SelectionFont = new Font(richTextBox.Font, FontStyle.Underline);
+            richTextBox.SelectionColor = Color.Red;
+            richTextBox.SelectionLength = 0;
+            richTextBox.SelectionStart = originalSelection;
+
+            redOnScreen = true;
+        }
+
         private bool done = true;
+        private bool redOnScreen = false;
 
         private void PaintInBlack()
         {
-            int originalSelection = richTextBox1.SelectionStart;
-            richTextBox1.SelectionStart = 0;
-            richTextBox1.SelectionLength = richTextBox1.Text.Length;
-            richTextBox1.SelectionFont = new Font(richTextBox1.Font, FontStyle.Regular);
-            richTextBox1.SelectionColor = Color.Black;
-            richTextBox1.SelectionLength = 0;
-            richTextBox1.SelectionStart = originalSelection;
+            if (redOnScreen)
+            {
+                int originalSelection = richTextBox.SelectionStart;
+                richTextBox.SelectionStart = 0;
+                richTextBox.SelectionLength = richTextBox.Text.Length;
+                richTextBox.SelectionFont = new Font(richTextBox.Font, FontStyle.Regular);
+                richTextBox.SelectionColor = Color.Black;
+                richTextBox.SelectionLength = 0;
+                richTextBox.SelectionStart = originalSelection;
+
+                redOnScreen = false;
+            }
         }
     }
 }

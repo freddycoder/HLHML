@@ -48,6 +48,7 @@ tant que quitter programme est égal à "faux",
 
     Afficher "1. Afficher un carré".
     Afficher "2. Afficher un rectangle".
+    Afficher "0. Quitter programme.".
 
     Lire choix utilisateur.
 
@@ -61,6 +62,6 @@ tant que quitter programme est égal à "faux",
 
     sinon 
 
-        quitter programme = "faux".
+        quitter programme = "vrai".
 
 Ensuite, terminer.
