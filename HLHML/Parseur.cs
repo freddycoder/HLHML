@@ -121,8 +121,8 @@ namespace HLHML
                 }
             }
 
-            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), 
-                                                skipLastAdverb: insideTantQue == 0 || conjonction.Terme.Mots.Est("Tant que"), 
+            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope),
+                                                skipLastAdverb: insideTantQue == 0 || conjonction.Terme.Mots.Est("Tant que"),
                                                 GetPredicatFunction()));
 
             if (TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
@@ -130,9 +130,9 @@ namespace HLHML
                 ObtenirProchainTerme();
 
                 conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope),
-                                                    skipLastAdverb: true, 
-                                                    () => TermeActuel.Type != TypeTerme.None && 
-                                                          TermeActuel.Type != TypeTerme.Adverbe && 
+                                                    skipLastAdverb: true,
+                                                    () => TermeActuel.Type != TypeTerme.None &&
+                                                          TermeActuel.Type != TypeTerme.Adverbe &&
                                                           TermeActuel.Mots.EstPas("sinon")));
             }
 
@@ -558,12 +558,31 @@ namespace HLHML
 
                 if (node != null)
                 {
-                    node.AddChild(Level_1());
+                    if (TermeActuel.Type == TypeTerme.Adjectif)
+                    {
+                        var t = TermeActuel;
+                        ObtenirProchainTerme();
+                        var parametres = new Parametres(t, Level_0());
+
+                        node.AddChild(parametres);
+                    }
+                    else
+                    {
+                        node.AddChild(Level_1());
+                    }
                 }
                 else
                 {
                     node = Level_1();
                 }
+            }
+            else if (TermeActuel.Type == TypeTerme.Adjectif)
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                var parametres = new Parametres(t, Level_0());
+
+                node = parametres;
             }
 
             return node;
@@ -622,17 +641,10 @@ namespace HLHML
                     throw new NonClosingParenthesisException();
                 }
             }
-            else if (TermeActuel.Type == TypeTerme.Adjectif)
-            {
-                // TODO : Continuer ici
-            }
 
             return node;
         }
 
-        public override string ToString()
-        {
-            return $"Parseur : {{ CurrentToken : {TermeActuel?.ToString() ?? "null" } }} ";
-        }
+        public override string ToString() => $"Parseur : {{ CurrentToken : {TermeActuel?.ToString() ?? "null" } }} ";
     }
 }
