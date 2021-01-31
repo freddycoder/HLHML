@@ -8,7 +8,6 @@ namespace HLHML.Console.Test
     public class TP_Algo_TP1
     {
         [Fact]
-        [Trait("Future", "true")]
         public void TP1_CalculateurDePrix_ScenarioNominal()
         {
             var path = Path.Combine("TP-Algo", "TP-01-calculateurDePrix.fr");
@@ -20,19 +19,19 @@ namespace HLHML.Console.Test
 
             var lines = sw.ToString().Split(Environment.NewLine);
 
-            lines.Length.ShouldBe(6);
+            lines.Length.ShouldBe(7);
             lines[0].ShouldBe("Bienvenu dans le calculateur de prix!");
             lines[1].ShouldBe("Combient d'étiquette blanche ? ");
             lines[2].ShouldBe("Combient d'étiquette grise ? ");
             lines[3].ShouldBe("Est-ce que vous voulez la livraison ? ");
-            lines[4].ShouldBe("18,425");
+            lines[4].ShouldBe("15,3");
             lines[5].ShouldBe("Merci d'avoir utiliser le calculateur de prix !");
+            lines[6].ShouldBe(string.Empty);
         }
 
         [Theory]
         [InlineData("1\n1\nnon\n", "2,75")]
-        [InlineData("5\n6\noui\n", "18,425")]
-        [Trait("Future", "true")]
+        [InlineData("5\n6\noui\n", "15,3")]
         public void TP1_Interpreteur(string input, string total)
         {
             var path = Path.Combine("TP-Algo", "TP-01-calculateurDePrix.fr");
@@ -46,13 +45,14 @@ namespace HLHML.Console.Test
 
             var lines = sw.ToString().Split(Environment.NewLine);
 
-            lines.Length.ShouldBe(6);
+            lines.Length.ShouldBe(7);
             lines[0].ShouldBe("Bienvenu dans le calculateur de prix!");
             lines[1].ShouldBe("Combient d'étiquette blanche ? ");
             lines[2].ShouldBe("Combient d'étiquette grise ? ");
             lines[3].ShouldBe("Est-ce que vous voulez la livraison ? ");
             lines[4].ShouldBe(total);
             lines[5].ShouldBe("Merci d'avoir utiliser le calculateur de prix !");
+            lines[6].ShouldBe(string.Empty);
         }
 
         [Theory]

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HLHML.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "E:\\frederic\\Bureau\\demo.fr"
+    }
+  }
+}

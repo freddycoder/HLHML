@@ -22,10 +22,11 @@ namespace HLHML
         public string Mots { get; set; }
         public TypeTerme Type { get; set; }
         public int? ValeurNumérique { get; set; }
+        public char PremièreLettre => Mots.Length > 0 ? Mots[0] : '\0';
 
         public int CompareTo(Terme terme)
         {
-            return Mots[0].CompareTo(terme.Mots[0]);
+            return PremièreLettre.CompareTo(terme.PremièreLettre);
         }
 
         public override string ToString()

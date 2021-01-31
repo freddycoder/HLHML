@@ -1,4 +1,5 @@
-﻿using HLHML.LanguageElements;
+﻿using HLHML.AnalyseurLexical;
+using HLHML.LanguageElements;
 using Shouldly;
 using Xunit;
 using static HLHML.Test.Outils.OutilsInterpreteur;

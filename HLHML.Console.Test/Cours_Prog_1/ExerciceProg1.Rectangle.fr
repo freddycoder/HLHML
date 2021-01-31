@@ -1,0 +1,21 @@
+﻿longueur = 7.
+hauteur = 3.
+
+i = 0.
+
+tant que i est plus petit que la hauteur,
+
+	si i est égal à 0 ou i est égal à hauteur - 1,
+
+		afficher longueur * "*".
+
+		i = 1 + i.
+
+	sinon
+
+		afficher "*" + (longueur - 2) * " " + "*".
+
+		i = 1 + i.
+
+Ensuite, terminer.
+

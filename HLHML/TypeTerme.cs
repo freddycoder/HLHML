@@ -26,6 +26,8 @@
         PlusGrandOuEgalÀ,
         PlusPetitOuEgalÀ,
         EgalÀ,
-        DifferentDe
+        DifferentDe,
+        SautDeLigne,
+        Indentation
     }
 }

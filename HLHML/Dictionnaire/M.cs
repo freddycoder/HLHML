@@ -8,6 +8,11 @@ namespace HLHML.Dictionnaire
         {
             Add(new Terme
             {
+                Mots = "ma",
+                Type = TypeTerme.Déterminant
+            });
+            Add(new Terme
+            {
                 Mots = "modulo",
                 Type = TypeTerme.OperateurMathematique
             });

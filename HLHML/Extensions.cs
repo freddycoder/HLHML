@@ -11,7 +11,7 @@ namespace HLHML
             return terme.Equals(comparaison, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static bool IsNot(this string terme, string comparaison)
+        public static bool EstPas(this string terme, string comparaison)
         {
             return !terme.Equals(comparaison, StringComparison.OrdinalIgnoreCase);
         }

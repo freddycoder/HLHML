@@ -21,8 +21,7 @@
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <LastGenOutput>appsettings.Designer.cs</LastGenOutput>
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator></Generator>
     </None>
   </ItemGroup>
 

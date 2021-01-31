@@ -1,4 +1,5 @@
-﻿using HLHML.Exceptions;
+﻿using HLHML.AnalyseurLexical;
+using HLHML.Exceptions;
 using HLHML.LanguageElements;
 using HLHML.LanguageElements.Adjectifs;
 using HLHML.LanguageElements.Syntaxe;
@@ -11,7 +12,7 @@ namespace HLHML
 {
     public class Parseur
     {
-        private readonly Lexer _lexer;
+        private readonly ILexer _lexer;
         private Terme TermeActuel { get; set; }
         private Scope? _actuelScope;
 
@@ -20,7 +21,7 @@ namespace HLHML
 
         private TextReader _textReader;
 
-        public Parseur(Lexer lexer)
+        public Parseur(ILexer lexer)
         {
             _lexer = lexer;
             _textWriter = Console.Out;
@@ -29,10 +30,24 @@ namespace HLHML
             TermeActuel = ObtenirProchainTerme();
         }
 
-        private Terme ObtenirProchainTerme()
+        /// <summary>
+        /// Parser le programme et le transformer sous la représentation d'un arbre de syntaxe abstrait
+        /// </summary>
+        /// <param name="scope">La scope des variables. Si null, une nouvelle scope sera initialisé</param>
+        /// <returns>L'arbre de syntaxe abstrait représentant le programme</returns>
+        public AST Parse(Scope? scope = null)
         {
-            TermeActuel = _lexer.ObtenirProchainTerme();
-            return TermeActuel;
+            try
+            {
+                AST ast = GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None &&
+                                                            TermeActuel.Type != TypeTerme.Adverbe);
+
+                return ast;
+            }
+            catch (Exception e)
+            {
+                throw new ParseurException(_lexer, $"Une exception est survenu au alentour du caractère à la position {_lexer.Position}. Le dernier terme était '{_lexer.DernierTerme}.'", e);
+            }
         }
 
         internal void SetTextWriter(TextWriter textWriter, bool newLineWhenAfficher = false)
@@ -44,6 +59,12 @@ namespace HLHML
         internal void SetTextReader(TextReader textReader)
         {
             _textReader = textReader;
+        }
+
+        private Terme ObtenirProchainTerme()
+        {
+            TermeActuel = _lexer.ObtenirProchainTerme();
+            return TermeActuel;
         }
 
         private void UpdateScopeReference(Scope? scope)
@@ -69,19 +90,6 @@ namespace HLHML
 
                 _actuelScope = scope;
             }
-        }
-
-        /// <summary>
-        /// Parser le programme et le transformer sous la représentation d'un arbre de syntaxe abstrait
-        /// </summary>
-        /// <param name="scope">La scope des variables. Si null, une nouvelle scope sera initialisé</param>
-        /// <returns>L'arbre de syntaxe abstrait représentant le programme</returns>
-        public AST Parse(Scope? scope = null)
-        {
-            AST ast = GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None && 
-                                                        TermeActuel.Type != TypeTerme.Adverbe);
-
-            return ast;
         }
 
         private int insideTantQue = 0;
@@ -110,19 +118,20 @@ namespace HLHML
                 }
             }
 
-            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), 
-                                                insideTantQue == 0 || conjonction.Terme.Mots.Est("Tant que"), 
+            conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope),
+                                                skipLastAdverb: insideTantQue == 0 || conjonction.Terme.Mots.Est("Tant que"),
                                                 GetPredicatFunction()));
 
             if (TermeActuel.Mots.Equals("sinon", StringComparison.OrdinalIgnoreCase))
             {
                 ObtenirProchainTerme();
 
-                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope), 
-                                                    true, 
-                                                    () => TermeActuel.Type != TypeTerme.None && 
-                                                          TermeActuel.Type != TypeTerme.Adverbe && 
-                                                          TermeActuel.Mots.IsNot("sinon")));
+                conjonction.AddChild(GeneriqueCorps(new Scope(_actuelScope),
+                                                    skipLastAdverb: true,
+                                                    () => TermeActuel.Type != TypeTerme.None &&
+                                                          TermeActuel.Type != TypeTerme.Adverbe &&
+                                                          TermeActuel.Mots.EstPas("définit") &&
+                                                          TermeActuel.Mots.EstPas("sinon")));
             }
 
             if (conjonction.Terme.Mots.Est("Tant que")) insideTantQue--;
@@ -135,15 +144,17 @@ namespace HLHML
             if (insideTantQue > 0)
             {
                 return () => TermeActuel.Type != TypeTerme.None &&
-                                 TermeActuel.Type != TypeTerme.Adverbe &&
-                                 TermeActuel.Mots.IsNot("sinon") &&
-                                 TermeActuel.Mots.IsNot("ensuite");
+                             TermeActuel.Type != TypeTerme.Adverbe &&
+                             TermeActuel.Mots.EstPas("définit") &&
+                             TermeActuel.Mots.EstPas("sinon") &&
+                             TermeActuel.Mots.EstPas("ensuite");
             }
             else
             {
                 return () => TermeActuel.Type != TypeTerme.None &&
-                                 TermeActuel.Type != TypeTerme.Adverbe &&
-                                 TermeActuel.Mots.IsNot("sinon");
+                             TermeActuel.Type != TypeTerme.Adverbe &&
+                             TermeActuel.Mots.EstPas("définit") &&
+                             TermeActuel.Mots.EstPas("sinon");
             }
         }
 
@@ -233,15 +244,10 @@ namespace HLHML
                         TermeActuel.Type == TypeTerme.Sujet ||
                         TermeActuel.Type == TypeTerme.OperateurMathematique ||
                         TermeActuel.Type == TypeTerme.OuvertureParenthèse ||
-                        TermeActuel.Type == TypeTerme.Negation)
+                        TermeActuel.Type == TypeTerme.Negation ||
+                        TermeActuel.Type == TypeTerme.Text)
                     {
                         asts.Add(Expression());
-                    }
-                    else if (TermeActuel.Type == TypeTerme.Text)
-                    {
-                        asts.Add(new AST(TermeActuel));
-
-                        ObtenirProchainTerme();
                     }
                     else if (TermeActuel.Type == TypeTerme.Conjonction)
                     {
@@ -266,21 +272,23 @@ namespace HLHML
 
             bool sujet_pas_traité_ou_definition_pas_terminer()
             {
-                var @return = TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe;
+                var @return = TermeActuel.Type != TypeTerme.None && 
+                              TermeActuel.Type != TypeTerme.Adverbe &&
+                              TermeActuel.Mots.EstPas("définit");
 
                 if (traiteLeSujet)
                 {
                     return false;
                 }
 
-                traiteLeSujet = TermeActuel.Mots.Equals(subject, StringComparison.OrdinalIgnoreCase);
+                traiteLeSujet = TermeActuel.Mots.Est(subject);
 
                 return @return;
             }
 
             _actuelScope = new Scope(_actuelScope);
 
-            var root = new AST(new Terme("Corps", TypeTerme.Corps), _actuelScope);
+            var root = new AST(Terme("Corps", TypeTerme.Corps), _actuelScope);
 
             ObtenirProchainTerme();
 
@@ -314,7 +322,7 @@ namespace HLHML
         {
             UpdateScopeReference(scope);
 
-            var root = new AST(new Terme("Corps", TypeTerme.Corps), _actuelScope);
+            var root = new AST(Terme("Corps", TypeTerme.Corps), _actuelScope);
 
             while (predicat.Invoke())
             {
@@ -334,7 +342,7 @@ namespace HLHML
                     root.AddChild(InitialiserConjonction());
                 }
 
-                if (TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.IsNot("sinon"))
+                if (TermeActuel.Type != TypeTerme.Adverbe && TermeActuel.Mots.EstPas("sinon"))
                 {
                     ObtenirProchainTerme();
                 }
@@ -345,7 +353,7 @@ namespace HLHML
                 ObtenirProchainTerme();
             }
 
-            _actuelScope = _actuelScope.Parent;
+            _actuelScope = _actuelScope?.Parent;
 
             return root;
         }
@@ -408,7 +416,7 @@ namespace HLHML
 
         private AST? Level_13()
         {
-            var node = Level_10();
+            var node = Level_9();
 
             if (TermeActuel.Mots.Equals("et", StringComparison.OrdinalIgnoreCase))
             {
@@ -416,13 +424,6 @@ namespace HLHML
                 ObtenirProchainTerme();
                 node = new Et(node, t, Level_13());
             }
-
-            return node;
-        }
-
-        private AST? Level_10()
-        {
-            var node = Level_9();
 
             return node;
         }
@@ -552,14 +553,31 @@ namespace HLHML
 
                 if (node != null)
                 {
-                    node.AddChild(Level_1());
+                    if (TermeActuel.Type == TypeTerme.Adjectif)
+                    {
+                        var t = TermeActuel;
+                        ObtenirProchainTerme();
+                        var parametres = new Parametres(t, Level_0());
+
+                        node.AddChild(parametres);
+                    }
+                    else
+                    {
+                        node.AddChild(Level_1());
+                    }
                 }
                 else
                 {
-                    // Ça ou throw new Exception() ...
-                    // avant, il n'y avait pas le if et node.AddChild était directement appeller alors que node pouvait être null.
                     node = Level_1();
                 }
+            }
+            else if (TermeActuel.Type == TypeTerme.Adjectif)
+            {
+                var t = TermeActuel;
+                ObtenirProchainTerme();
+                var parametres = new Parametres(t, Level_0());
+
+                node = parametres;
             }
 
             return node;
@@ -582,6 +600,11 @@ namespace HLHML
         private AST? Level_0()
         {
             AST? node = default;
+
+            if (TermeActuel.Type == TypeTerme.Déterminant)
+            {
+                ObtenirProchainTerme();
+            }
 
             if (TermeActuel.Type == TypeTerme.Sujet)
             {
@@ -617,9 +640,6 @@ namespace HLHML
             return node;
         }
 
-        public override string ToString()
-        {
-            return $"Parseur : {{ CurrentToken : {TermeActuel?.ToString() ?? "null" } }} ";
-        }
+        public override string ToString() => $"Parseur : {{ CurrentToken : {TermeActuel?.ToString() ?? "null" } }} ";
     }
 }

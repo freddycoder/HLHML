@@ -4,60 +4,83 @@ using System.Text;
 using static HLHML.TermeBuilder;
 using static HLHML.DictionnaireTermeConnue;
 
-namespace HLHML
+namespace HLHML.AnalyseurLexical
 {
-    public class Lexer
+    public class Lexer : ILexer
     {
         private readonly string _text;
-        private int _pos;
-        
-        private char CurrentChar => _pos >= _text.Length ? '\0' : _text[_pos];
 
-        private char PeekChar => _pos + 1 >= _text.Length ? '\0' : _text[_pos + 1];
+        private readonly int _limit;
+
+        public char CurrentChar { get; set; }
+
+        public char PeekChar => Position > _limit ? '\0' : _text[Position + 1];
 
         public Lexer(string text)
         {
             _text = text;
-            _pos = 0;
+            Position = 0;
+            if (text.Length > 0)
+            {
+                CurrentChar = _text[Position];
+            }
+            _limit = _text.Length - 1;
+            DernierTerme = new DernierTerme();
         }
+
+        public int Position { get; private set; }
+
+        public DernierTerme DernierTerme { get; private set; }
 
         public Terme ObtenirProchainTerme()
         {
             Avancer();
 
+            DernierTerme.Position = Position;
+
             if (char.IsLetter(CurrentChar))
             {
                 var value = GetNextWord();
 
-                return Terme(value, ObtenirTypeTerme(value));
+                DernierTerme.Terme = Terme(value, ObtenirTypeTerme(value));
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '"')
             {
                 var value = ObtenirChaineDeTexte();
 
-                return Terme(value, TypeTerme.Text);
+                DernierTerme.Terme = Terme(value, TypeTerme.Text);
+
+                return DernierTerme.Terme;
             }
             else if (char.IsDigit(CurrentChar))
             {
                 var nombre = GetNumber();
 
-                return Terme(nombre, TypeTerme.Nombre);
+                DernierTerme.Terme = Terme(nombre, TypeTerme.Nombre);
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '.' || CurrentChar == ',' || CurrentChar == ':')
             {
                 var point = CurrentChar.ToString();
 
-                _pos++;
+                Incrementer();
 
-                return Terme(point, TypeTerme.Ponctuation);
+                DernierTerme.Terme = Terme(point, TypeTerme.Ponctuation);
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '+' || CurrentChar == '-' || CurrentChar == '*' || CurrentChar == '/')
             {
                 var operateur = Terme(CurrentChar.ToString(), TypeTerme.OperateurMathematique);
 
-                _pos++;
+                Incrementer();
 
-                return operateur;
+                DernierTerme.Terme = operateur;
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '=')
             {
@@ -65,43 +88,53 @@ namespace HLHML
                 {
                     var egalÀ = Terme("==", TypeTerme.EgalÀ);
 
-                    _pos++;
-                    _pos++;
+                    Incrementer();
+                    Incrementer();
 
-                    return egalÀ;
+                    DernierTerme.Terme = egalÀ;
+
+                    return DernierTerme.Terme;
                 }
                 else
                 {
                     var vaut = Terme("vaut", TypeTerme.Verbe);
 
-                    _pos++;
+                    Incrementer();
 
-                    return vaut;
+                    DernierTerme.Terme = vaut;
+
+                    return DernierTerme.Terme;
                 }
             }
             else if (CurrentChar == '%')
             {
                 var modulo = Terme("modulo", TypeTerme.OperateurMathematique);
 
-                _pos++;
+                Incrementer();
 
-                return modulo;
+                DernierTerme.Terme = modulo;
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '(')
             {
                 var terme = Terme(CurrentChar.ToString(), TypeTerme.OuvertureParenthèse);
 
-                _pos++;
+                Incrementer();
 
-                return terme;
+                DernierTerme.Terme = terme;
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == ')')
             {
                 var terme = Terme(CurrentChar.ToString(), TypeTerme.FermetureParenthèse);
 
-                _pos++;
+                Incrementer();
 
-                return terme;
+                DernierTerme.Terme = terme;
+
+                return DernierTerme.Terme;
             }
             else if (CurrentChar == '>')
             {
@@ -109,18 +142,22 @@ namespace HLHML
                 {
                     var terme = Terme(">=", TypeTerme.PlusGrandOuEgalÀ);
 
-                    _pos++;
-                    _pos++;
+                    Incrementer();
+                    Incrementer();
 
-                    return terme;
+                    DernierTerme.Terme = terme;
+
+                    return DernierTerme.Terme;
                 }
                 else
                 {
                     var terme = Terme(CurrentChar.ToString(), TypeTerme.PlusGrandQue);
 
-                    _pos++;
+                    Incrementer();
 
-                    return terme;
+                    DernierTerme.Terme = terme;
+
+                    return DernierTerme.Terme;
                 }
             }
             else if (CurrentChar == '<')
@@ -129,31 +166,39 @@ namespace HLHML
                 {
                     var terme = Terme("<=", TypeTerme.PlusPetitOuEgalÀ);
 
-                    _pos++;
-                    _pos++;
+                    Incrementer();
+                    Incrementer();
 
-                    return terme;
+                    DernierTerme.Terme = terme;
+
+                    return DernierTerme.Terme;
                 }
                 else
                 {
                     var terme = Terme(CurrentChar.ToString(), TypeTerme.PlusPetitQue);
 
-                    _pos++;
+                    Incrementer();
 
-                    return terme;
+                    DernierTerme.Terme = terme;
+
+                    return DernierTerme.Terme;
                 }
             }
             else if (CurrentChar == '!' && PeekChar == '=')
             {
                 var terme = Terme("!=", TypeTerme.DifferentDe);
 
-                _pos++;
-                _pos++;
+                Incrementer();
+                Incrementer();
 
-                return terme;
+                DernierTerme.Terme = terme;
+
+                return DernierTerme.Terme;
             }
 
-            return Terme("", TypeTerme.None);
+            DernierTerme.Terme = Terme("", TypeTerme.None);
+
+            return DernierTerme.Terme;
         }
 
         private string GetNumber()
@@ -165,12 +210,12 @@ namespace HLHML
             while (char.IsDigit(CurrentChar))
             {
                 sb.Append(CurrentChar);
-                _pos++;
+                Incrementer();
 
                 if (!partieDecimaleCommencé && (CurrentChar == CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]) && char.IsDigit(PeekChar))
                 {
                     sb.Append(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-                    _pos++;
+                    Incrementer();
                     partieDecimaleCommencé = true;
                 }
             }
@@ -182,29 +227,29 @@ namespace HLHML
         {
             var sb = new StringBuilder();
 
-            var firstQuoteIndice = _pos;
+            var firstQuoteIndice = Position;
 
-            _pos++;
+            Incrementer();
 
-            while (CurrentChar != '"' && _pos < _text.Length)
+            while (CurrentChar != '"' && Position < _text.Length)
             {
                 sb.Append(CurrentChar);
-                _pos++;
+                Incrementer();
             }
 
-            if (_text.Length == _pos)
+            if (_text.Length == Position)
             {
                 throw new NonClosingQuoteException("No closing quote matching", firstQuoteIndice, _text);
             }
 
-            _pos++;
+            Incrementer();
 
             return sb.ToString();
         }
 
         private Terme PeekNextToken()
         {
-            var sublexer = new Lexer(_text.Substring(_pos));
+            var sublexer = new Lexer(_text.Substring(Position));
 
             try
             {
@@ -218,11 +263,6 @@ namespace HLHML
 
         private TypeTerme ObtenirTypeTerme(string mots)
         {
-            //if (mots.Length > 1 && mots.EstPluriel())
-            //{
-            //    mots = mots.AccorderSingulier();
-            //}
-
             if (TermesConnues.ContainsKey(mots))
             {
                 return TermesConnues[mots].Type;
@@ -238,13 +278,13 @@ namespace HLHML
             while (char.IsLetterOrDigit(CurrentChar))
             {
                 sb.Append(CurrentChar);
-                _pos++;
+                Incrementer();
             }
 
             if (CurrentChar == '\'')
             {
                 sb.Append(CurrentChar);
-                _pos++;
+                Incrementer();
             }
             else
             {
@@ -275,7 +315,29 @@ namespace HLHML
         {
             while (char.IsWhiteSpace(CurrentChar))
             {
-                _pos++;
+                Incrementer();
+            }
+        }
+
+        /// <summary>
+        /// Sauter les prochains espaces blanc pour se positionner sur le prochain caractère
+        /// </summary>
+        public void Incrementer()
+        {
+            if (_limit > Position)
+            {
+                Position++;
+
+                CurrentChar = _text[Position];
+            }
+            else
+            {
+                CurrentChar = '\0';
+
+                if (Position < _text.Length)
+                {
+                    Position++;
+                }
             }
         }
     }

@@ -1,45 +1,35 @@
-﻿using HLHML;
+﻿using HMHML.Editor.Evenements;
 using Serilog;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HMHML.Editor
 {
-    public partial class Form1 : Form
+    public partial class EditeurFr : Form
     {
-        public Form1()
+        private readonly RedesinerArbre redesinerArbre;
+        private readonly InformationsTermes informationsTermes;
+
+        public EditeurFr()
         {
             InitializeComponent();
 
-            var log = new LoggerConfiguration().WriteTo.File($"{DateTime.Now.ToString("yyyy-MM-ddThhmmss")}.txt")
+            redesinerArbre = new RedesinerArbre(richTextBox1, SelectionnerPolice, pictureBox1);
+            informationsTermes = new InformationsTermes(richTextBox1);
+
+            var log = new LoggerConfiguration().WriteTo.File($"{DateTime.Now:yyyy-MM-ddThhmmss}.txt")
                                                .CreateLogger();
 
             Log.Logger = log;
         }
 
-        private bool done = true;
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            if (done)
-            {
-                done = false;
+        private Font SelectionnerPolice() => new Font(fontNameComboBox.Text, float.Parse(fontSizeInput.Text), FontStyle.Bold, GraphicsUnit.Pixel);
 
-                try
-                {
-                    var lexer = new Lexer(richTextBox1.Text.Trim());
-                    var parser = new Parseur(lexer);
-                    var drawer = new ASTDrawer(parser.Parse());
-                    pictureBox1.Image = drawer.GetBitmap();
-                }
-                catch (Exception exception)
-                {
-                    Log.Logger.Error(exception, nameof(richTextBox1_TextChanged));
-                }
-                finally
-                {
-                    done = true;
-                }
-            }
-        }
+        private void NeedToReDrawPicture(object sender, EventArgs e) => redesinerArbre.NeedToReDrawPicture(sender, e);
+
+        private void MaybeRedrawPicture(object sender, KeyPressEventArgs e) => redesinerArbre.MaybeRedrawPicture(sender, e);
+
+        private void MontrerInformationsTermes(object sender, MouseEventArgs e) => informationsTermes.MontrerInformationsTermes(sender, e);
     }
 }

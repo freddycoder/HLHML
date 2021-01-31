@@ -1,4 +1,5 @@
-﻿using HLHML.LanguageElements.Syntaxe;
+﻿using HLHML.AnalyseurLexical;
+using HLHML.LanguageElements.Syntaxe;
 using Shouldly;
 using System.IO;
 using Xunit;

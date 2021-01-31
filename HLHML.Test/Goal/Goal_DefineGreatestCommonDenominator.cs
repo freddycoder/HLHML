@@ -2,13 +2,13 @@
 using Shouldly;
 using static HLHML.TermeBuilder;
 using static HLHML.Test.Outils.OutilsInterpreteur;
+using HLHML.AnalyseurLexical;
 
 namespace HLHML.Test.Goal
 {
     public class Goal_DefineGreatestCommonDenominator
     {
         [Fact]
-        [Trait("Future", "true")]
         public void GreatestCommonDenominator()
         {
             var program = "Le plus grand diviseur commun de deux nombres se définit comme suit :" +
@@ -115,7 +115,6 @@ namespace HLHML.Test.Goal
         }
 
         [Fact]
-        [Trait("Future", "true")]
         public void TestDefinitionFonctionMaximum()
         {
             var program = "Le maximum de trois nombres se définit comme suit: " +
