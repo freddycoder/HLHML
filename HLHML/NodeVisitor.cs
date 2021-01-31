@@ -7,7 +7,7 @@ namespace HLHML
     {
         public static void Visit(AST ast)
         {
-            foreach (var instruction in ast.Childs)
+            foreach (AST instruction in ast.Childs)
             {
                 VisitNode(instruction);
             }

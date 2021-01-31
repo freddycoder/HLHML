@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using HLHML.Dictionnaire;
 
 namespace HLHML.LanguageElements
@@ -30,7 +31,22 @@ namespace HLHML.LanguageElements
                 }
                 else if (child.Type == TypeTerme.Sujet)
                 {
-                    _textWriter.Write(Scope[child.Value] ?? "");
+                    var valeurSujet = Scope[child.Value];
+
+                    if (valeurSujet is AST noeudDefinition)
+                    {
+                        var corps = noeudDefinition.Childs.Last();
+
+                        NodeVisitor.Visit(corps);
+
+                        var toPrint = corps.Scope[child.Value];
+
+                        _textWriter.Write(toPrint);
+                    }
+                    else
+                    {
+                        _textWriter.Write(valeurSujet ?? "");
+                    }
                 }
                 else if (child is OperateurMathematique op)
                 {

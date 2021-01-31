@@ -1,4 +1,5 @@
 ﻿using HLHML;
+using HLHML.AnalyseurLexical;
 using HLHML.Exceptions;
 using Serilog;
 using System;
@@ -38,15 +39,14 @@ namespace HMHML.Editor.Evenements
                 {
                     PaintInBlack();
 
-                    var lexer = new Lexer(richTextBox.Text);
+                    var lexer = new Lexer(richTextBox.Text).PrendreEnComptesEspacement();
                     var parser = new Parseur(lexer);
-                    var drawer = new ASTDrawer(parser.Parse(),
-                                               policeSelecteur.Invoke(),
+                    var drawer = new ASTDrawer(policeSelecteur.Invoke(),
                                                Color.White,
                                                Color.Black,
                                                Brushes.Black);
 
-                    pictureBox.Image = drawer.GetBitmap();
+                    pictureBox.Image = drawer.GetBitmap(parser.Parse());
                 }
                 catch (ParseurException exception)
                 {
@@ -65,7 +65,7 @@ namespace HMHML.Editor.Evenements
 
         private void PaintMistakInRed(ParseurException exception)
         {
-            Lexer lexer = exception.Data["Lexer"] as Lexer;
+            ILexer lexer = exception.Lexer;
             int debutSelection = lexer.Position - lexer.DernierTerme.Terme.Mots.Length;
 
             int originalSelection = richTextBox.SelectionStart;

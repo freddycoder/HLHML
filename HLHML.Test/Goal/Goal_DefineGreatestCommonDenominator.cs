@@ -2,6 +2,7 @@
 using Shouldly;
 using static HLHML.TermeBuilder;
 using static HLHML.Test.Outils.OutilsInterpreteur;
+using HLHML.AnalyseurLexical;
 
 namespace HLHML.Test.Goal
 {

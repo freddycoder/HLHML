@@ -1,4 +1,5 @@
-﻿using HLHML.Exceptions;
+﻿using HLHML.AnalyseurLexical;
+using HLHML.Exceptions;
 using Shouldly;
 using Xunit;
 using static HLHML.TermeBuilder;

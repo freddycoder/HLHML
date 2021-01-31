@@ -10,49 +10,59 @@ namespace HLHML
     {
         private static IComparer<float> _comparer = new DescendingOrderFloatComparer();
 
-        private readonly AST _ast;
-        private readonly Bitmap _bitmap;
-        private readonly Graphics _graphics;
-        private readonly SortedDictionary<float, SortedDictionary<float, BitmapEnhance>> _bitMaps;
-
+        private Bitmap _bitmap;
+        private Graphics _graphics;
         private readonly Font _font;
         private readonly Color _backgroundColor;
         private readonly Color _drawingColor;
         private readonly Brush _brush;
         private readonly Pen _pen;
         private readonly SolidBrush _solidBrush;
+        private readonly int _margin;
 
-        public ASTDrawer(AST ast) : this(ast, new Font("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel), Color.White, Color.Black, Brushes.Black)
+        public ASTDrawer() : this(new Font("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel), Color.White, Color.Black, Brushes.Black)
         {
         }
 
-        public ASTDrawer(AST ast, Font font, Color backgroundColor, Color drawingColor, Brush brush)
+        public ASTDrawer(Font font, Color backgroundColor, Color drawingColor, Brush brush, int margin = 25)
         {
-            _ast = ast;
-            _bitMaps = new SortedDictionary<float, SortedDictionary<float, BitmapEnhance>>(_comparer);
             _font = font;
             _backgroundColor = backgroundColor;
             _drawingColor = drawingColor;
             _brush = brush;
             _pen = new Pen(_brush);
             _solidBrush = new SolidBrush(_drawingColor);
+            _margin = margin;
+            BitMaps = new SortedDictionary<float, SortedDictionary<float, BitmapEnhance>>(_comparer);
+        }
 
-            InitNodeDictionary(_ast);
+        public SortedDictionary<float, SortedDictionary<float, BitmapEnhance>> BitMaps { get; private set; }
+
+        public Bitmap GetBitmap(AST ast)
+        {
+            BitMaps.Clear();
+
+            InitNodeDictionary(ast);
 
             _bitmap = new Bitmap(CalculateWidth(), CalulateHeight());
             _graphics = Graphics.FromImage(_bitmap);
             _graphics.Clear(_backgroundColor);
-        }
 
-        public Bitmap GetBitmap()
-        {
             BuildBitmap();
 
             return _bitmap;
         }
 
-        public void DrawToFile(string filename)
+        public void DrawToFile(AST ast, string filename)
         {
+            BitMaps.Clear();
+
+            InitNodeDictionary(ast);
+
+            _bitmap = new Bitmap(CalculateWidth(), CalulateHeight());
+            _graphics = Graphics.FromImage(_bitmap);
+            _graphics.Clear(_backgroundColor);
+
             BuildBitmap();
 
             _bitmap.Save(filename, ImageFormat.Bmp);
@@ -62,9 +72,9 @@ namespace HLHML
         {
             int width = 0;
 
-            foreach (float y in _bitMaps.Keys)
+            foreach (float y in BitMaps.Keys)
             {
-                int sum = _bitMaps[y].Sum(b => b.Value.Width + 25);
+                int sum = BitMaps[y].Sum(b => b.Value.Width + _margin);
 
                 if (sum > width)
                 {
@@ -77,18 +87,18 @@ namespace HLHML
 
         private int CalulateHeight()
         {
-            float nbNode = _bitMaps.Max(b => b.Key + 1);
+            float nbNode = BitMaps.Max(b => b.Key + 1);
 
-            return (int)Math.Floor(nbNode * (_bitMaps.Values.First().Values.First().Height + 25));
+            return (int)Math.Floor(nbNode * (BitMaps.Values.First().Values.First().Height + _margin));
         }
 
         private void BuildBitmap()
         {
-            foreach (var level in _bitMaps)
+            foreach (KeyValuePair<float, SortedDictionary<float, BitmapEnhance>> level in BitMaps)
             {
                 int nbChildProcess = 0;
 
-                foreach (var row in level.Value)
+                foreach (KeyValuePair<float, BitmapEnhance> row in level.Value)
                 {
                     BitmapEnhance bitmap = row.Value;
 
@@ -100,7 +110,7 @@ namespace HLHML
 
                         for (int i = 0; i < nbChild; i++)
                         {
-                            _graphics.DrawLine(_pen, bitmap.BottomCenter, _bitMaps[level.Key + 1].ElementAt(i + nbChildProcess).Value.TopCenter);
+                            _graphics.DrawLine(_pen, bitmap.BottomCenter, BitMaps[level.Key + 1].ElementAt(i + nbChildProcess).Value.TopCenter);
                         }
 
                         nbChildProcess += nbChild;
@@ -109,9 +119,41 @@ namespace HLHML
             }
         }
 
+        private void AddNodeToBitmap(BitmapEnhance bitmap, float x, float y)
+        {
+            var center = _bitmap.Width / 2;
+
+            var halfNodeWidth = bitmap.Width / 2;
+
+            var rowLength = BitMaps[y].Values.Sum(b => b.Width + _margin) - _margin;
+
+            var adjust = 0f;
+
+            foreach (var node in BitMaps[y])
+            {
+                if (node.Key > x)
+                {
+                    adjust -= (node.Value.Width + _margin) / 2f;
+                }
+                else if (node.Key < x)
+                {
+                    adjust += (node.Value.Width + _margin) / 2f;
+                }
+            }
+
+            float point_x = center - halfNodeWidth + adjust;
+
+            float point_y = y * _margin + y * bitmap.Height;
+
+            bitmap.TopCenter = new Point((int)Math.Floor(point_x + bitmap.Width / 2), (int)Math.Floor(point_y));
+            bitmap.BottomCenter = new Point((int)Math.Floor(point_x + bitmap.Width / 2), (int)Math.Floor(point_y + bitmap.Height));
+
+            _graphics.DrawImage(bitmap, point_x, point_y);
+        }
+
         private void InitNodeDictionary(AST ast, float x = 0, float y = 0, int xJump = 0)
         {
-            if (_bitMaps.TryGetValue(y + 1, out SortedDictionary<float, BitmapEnhance> subDictionary))
+            if (BitMaps.TryGetValue(y + 1, out SortedDictionary<float, BitmapEnhance> subDictionary))
             {
                 xJump = subDictionary.Count;
             }
@@ -126,45 +168,13 @@ namespace HLHML
 
         private void AddNodeToDictionary(AST ast, float x, float y)
         {
-            if (!_bitMaps.TryGetValue(y, out var subDictionary))
+            if (!BitMaps.TryGetValue(y, out SortedDictionary<float, BitmapEnhance> subDictionary))
             {
                 subDictionary = new SortedDictionary<float, BitmapEnhance>();
-                _bitMaps.Add(y, subDictionary);
+                BitMaps.Add(y, subDictionary);
             }
 
             subDictionary.Add(x, GetBitmapNode(ast));
-        }
-
-        private void AddNodeToBitmap(BitmapEnhance bitmap, float x, float y)
-        {
-            var center = _bitmap.Width / 2;
-
-            var halfNodeWidth = bitmap.Width / 2;
-
-            var rowLength = _bitMaps[y].Values.Sum(b => b.Width + 25) - 25;
-
-            var adjust = 0f;
-
-            foreach (var node in _bitMaps[y])
-            {
-                if (node.Key > x)
-                {
-                    adjust -= (node.Value.Width + 25) / 2f;
-                }
-                else if (node.Key < x)
-                {
-                    adjust += (node.Value.Width + 25) / 2f;
-                }
-            }
-
-            float point_x = center - halfNodeWidth + adjust;
-
-            float point_y = y * 25 + y * bitmap.Height;
-
-            bitmap.TopCenter = new Point((int)Math.Floor(point_x + bitmap.Width / 2), (int)Math.Floor(point_y));
-            bitmap.BottomCenter = new Point((int)Math.Floor(point_x + bitmap.Width / 2), (int)Math.Floor(point_y + bitmap.Height));
-
-            _graphics.DrawImage(bitmap, point_x, point_y);
         }
 
         private BitmapEnhance GetBitmapNode(AST ast)

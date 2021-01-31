@@ -24,6 +24,10 @@ namespace HLHML.LanguageElements
             {
                 Scope[Childs[0].Value] = NodeVisitor.Eval(Childs[1]);
             }
+            else if (Value.Equals("définit", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Scope[Childs[0].Value] = this;
+            }
             else
             {
                 NodeVisitor.Visit(Childs[1]);

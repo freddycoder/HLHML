@@ -1,7 +1,6 @@
-﻿using HLHML;
+﻿using HLHML.AnalyseurLexical;
 using Serilog;
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace HMHML.Editor.Evenements
@@ -52,7 +51,7 @@ namespace HMHML.Editor.Evenements
             {
                 lastCharIndex = charIndex;
 
-                var lexer = new Lexer(richTextBox1.Text);
+                var lexer = new Lexer(richTextBox1.Text).PrendreEnComptesEspacement();
 
                 while (lexer.Position < charIndex)
                 {

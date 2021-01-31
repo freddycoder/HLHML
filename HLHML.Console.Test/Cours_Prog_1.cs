@@ -1,4 +1,5 @@
-﻿using HLHML.LanguageElements;
+﻿using HLHML.AnalyseurLexical;
+using HLHML.LanguageElements;
 using Shouldly;
 using System;
 using System.IO;
@@ -12,7 +13,7 @@ namespace HLHML.Console.Test
         [Fact]
         public void AfficherCarre()
         {
-            var path = Path.Combine("Cours_Prog_1", "ExerciceProg1.Carre.fr");
+            var path = Path.Combine(nameof(Cours_Prog_1), "ExerciceProg1.Carre.fr");
 
             using var sw = new StringWriter();
             using var sr = new StringReader("3\n");
@@ -34,7 +35,7 @@ namespace HLHML.Console.Test
         [Fact]
         public void AfficherCarre1()
         {
-            var path = Path.Combine("Cours_Prog_1", "ExerciceProg1.Carre.fr");
+            var path = Path.Combine(nameof(Cours_Prog_1), "ExerciceProg1.Carre.fr");
 
             using var sw = new StringWriter();
             using var sr = new StringReader("1\n");
@@ -58,7 +59,7 @@ namespace HLHML.Console.Test
 
             AST tree = parseur.Parse();
 
-            string output = (tree.Childs.Single() as OperateurMathematique).Eval();
+            string output = ((OperateurMathematique)tree.Childs.Single()).Eval();
 
             output.ShouldBe("***");
         }
@@ -66,7 +67,7 @@ namespace HLHML.Console.Test
         [Fact]
         public void AfficherTriangle()
         {
-            var path = Path.Combine("Cours_Prog_1", "ExerciceProg1.Triangle.fr");
+            var path = Path.Combine(nameof(Cours_Prog_1), "ExerciceProg1.Triangle.fr");
 
             using var sw = new StringWriter();
             using var sr = new StringReader("3\n");
@@ -88,7 +89,7 @@ namespace HLHML.Console.Test
         [Fact]
         public void AfficherTriangle1()
         {
-            var path = Path.Combine("Cours_Prog_1", "ExerciceProg1.Triangle.fr");
+            var path = Path.Combine(nameof(Cours_Prog_1), "ExerciceProg1.Triangle.fr");
 
             using var sw = new StringWriter();
             using var sr = new StringReader("1\n");
@@ -108,7 +109,7 @@ namespace HLHML.Console.Test
         [Fact]
         public void AfficherRectangle()
         {
-            var path = Path.Combine("Cours_Prog_1", "ExerciceProg1.Rectangle.fr");
+            var path = Path.Combine(nameof(Cours_Prog_1), "ExerciceProg1.Rectangle.fr");
 
             using var sw = new StringWriter();
 
@@ -123,6 +124,22 @@ namespace HLHML.Console.Test
             lines[1].ShouldBe("*     *");
             lines[2].ShouldBe("*******");
             lines[3].ShouldBe(string.Empty);
+        }
+
+        [Fact]
+        public void Cours2FinaleArbre()
+        {
+            var path = Path.Combine(nameof(Cours_Prog_1), "ExerciceProg1.Cours2.Finale.fr");
+
+            var text = File.ReadAllText(path);
+
+            var parseur = new Parseur(new Lexer(text));
+
+            var tree = parseur.Parse();
+
+            tree.Childs.Count.ShouldBeGreaterThanOrEqualTo(3);
+            tree.Childs[1].Terme.Mots.ShouldBe("définit");
+            tree.Childs[2].Terme.Mots.ShouldBe("définit");
         }
     }
 }

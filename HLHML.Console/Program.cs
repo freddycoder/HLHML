@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using HLHML.AnalyseurLexical;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics;
@@ -71,9 +72,9 @@ namespace HLHML.Console
 
                         var destination = args.Last(f => Path.HasExtension(f) && f != fileName);
 
-                        var drawer = new ASTDrawer(ast);
+                        var drawer = new ASTDrawer();
 
-                        drawer.DrawToFile(destination);
+                        drawer.DrawToFile(ast, destination);
 
                         if (Configuration?.GetBool("openFileAfterGeneration") == true)
                         {

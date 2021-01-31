@@ -1,4 +1,5 @@
-﻿using HLHML.Exceptions;
+﻿using HLHML.AnalyseurLexical;
+using HLHML.Exceptions;
 using HLHML.LanguageElements;
 using HLHML.LanguageElements.Adjectifs;
 using HLHML.LanguageElements.Syntaxe;
@@ -11,7 +12,7 @@ namespace HLHML
 {
     public class Parseur
     {
-        private readonly Lexer _lexer;
+        private readonly ILexer _lexer;
         private Terme TermeActuel { get; set; }
         private Scope? _actuelScope;
 
@@ -20,7 +21,7 @@ namespace HLHML
 
         private TextReader _textReader;
 
-        public Parseur(Lexer lexer)
+        public Parseur(ILexer lexer)
         {
             _lexer = lexer;
             _textWriter = Console.Out;
@@ -29,10 +30,24 @@ namespace HLHML
             TermeActuel = ObtenirProchainTerme();
         }
 
-        private Terme ObtenirProchainTerme()
+        /// <summary>
+        /// Parser le programme et le transformer sous la représentation d'un arbre de syntaxe abstrait
+        /// </summary>
+        /// <param name="scope">La scope des variables. Si null, une nouvelle scope sera initialisé</param>
+        /// <returns>L'arbre de syntaxe abstrait représentant le programme</returns>
+        public AST Parse(Scope? scope = null)
         {
-            TermeActuel = _lexer.ObtenirProchainTerme();
-            return TermeActuel;
+            try
+            {
+                AST ast = GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None &&
+                                                            TermeActuel.Type != TypeTerme.Adverbe);
+
+                return ast;
+            }
+            catch (Exception e)
+            {
+                throw new ParseurException(_lexer, $"Une exception est survenu au alentour du caractère à la position {_lexer.Position}. Le dernier terme était '{_lexer.DernierTerme}.'", e);
+            }
         }
 
         internal void SetTextWriter(TextWriter textWriter, bool newLineWhenAfficher = false)
@@ -44,6 +59,12 @@ namespace HLHML
         internal void SetTextReader(TextReader textReader)
         {
             _textReader = textReader;
+        }
+
+        private Terme ObtenirProchainTerme()
+        {
+            TermeActuel = _lexer.ObtenirProchainTerme();
+            return TermeActuel;
         }
 
         private void UpdateScopeReference(Scope? scope)
@@ -68,30 +89,6 @@ namespace HLHML
                 }
 
                 _actuelScope = scope;
-            }
-        }
-
-        /// <summary>
-        /// Parser le programme et le transformer sous la représentation d'un arbre de syntaxe abstrait
-        /// </summary>
-        /// <param name="scope">La scope des variables. Si null, une nouvelle scope sera initialisé</param>
-        /// <returns>L'arbre de syntaxe abstrait représentant le programme</returns>
-        public AST Parse(Scope? scope = null)
-        {
-            try
-            {
-                AST ast = GeneriqueCorps(scope, true, () => TermeActuel.Type != TypeTerme.None &&
-                                                            TermeActuel.Type != TypeTerme.Adverbe);
-
-                return ast;
-            }
-            catch (Exception e)
-            {
-                var parserException = new ParseurException($"Une exception est survenu au alentour du caractère à la position {_lexer.Position}. Le dernier terme était '{_lexer.DernierTerme}.'", e);
-
-                parserException.Data.Add("Lexer", _lexer);
-
-                throw parserException;
             }
         }
 
@@ -133,6 +130,7 @@ namespace HLHML
                                                     skipLastAdverb: true,
                                                     () => TermeActuel.Type != TypeTerme.None &&
                                                           TermeActuel.Type != TypeTerme.Adverbe &&
+                                                          TermeActuel.Mots.EstPas("définit") &&
                                                           TermeActuel.Mots.EstPas("sinon")));
             }
 
@@ -147,6 +145,7 @@ namespace HLHML
             {
                 return () => TermeActuel.Type != TypeTerme.None &&
                              TermeActuel.Type != TypeTerme.Adverbe &&
+                             TermeActuel.Mots.EstPas("définit") &&
                              TermeActuel.Mots.EstPas("sinon") &&
                              TermeActuel.Mots.EstPas("ensuite");
             }
@@ -154,6 +153,7 @@ namespace HLHML
             {
                 return () => TermeActuel.Type != TypeTerme.None &&
                              TermeActuel.Type != TypeTerme.Adverbe &&
+                             TermeActuel.Mots.EstPas("définit") &&
                              TermeActuel.Mots.EstPas("sinon");
             }
         }
@@ -272,21 +272,23 @@ namespace HLHML
 
             bool sujet_pas_traité_ou_definition_pas_terminer()
             {
-                var @return = TermeActuel.Type != TypeTerme.None && TermeActuel.Type != TypeTerme.Adverbe;
+                var @return = TermeActuel.Type != TypeTerme.None && 
+                              TermeActuel.Type != TypeTerme.Adverbe &&
+                              TermeActuel.Mots.EstPas("définit");
 
                 if (traiteLeSujet)
                 {
                     return false;
                 }
 
-                traiteLeSujet = TermeActuel.Mots.Equals(subject, StringComparison.OrdinalIgnoreCase);
+                traiteLeSujet = TermeActuel.Mots.Est(subject);
 
                 return @return;
             }
 
             _actuelScope = new Scope(_actuelScope);
 
-            var root = new AST(new Terme("Corps", TypeTerme.Corps), _actuelScope);
+            var root = new AST(Terme("Corps", TypeTerme.Corps), _actuelScope);
 
             ObtenirProchainTerme();
 
@@ -320,7 +322,7 @@ namespace HLHML
         {
             UpdateScopeReference(scope);
 
-            var root = new AST(new Terme("Corps", TypeTerme.Corps), _actuelScope);
+            var root = new AST(Terme("Corps", TypeTerme.Corps), _actuelScope);
 
             while (predicat.Invoke())
             {
@@ -351,7 +353,7 @@ namespace HLHML
                 ObtenirProchainTerme();
             }
 
-            _actuelScope = _actuelScope.Parent;
+            _actuelScope = _actuelScope?.Parent;
 
             return root;
         }
@@ -414,7 +416,7 @@ namespace HLHML
 
         private AST? Level_13()
         {
-            var node = Level_10();
+            var node = Level_9();
 
             if (TermeActuel.Mots.Equals("et", StringComparison.OrdinalIgnoreCase))
             {
@@ -422,13 +424,6 @@ namespace HLHML
                 ObtenirProchainTerme();
                 node = new Et(node, t, Level_13());
             }
-
-            return node;
-        }
-
-        private AST? Level_10()
-        {
-            var node = Level_9();
 
             return node;
         }

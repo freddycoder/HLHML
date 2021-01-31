@@ -1,4 +1,5 @@
-﻿using HLHML.Dictionnaire;
+﻿using HLHML.AnalyseurLexical;
+using HLHML.Dictionnaire;
 using HLHML.LanguageElements;
 using Shouldly;
 using System.Linq;

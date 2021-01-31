@@ -4,17 +4,17 @@ using System.Text;
 using static HLHML.TermeBuilder;
 using static HLHML.DictionnaireTermeConnue;
 
-namespace HLHML
+namespace HLHML.AnalyseurLexical
 {
-    public class Lexer
+    public class Lexer : ILexer
     {
         private readonly string _text;
 
         private readonly int _limit;
 
-        private char CurrentChar;
+        public char CurrentChar { get; set; }
 
-        private char PeekChar => Position + 1 >= _text.Length ? '\0' : _text[Position + 1];
+        public char PeekChar => Position > _limit ? '\0' : _text[Position + 1];
 
         public Lexer(string text)
         {
@@ -322,7 +322,7 @@ namespace HLHML
         /// <summary>
         /// Sauter les prochains espaces blanc pour se positionner sur le prochain caractère
         /// </summary>
-        private void Incrementer()
+        public void Incrementer()
         {
             if (_limit > Position)
             {

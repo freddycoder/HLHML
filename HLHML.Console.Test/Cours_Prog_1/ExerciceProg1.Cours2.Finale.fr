@@ -18,7 +18,7 @@ un carré se définit comme suit :
         tant que ligne est plus petit que la longeur d'un coté,
                  afficher la longeur d'un coté * "*".
         Ensuite, fin boucle.
-     un carré = "".
+    un carré = "".
 
 un rectangle se définit comme suit :
     Afficher "Choisir la longeur d'un coté".
@@ -40,7 +40,7 @@ un rectangle se définit comme suit :
         tant que ligne est plus petit que la hauteur,
                  afficher la longeur d'un coté * "*".
         Ensuite, fin boucle.
-     un rectangle = "".
+    un rectangle = "".
 
 quitter programme = "faux".
 
